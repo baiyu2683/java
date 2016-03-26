@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Created by zhheng on 2016/3/23
  * <ul>
- *     <li>注解必须值，要么定义有默认值，要么在使用时赋值</li>
+ *     <li>注解必须有值，要么定义有默认值，要么在使用时赋值</li>
  *     <li>对于非基本元素，默认值和赋的值都不能为null，可以像下面定义的使用一些特殊的值表示不存在</li>
  * </ul>
  *
