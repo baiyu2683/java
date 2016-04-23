@@ -1,6 +1,6 @@
 package com.zh.annotations;
 
-import com.zh.atunit.Test;
+import com.zh.annotations.atunit.Test;
 
 /**
  * Created by zhheng on 2016/3/23.
