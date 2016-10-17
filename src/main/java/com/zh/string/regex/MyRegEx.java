@@ -1,6 +1,7 @@
 package com.zh.string.regex;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhheng on 2016-04-23.
@@ -35,5 +36,13 @@ public class MyRegEx {
     public static String[] exercise12(String test){
         String reg = "[^A-Z]\\w+";
         return test.split(reg);
+    }
+
+    /**
+     * 判断是否是.ok结尾
+     */
+    public static boolean isEndofOk(String str){
+        Pattern pattern = Pattern.compile("^(\\w+).ok$");
+        return pattern.matcher(str).find();
     }
 }
