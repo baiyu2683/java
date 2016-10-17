@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public class MyMain {
 
     public static void main(String[] args){
-//        BlockingQueue<Runnable> blockingQueue = new LinkedBlockingDeque<Runnable>();
+        BlockingQueue<Runnable> blockingQueue = new LinkedBlockingDeque<Runnable>();
 //        //只有一个线程
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 3000, TimeUnit.SECONDS,blockingQueue);
         for(int i = 0; i < 50; i++){
