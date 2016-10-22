@@ -14,21 +14,18 @@ public class Consumer implements Runnable {
     private static final Pattern pattern = Pattern.compile("^(\\w+).ok$");
 
     public void run() {
+        String fileName = "";
         try {
-            TimeUnit.SECONDS.sleep(3);
-//            Thread.sleep(3000);
+            fileName = MyTask.blockingQueue.take();
+            System.out.println(fileName + "出队！");
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("获取失败!");
         }
-        File file = new File("F:/tmp/");
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-            for(File file1 : files){
-                System.out.println("当前文件:" + file1.getName() + "-" + file1.getAbsolutePath());
-                if(pattern.matcher(file1.getName()).find()) {
-                    file1.delete();
-                    System.out.println("删除:" + file1.getName() + "-" + file1.getAbsolutePath());
-                }
+        File file = new File(Consts.DEFAULT_DIR + fileName);
+        if(file.exists()){
+            if (pattern.matcher(file.getName()).find()) {
+                file.delete();
+//                System.out.println("删除:" + file.getName() + "-" + file.getAbsolutePath());
             }
         }
     }
