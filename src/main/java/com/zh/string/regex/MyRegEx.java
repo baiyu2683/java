@@ -1,6 +1,7 @@
 package com.zh.string.regex;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -44,5 +45,18 @@ public class MyRegEx {
     public static boolean isEndofOk(String str){
         Pattern pattern = Pattern.compile("^(\\w+).ok$");
         return pattern.matcher(str).find();
+    }
+
+    /**
+     * @param source  原始字符串
+     * @param subStr  字符串中的字串
+     * @param prefix  需要在子串前添加的前缀
+     * @return
+     */
+    public static String addPrefix(String source, String subStr, String prefix) throws Exception {
+        if(source == null)
+            throw new Exception("原始字符串为null!");
+        String reg = "(" + subStr + ")";
+        return source.replaceAll(reg, prefix + "$1");
     }
 }
