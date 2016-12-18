@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TestJava {
 
-    @org.junit.Test
+    @Test
     public void test1(){
         BlockingQueue<Integer> deque = new LinkedBlockingQueue<>();
         for(int i = 0; i < 10; i++){
@@ -47,6 +47,14 @@ public class TestJava {
             System.out.println(MyRegEx.addPrefix("zhangheng", "", "ss"));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test4() {
+        Random random = new Random(47);
+        for(int i = 0; i < 10; i++) {
+            System.out.println(random.nextInt() + "-" + random.nextInt(100));
         }
     }
 
