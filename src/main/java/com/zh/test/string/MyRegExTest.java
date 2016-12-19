@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -112,6 +113,43 @@ public class MyRegExTest {
         Matcher m = p.matcher(s);
         while(m.find()){
             System.out.println(m.group());
+        }
+    }
+
+    @Test
+    public void test15() {
+        String reg = "a.*?b";
+        String teststr = "addcddb";
+        Pattern p = Pattern.compile(reg);
+        Matcher matcher = p.matcher(teststr);
+        while(matcher.find()) {
+            System.out.println(matcher.group());
+        }
+    }
+    @Test
+    public void test14() {
+//        String s = "<li class=\"f_class_li first_li\" data-for=\"entertainment\"><a href=\"/f/index/forumpark?pcn=娱乐明星&amp;pci=0&amp;ct=1&amp;rn=20&amp;pn=1\" title=\"娱乐明星\" class=\"entertainment\">娱乐明星</a></li>"
+//                + "<li class=\"f_class_li\" data-for=\"tvshows\"><a href=\"/f/index/forumpark?pcn=电视节目&amp;pci=0&amp;ct=1&amp;rn=20&amp;pn=1\" title=\"爱综艺\" class=\"tvshows\">爱综艺</a></li>"
+//                + "<a class=\"class-item-title\" href=\"/f/index/forumpark?pcn=娱乐明星&amp;pci=0&amp;ct=1\">娱乐明星</a>"
+//                + "<li><a href=\"/f/index/forumpark?cn=%E6%B8%AF%E5%8F%B0%E4%B8%9C%E5%8D%97%E4%BA%9A%E6%98%8E%E6%98%9F&amp;ci=0&amp;pcn=%E5%A8%B1%E4%B9%90%E6%98%8E%E6%98%9F&amp;pci=0&amp;ct=1\">港台东南亚明星</a></li>";
+        File file = new File("F:/company/spider/贴吧分类.htm");
+        StringBuilder s = new StringBuilder();
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+            while ((line=br.readLine()) != null) {
+                s.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String a = "<a.*?href=([\"|\'])(/f/index/forumpark\\?pcn=.*?)\\1.*?>";//href=［\"|\'](/f/index/forumpark?pcn=.*?)[\"|\'].*?</a>$";
+        Pattern pattern = Pattern.compile(a);
+        Matcher matcher = pattern.matcher(s.toString());
+        while(matcher.find()) {
+            System.out.println(matcher.group(2));
         }
     }
 }
