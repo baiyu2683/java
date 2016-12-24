@@ -47,12 +47,12 @@ public class TestExecutor {
         Random random = new Random(47);
         ExecutorService exec = Executors.newCachedThreadPool();
         ArrayList<Future<Double>> arrayList = new ArrayList<>();
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < 100; i++) {
             arrayList.add(exec.submit(new Exercise3Fibonacci(random.nextInt(1000))));
         }
         for(Future<Double> future : arrayList) {
             try {
-                System.out.print(format.format(future.get())+ "-");
+                System.out.println(format.format(future.get())+ "-");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
