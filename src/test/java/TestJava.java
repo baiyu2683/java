@@ -1,6 +1,8 @@
 import com.zh.string.regex.MyRegEx;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -56,6 +58,12 @@ public class TestJava {
         for(int i = 0; i < 10; i++) {
             System.out.println(random.nextInt() + "-" + random.nextInt(100));
         }
+    }
+
+    @Test
+    public void test5() throws IOException {
+        File file = new File("f:/asdf.trs");
+        System.out.println(file.getName());
     }
 
 }
