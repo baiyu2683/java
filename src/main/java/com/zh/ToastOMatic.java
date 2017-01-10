@@ -11,21 +11,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class ToastOMatic {
     public static void main(String[] args) throws InterruptedException {
-        ToastQueue dryQueue = new ToastQueue(),
-                butteredQueue = new ToastQueue(),
-                finishedQueue = new ToastQueue();
+        ToastQueue dryQueue1 = new ToastQueue(),dryQueue2 = new ToastQueue(),
+                butteredQueue = new ToastQueue(),jammerQueue = new ToastQueue(),
+                mergeQueue = new ToastQueue();
         ExecutorService executorService = Executors.newCachedThreadPool();
-//        executorService.execute(new Toaster(dryQueue));
-        executorService.execute(new Butterer(dryQueue, butteredQueue));
-        executorService.execute(new Jammer(butteredQueue,finishedQueue));
-        executorService.execute(new Eater(finishedQueue));
-        TimeUnit.SECONDS.sleep(5);
+        executorService.execute(new Toaster(dryQueue1));
+        executorService.execute(new Butterer(dryQueue1, butteredQueue));
+        executorService.execute(new Toaster(dryQueue2));
+        executorService.execute(new Jammer(dryQueue2,jammerQueue));
+        executorService.execute(new Merge(butteredQueue, jammerQueue, mergeQueue));
+        executorService.execute(new Eater(mergeQueue));
+        TimeUnit.SECONDS.sleep(1000);
         executorService.shutdownNow();
     }
 }
 
 class Toast {
-    public enum Status{ DRY, BUTTERED, JAMMED }
+    public enum Status{ DRY, BUTTERED, JAMMED, MERGE }
     private Status status = Status.DRY;
     private final int id;
     public Toast(int idn) {
@@ -36,6 +38,9 @@ class Toast {
     }
     public void jam() {
         status = Status.JAMMED;
+    }
+    public void merge() {
+        status = Status.MERGE;
     }
     public Status getStatus() {
         return status;
@@ -61,9 +66,11 @@ class Toaster implements Runnable {
         try {
             while (!Thread.interrupted()) {
                 TimeUnit.MILLISECONDS.sleep(100 + rand.nextInt(500));
-                Toast t = new Toast(count++);
-                System.out.println(t);
-                toastQueue.put(t);
+                if(toastQueue.size() < 100) {
+                    Toast t = new Toast(count++);
+                    System.out.println(t);
+                    toastQueue.put(t);
+                }
             }
         } catch (InterruptedException e) {
             System.out.printf("Toaster interrupted");
@@ -73,18 +80,19 @@ class Toaster implements Runnable {
 }
 
 class Butterer implements Runnable {
-    private ToastQueue dryQueue, butteredQueue;
-    public Butterer(ToastQueue dry, ToastQueue buttered) {
-        dryQueue =dry; 
-        butteredQueue = buttered;
+    private ToastQueue dryQueue, fineshedQueue;
+    public Butterer(ToastQueue dry, ToastQueue fineshed) {
+        dryQueue =dry;
+        fineshedQueue = fineshed;
     }
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                Toast t = dryQueue.take();
+                TimeUnit.SECONDS.sleep(2);
+                Toast t = dryQueue.take();  //阻塞的
                 t.butter();
                 System.out.println(t);
-                butteredQueue.put(t);
+                fineshedQueue.put(t);
             }
         } catch (InterruptedException e) {
             System.out.println("Butterer interrupted");
@@ -102,10 +110,12 @@ class Jammer implements Runnable {
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                Toast t = butteredQueue.take();
-                t.jam();
-                System.out.println(t);
-                finishedQueue.put(t);
+                if(finishedQueue.size() < 50) {
+                    Toast t = butteredQueue.take();
+                    t.jam();
+                    System.out.println(t);
+                    finishedQueue.put(t);
+                }
             }
         } catch (InterruptedException e) {
             System.out.println("Jammer interrupted");
@@ -114,9 +124,33 @@ class Jammer implements Runnable {
     }
 }
 
+class Merge implements Runnable {
+    private ToastQueue butteredQueue, jammeredQueue, finishedQueue;
+    public Merge(ToastQueue buttered, ToastQueue jammer, ToastQueue finished) {
+        butteredQueue = buttered;
+        jammeredQueue = jammer;
+        finishedQueue = finished;
+    }
+    public void run() {
+        Random random = new Random(47);
+        try {
+            while (!Thread.interrupted()) {
+                Toast t = butteredQueue.take();
+                Toast t1 = jammeredQueue.take();
+                System.out.println(t + ";" + t1);
+                Toast t11 = new Toast(random.nextInt(1000));
+                t11.merge();
+                finishedQueue.put(t11);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Merge interrupted");
+        }
+        System.out.println("Merge off");
+    }
+}
+
 class Eater implements Runnable {
     private ToastQueue finishedQueue;
-    private int counter = 0;
     public Eater(ToastQueue finished) {
         finishedQueue = finished;
     }
@@ -124,8 +158,7 @@ class Eater implements Runnable {
         try {
             while (!Thread.interrupted()) {
                 Toast t = finishedQueue.take();
-                if(t.getId() != counter++ ||
-                        t.getStatus() != Toast.Status.JAMMED) {
+                if(t.getStatus() != Toast.Status.MERGE) {
                     System.out.printf(">>>> Error: " + t);
                     System.exit(1);
                 } else {
