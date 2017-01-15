@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 银行出纳员仿真
  * Created by zh on 2017-01-15.
  */
 public class BankTellseSimulation {
