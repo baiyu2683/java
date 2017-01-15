@@ -39,9 +39,11 @@ class DelayedTask implements Runnable, Delayed {
         if(trigger > that.trigger) return 1;
         return 0;
     }
+
     public void run() {
         System.out.println(this + " ");
     }
+
     public String toString() {
         return String.format("[%1$-4d]", delta) + " Task " + id;
     }
