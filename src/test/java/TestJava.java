@@ -1,8 +1,10 @@
 import com.zh.string.regex.MyRegEx;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -71,4 +73,44 @@ public class TestJava {
         System.out.println("-" + System.lineSeparator() + "-");
     }
 
+    private static volatile int i = 0;
+
+    private synchronized int getCounter() {
+        return i++;
+    }
+
+    @Test
+    public void test7() {
+        File dirParent = new File("I:/xxx/xxx/xxx");
+        File[] dirs = dirParent.listFiles();
+        for(File dir : dirs) {
+            File[] files = dir.listFiles();
+            List<File> list = new ArrayList<>();
+            Collections.addAll(list, files);
+            list.parallelStream().filter((file -> {
+                if(file.getName().contains("xxx")) return false;
+                if(!file.getName().contains(".")) return false;
+                return true;
+            })).forEach((file)-> {
+                int bytesum = 0;
+                int byteread = 0;
+                try {
+                    InputStream inStream = new FileInputStream(file); //读入原文件
+                    FileOutputStream fs = new FileOutputStream("I:/xxx/xxx/xxx/" + getCounter() + file.getName());
+                    System.out.println("i:" + i);
+                    byte[] buffer = new byte[2048];
+                    int length;
+                    while ((byteread = inStream.read(buffer)) != -1) {
+                        bytesum += byteread; //字节数 文件大小
+                        fs.write(buffer, 0, byteread);
+                    }
+                    fs.flush();
+                    fs.close();
+                    inStream.close();
+                }catch (IOException e) {
+                }
+            });
+            list.clear();
+        }
+    }
 }
