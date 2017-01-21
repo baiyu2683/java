@@ -1,4 +1,6 @@
 import com.zh.string.regex.MyRegEx;
+import jxtras.regex.Match;
+import jxtras.regex.Regex;
 import org.junit.Test;
 
 import java.io.*;
@@ -112,5 +114,28 @@ public class TestJava {
             });
             list.clear();
         }
+    }
+
+    @Test
+    public void testRegex4j() throws IOException {
+        FileInputStream fis = new FileInputStream("F:/temp/京剧猫吧_百度贴吧.htm");
+        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+        StringBuilder sb = new StringBuilder();
+        String s = "";
+        while ((s = br.readLine()) != null) {
+            sb.append(s);
+        }
+        String result = sb.toString();
+        List<String> dataList = new ArrayList<>();
+        String regex = "(<(li)(?:(?!data-field=)[^>])+data-field=[^>]+>(?>(?<o>)<\\2[^>]*>|(?<-o>)</\\2>|(?!</?\\2)[\\w\\W])*(?(o)(?!))</\\2>)";
+        Match match = Regex.match(result, regex);
+        while (match.success()) {
+            dataList.add(match.groups().get(1).toString());
+            match = match.nextMatch();
+        }
+        dataList.forEach((v)->{
+            System.out.println(v);
+        });
+        System.out.println(dataList.size());
     }
 }
