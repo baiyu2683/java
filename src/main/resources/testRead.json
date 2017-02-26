@@ -1,0 +1,72 @@
+[
+  {
+    "NAME": "zhengquanshibaotest",
+    "INTERVAL": "86400",
+    "CHECK": "_$X_//input[@id='curtime']/@value_$TIME_",
+    "PROXY": "证券时报代理",
+    "TEMPLATE": {
+        "CUSTOMKEYS": [
+            {
+                "IR_GROUPNAME": "国内新闻_电子报",
+                "IR_SITENAME": "证券时报",
+                "IR_CHANNEL": "电子报",
+                "DBNAME": "DCzhengquanshibaopagelist",
+                "IR_BBSNUM": "0",
+                "IR_SERVICEID": "1533",
+                "IR_URLTIME": "_$X_//input[@id='curtime']/@value_$TIME_",
+                "IR_PAGELIST":"_$R_<dt id=[\\s\\S]*?<a href=([\\s\\S]*?)>_$RESOLVE__$R_<dt id=[\\s\\S]*?<a[\\s\\S]*?>([\\s\\S]*?)</a>_$JOINLIST_ ",
+            },
+        {
+          "IR_GROUPNAME": "国内新闻_电子报",
+          "IR_SITENAME": "证券时报",
+          "IR_CHANNEL": "电子报",
+          "DBNAME": "DCzhengquanshibaopagepic",
+          "IR_BBSNUM": "0",
+          "IR_SERVICEID": "1533",
+          "IR_VRESERVED1": "_$X_//div[@id='webtree']/dl[1]/dt/@id",
+          "IR_VRESERVED2": "_$X_//div[@id='webtree']/dl[1]/dt[1]/span[1]/a[1]/i/text()",
+          "IR_URLNAME": "_$X_//div[@id='webtree']/dl[1]/dt[1]/span[1]/a[1]/@href_$RESOLVE_",
+          "IR_URLTIME": "_$X_//input[@id='curtime']/@value_$TIME_",
+          "IR_PAGEPIC": "_$X_//body/div[4]/div[1]/ul/li/img/@src_$RESOLVE_",
+          "IR_HOTSPOT":"_$X_//map_$HTML_",
+          "IR_TITLELIST":"BLOCK_$X_//dl/dd/ul/li/a/@href_$RESOLVE__$R_<a href=content_[\s\S]*?>([\s\S]*?)</a>_$JOINLIST_ ",
+          "BLOCK": "_$X_//div[@id='webtree']/dl[1]",
+        },
+        {
+          "IR_GROUPNAME": "国内新闻_电子报",
+          "IR_SITENAME": "证券时报",
+          "IR_CHANNEL": "电子报",
+          "DBNAME": "DCzhengquanshibaopagepic",
+          "IR_BBSNUM": "0",
+          "IR_SERVICEID": "1533",
+          "IR_VRESERVED1": "BLOCK_$X_//dl/dt/@id",
+          "IR_VRESERVED2": "BLOCK_$X_//dl/dt/span/a/i/text()",
+          "IR_URLNAME": "BLOCK_$X_//dl/dt/span/a/@href_$RESOLVE_",
+          "IR_URLTIME": "_$X_//input[@id='curtime']/@value_$TIME_",
+          "IR_TITLELIST":"BLOCK_$X_//dl/dd/ul/li/a/@href_$RESOLVE__$R_<a href=content_[\s\S]*?>([\s\S]*?)</a>_$JOINLIST_ ",
+          "BLOCK": "_$X_//div[@id='webtree']/dl_$NTOP_1",
+        }
+      ],
+      "MERGE_zhengquanshibaobanmiantudetail": "_$X_//div[@id='webtree']/dl/dt/span/a/@href",
+      "TEMPLATENAME": "通用模板"
+    }
+  },
+  {
+    "NAME": "zhengquanshibaobanmiantudetail",
+    "INTERVAL": "-1",
+    "PROXY": "证券时报代理",
+    "CHECK": "_$X_//body/div[4]/div[1]/ul/li/img/@src_$RESOLVE_",
+    "TEMPLATE": {
+      "CUSTOMKEYS": [
+        {
+          "IR_HOTSPOT":"_$X_//map_$HTML_",
+          "IR_PAGEPIC": "_$X_//body/div[4]/div[1]/ul/li/img/@src_$RESOLVE_"
+        }
+      ],
+      "TEMPLATENAME": "通用模板"
+    }
+  },
+  {
+    "storageinfo": "TRSSERVER;192.9.200.18;8888;system;manager;DCdzbimage"
+  }
+]
