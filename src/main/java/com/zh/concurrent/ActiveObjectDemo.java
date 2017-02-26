@@ -1,6 +1,5 @@
 package com.zh.concurrent;
 
-import com.zh.util.CountingGenerator;
 
 import java.util.List;
 import java.util.Random;
