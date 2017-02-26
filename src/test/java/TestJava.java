@@ -138,4 +138,12 @@ public class TestJava {
         });
         System.out.println(dataList.size());
     }
+
+    @Test
+    public void testFile() throws IOException, ClassNotFoundException {
+        String path = Class.forName(TestJava.class.getName()).getResource("testRead.json").getFile();
+        File file = new File(path);
+        System.out.println(file.getCanonicalPath());
+        System.out.println(file.getAbsolutePath());
+    }
 }
