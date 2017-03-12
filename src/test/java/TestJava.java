@@ -4,6 +4,9 @@ import jxtras.regex.Regex;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -145,5 +148,23 @@ public class TestJava {
         File file = new File(path);
         System.out.println(file.getCanonicalPath());
         System.out.println(file.getAbsolutePath());
+    }
+
+    @Test
+    public void testCharset() {
+        Charset charset = Charset.forName("819");
+        System.out.println(charset.aliases());
+        System.out.println(charset.displayName());
+        System.out.println(charset.name());
+    }
+
+    @Test
+    public void testByteBuffer() {
+//        ByteBuffer buffer = ByteBuffer.allocate(24 * 1024);
+//        buffer.wrap("Some text".getBytes());
+//        CharBuffer charBuffer = buffer.asCharBuffer();
+        CharBuffer charBuffer = CharBuffer.allocate(1024);
+        charBuffer.wrap("Some text".toCharArray());
+        System.out.println(charBuffer.toString());
     }
 }
