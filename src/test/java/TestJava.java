@@ -7,11 +7,9 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Predicate;
 
 /**
  * Created by zhangheng on 16-8-28.
@@ -167,4 +165,12 @@ public class TestJava {
         charBuffer.wrap("Some text".toCharArray());
         System.out.println(charBuffer.toString());
     }
+
+    @Test
+    public void testProdicate() {
+        boolean re = true;
+        re |= false;
+        System.out.println(re);
+    }
+
 }
