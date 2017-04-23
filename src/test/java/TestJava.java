@@ -1,6 +1,7 @@
 import com.zh.string.regex.MyRegEx;
 import jxtras.regex.Match;
 import jxtras.regex.Regex;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 
 import java.io.*;
@@ -185,4 +186,8 @@ public class TestJava {
         }
     }
 
+    @Test
+    public void testMap() {
+        IdentityHashMap<String, String> map = new IdentityHashMap<>();
+    }
 }
