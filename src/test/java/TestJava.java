@@ -173,4 +173,16 @@ public class TestJava {
         System.out.println(re);
     }
 
+    @Test
+    public void testColl() {
+        Set<String> s = new HashSet<>();
+        s.add(null);
+        s.add("sdf");
+        s.add(null);
+        System.out.println(s.size());
+        for(String ss:s){
+            System.out.println(ss);
+        }
+    }
+
 }
