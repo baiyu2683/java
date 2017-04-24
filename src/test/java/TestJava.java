@@ -188,6 +188,6 @@ public class TestJava {
 
     @Test
     public void testMap() {
-        IdentityHashMap<String, String> map = new IdentityHashMap<>();
+        System.out.println(1 << 2);
     }
 }
