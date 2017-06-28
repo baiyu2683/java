@@ -2,6 +2,7 @@ package edition8;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zh.typeinfo.pets.Cat;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -13,6 +14,10 @@ import java.util.stream.Collectors;
  * Created by zhangheng on 2017/1/10.
  */
 public class TestJava8 {
+
+    @Test
+    public void testClone() {
+    }
 
     @Test
     public void testMapCompute() {
