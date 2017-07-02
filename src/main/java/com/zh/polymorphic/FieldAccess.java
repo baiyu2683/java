@@ -1,6 +1,7 @@
 package com.zh.polymorphic;
 
 /**
+ * 只有普通方法的调用时多态的，public域的调用实在编译器就确定的
  * Created by zh on 2017-04-04.
  */
 public class FieldAccess {
