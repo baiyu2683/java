@@ -14,11 +14,11 @@ public class TestHarness {
         for(int i = 0; i < nThreads; i++) {
             Thread t = new Thread(() -> {
                     try {
-                        startGate.await();
+                        startGate.await(); //所由线程阻塞等待起始门打开
                         try {
                             task.run();
                         } finally {
-                            endGate.countDown();
+                            endGate.countDown(); //一个线程执行结束，计数减1
                         }
                     } catch (InterruptedException ignored) {
                     }
