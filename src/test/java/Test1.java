@@ -26,7 +26,12 @@ class Test1 extends A {
         System.out.print("B");
     }
 
+    public void show() {
+        System.out.println("A");
+    }
+
     public static void main(String[] args) {
-        new Test1();
+        Test1 t = new Test1();
+        t.show();
     }
 }
