@@ -7,6 +7,8 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by zh on 2017-09-10.
@@ -86,5 +88,24 @@ public class TestMapped {
         fin.close();
         fou.close();
         System.out.println("test3:" + (System.currentTimeMillis() - start));
+    }
+
+    /**
+     * 新建一个空文件
+     * @throws IOException
+     */
+    @Test
+    public void test5() throws IOException {
+        File file = new File("f:/testcreate1");
+//        if(!file.exists()) file.createNewFile();
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+        randomAccessFile.setLength(2_048);
+    }
+    @Test
+    public void test6() throws IOException {
+        File file = new File("f:/testcreate1");
+        if(!file.exists()) file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file, true);
+        FileChannel fileChannel = fos.getChannel();
     }
 }
