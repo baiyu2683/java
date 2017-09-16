@@ -96,15 +96,15 @@ public class TestMapped {
      */
     @Test
     public void test5() throws IOException {
-        File file = new File("f:/testcreate1");
+        File file = new File("f:/testcreate2");
 //        if(!file.exists()) file.createNewFile();
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         randomAccessFile.setLength(2_048);
     }
     @Test
     public void test6() throws IOException {
-        File file = new File("f:/testcreate1");
-        if(!file.exists()) file.createNewFile();
+        File file = new File("f:/testcreate2");
+//        if(!file.exists()) file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file, true);
         FileChannel fileChannel = fos.getChannel();
     }
