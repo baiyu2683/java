@@ -2,6 +2,7 @@ package com.zh;
 
 import org.junit.Test;
 
+import java.nio.channels.Selector;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
@@ -48,5 +49,10 @@ public class TestQueue {
         public String toString() {
             return Thread.currentThread().getName() + "-delay:" + delay;
         }
+    }
+
+    @Test
+    public void testSelect() {
+        Selector selector;
     }
 }
