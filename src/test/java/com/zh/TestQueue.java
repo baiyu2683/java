@@ -3,6 +3,7 @@ package com.zh;
 import org.junit.Test;
 
 import java.nio.channels.Selector;
+import java.util.PriorityQueue;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,14 @@ public class TestQueue {
     }
 
     @Test
-    public void testSelect() {
-        Selector selector;
+    public void testPriorityQueue() {
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>();
+        priorityQueue.add("123");
+        priorityQueue.add("zhangheng");
+        priorityQueue.add("asdf");
+        priorityQueue.add("45");
+        for(String s : priorityQueue) {
+            System.out.println(s);
+        }
     }
 }
