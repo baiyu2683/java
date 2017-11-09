@@ -1,6 +1,5 @@
 package com.zh.chapter14;
 
-import javax.rmi.PortableRemoteObject;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
