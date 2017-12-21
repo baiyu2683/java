@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zh.typeinfo.pets.Cat;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -84,5 +85,16 @@ public class TestJava8 {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         System.out.println(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINESE)));
         System.out.println(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }
+
+    @Test
+    public void testAscii() throws UnsupportedEncodingException {
+    }
+
+    @Test
+    public void testBit() {
+        BitSet bitSet = new BitSet();
+        bitSet.set(10);
+        System.out.println(bitSet.get(10));
     }
 }

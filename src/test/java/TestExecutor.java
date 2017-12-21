@@ -4,9 +4,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 /**
  * Created by zh on 2016/12/18.
@@ -65,5 +66,17 @@ public class TestExecutor {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void test4() throws IOException {
+        List<String[]> list  = new ArrayList<>();
+        list.add(new String[]{"1", "2"});
+        list.add(new String[]{"3", "4", "5"});
+    }
+
+    @Test
+    public void test5() throws IOException {
+        Map<String, String> map = new ConcurrentHashMap<>();
     }
 }
