@@ -82,4 +82,82 @@ public class TestMyRegEx {
         if(matcher.find())
             System.out.println(matcher.group());
     }
+
+    /**
+     * 替换空行
+     */
+    @Test
+    public void replaceBlankLine() {
+        String s = "asdf\n" +
+                "\n" +
+                "zhagheng\n";
+        s = s.replaceAll("(?m)^$", "");
+        System.out.println(s);
+    }
+
+    @Test
+    public void test5() {
+        String s = "Quansar\n" +
+                "Qasdf\n" +
+                "qsdaf\n" +
+                "q123\n" +
+                "wdsdf\n" +
+                "kkd\n" +
+                "iiie\n" +
+                "asdf\n" +
+                "iasdfqiii\n" +
+                "Iraq";
+        Pattern pattern = Pattern.compile("q[^u]");
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find())
+            System.out.println(matcher.group());
+    }
+
+    /**
+     * 为数字插入逗号分隔符
+     */
+    @Test
+    public void test6() {
+        String s = "12345611990";
+        String reg = "(?<=\\d)(?=\\d{3}+$)";
+        reg = "(?<=\\d)(?=(\\d{3})+$)";
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()) {
+            System.out.println(matcher.groupCount());
+        }
+    }
+
+    @Test
+    public void test7() {
+        int num = 0;
+        String s = "asdf\n" +
+                "     \n" +
+                "dddddfa    \n" +
+                "#\n" +
+                "asdf\n";
+        Pattern pattern = Pattern.compile("(?<hh>a+)", Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+            System.out.println(matcher.start() + "-" + matcher.end());
+            System.out.println(matcher.group("hh"));
+        }
+        System.out.println(Pattern.quote("\\s*"));
+        s = s.replaceAll(Pattern.quote("\n"), "");
+        System.out.println(s);
+    }
+
+    @Test
+    public void test8() {
+        String s = "(\\w+)";
+        s.replace("", "");
+        Pattern pattern = Pattern.compile(s);
+        Matcher matcher = pattern.matcher("a sdf asdfa sdf");
+        matcher.reset("as df");//重置
+        while (matcher.find()) {
+            System.out.println(matcher.groupCount());
+            System.out.println(matcher.group(1));
+        }
+    }
 }
