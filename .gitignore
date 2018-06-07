@@ -1,7 +1,6 @@
 *.class
 /.idea/
-/target/
-/.idea/
+*/target/
 *.iml
 .*
 /.setting/
