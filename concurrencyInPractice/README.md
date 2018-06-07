@@ -1,2 +1,0 @@
-# concurrencyInPractice
-Java Concurrency in Practice
