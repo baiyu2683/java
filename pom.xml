@@ -24,6 +24,7 @@
     <module>jvm</module>
     <module>common</module>
     <module>assemblyTest</module>
+        <module>designPattern</module>
     </modules>
     <dependencies>
     <dependency>
