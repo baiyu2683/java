@@ -1,6 +1,7 @@
 package com.zh;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class JsonTest {
@@ -27,10 +28,5 @@ public class JsonTest {
     }
 
     public static void main(String[] args) {
-        Dimension dimension = new Dimension();
-        dimension.setName("asdf");
-        dimension.setAddress("dddd");
-        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(dimension);
-        System.out.println(jsonObject.toJSONString());
     }
 }

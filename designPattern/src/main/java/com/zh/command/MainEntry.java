@@ -17,9 +17,12 @@ public class MainEntry {
 
         Invoker invoker = new Invoker();
         invoker.setCommand(command);
-        invoker.doSomethind();
+        invoker.doSomething();
 
         invoker.setCommand(command1);
-        invoker.doSomethind();
+        invoker.doSomething();
+
+        command1.setReceiver(new FiremanReceiver());
+        invoker.doSomething();
     }
 }

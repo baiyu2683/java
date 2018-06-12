@@ -9,7 +9,7 @@ public class Invoker {
 
     private Command command;
 
-    public void doSomethind() {
+    public void doSomething() {
         command.execute();
     }
 

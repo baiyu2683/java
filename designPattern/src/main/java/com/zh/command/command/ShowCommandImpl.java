@@ -13,8 +13,12 @@ public class ShowCommandImpl implements Command {
         this.receiver = receiver;
     }
 
+    public void setReceiver(Receiver receiver) {
+        this.receiver = receiver;
+    }
+
     @Override
     public void execute() {
-        System.out.println("打印中。。。");
+        receiver.doSomething();
     }
 }
