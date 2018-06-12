@@ -7,7 +7,10 @@ import com.zh.command.receiver.FiremanReceiver;
 import com.zh.command.receiver.PrinterReceiver;
 
 /**
- * 入口测试类
+ * 状态模式使用场景:
+ * 1, 事务，在command中实现
+ * 2, 多级回退，使用栈保存每个执行的命令，回退时出栈回退
+ * 3，java线程池中，每个ExecutorService(调用者)执行一个Runnable（命令），Runnable中执行不同的任务
  */
 public class MainEntry {
 

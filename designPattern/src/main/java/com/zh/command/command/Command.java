@@ -10,4 +10,8 @@ public interface Command {
     void setReceiver(Receiver receiver);
 
     void execute();
+
+    void beginTransaction();
+    void commit();
+    void rollBack();
 }

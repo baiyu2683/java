@@ -19,6 +19,27 @@ public class ShowCommandImpl implements Command {
 
     @Override
     public void execute() {
-        receiver.doSomething();
+        beginTransaction();
+        try {
+            receiver.doSomething();
+            commit();
+        } catch (Exception e) {
+            rollBack();
+        }
+    }
+
+    @Override
+    public void beginTransaction() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
+
+    @Override
+    public void rollBack() {
+
     }
 }
