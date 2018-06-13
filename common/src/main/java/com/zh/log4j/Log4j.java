@@ -1,10 +1,12 @@
 package com.zh.log4j;
 
+import jdk.nashorn.internal.runtime.PropertyMap;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.LoggerFactory;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 /**
@@ -14,20 +16,56 @@ public class Log4j {
 
     private static final Logger logger = Logger.getLogger(Log4j.class);
 
+    // jar部署目录名字必须为lib
+    private static final String PATH_CONF = "/conf";
+    private static final String PATH_LOG = "/log";
+    private static final String PATH_LOG4j = "/log4j.properties";
+    private static final String PATH_FILE_LOG4j = PATH_CONF + PATH_LOG4j;
+
     static {
+        // 加载配置文件
+        InputStream is = null;
+        String path = Log4j.class.getResource("").getPath();
+        String logPath = PATH_LOG;
+        if (path.contains("jar")) {
+            try {
+                path = path.substring(0, path.lastIndexOf("lib"));
+                path = path.substring(0, path.lastIndexOf("/"));
+                URI uri = new URI(path);
+                is = new FileInputStream(new File(uri.getPath() + PATH_FILE_LOG4j));
+
+                logPath = uri.getPath() + logPath;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("获取日志配置失败!");
+            }
+        } else {
+            is = Log4j.class.getResourceAsStream(PATH_FILE_LOG4j);
+
+            logPath = path.substring(0, path.lastIndexOf("classes"));
+            logPath = logPath + PATH_LOG;
+        }
+        File logDir = new File(logPath);
+        if (!logDir.exists())
+            logDir.mkdirs();
+
         Properties properties = new Properties();
         try {
-            InputStream is = Log4j.class.getResourceAsStream("/conf/log4j.properties");
             properties.load(new InputStreamReader(is));
-        } catch (IOException e) {
-            System.out.println("启动失败");
+            System.out.println(new URI(logPath).getPath() + "/log.log");
+            properties.setProperty("log4j.appender.file.File", logDir.getPath() + "/log.log");
+            PropertyConfigurator.configure(properties);
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("日志初始化失败!");
+            throw new RuntimeException("初始化日志配置失败！");
         }
-        // TODO 需要修正文件输出路径
-        // ..
-        PropertyConfigurator.configure(properties);
+
     }
+
+    public static void main(String[] args) {
+        info("123");
+    }
+
     // 字符拼接
     private static ThreadLocal<StringBuilder> stringBuilderThreadLocal = new ThreadLocal<StringBuilder>() {
         protected StringBuilder initialValue() {

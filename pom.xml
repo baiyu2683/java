@@ -21,7 +21,6 @@
     <modules>
     <module>concurrencyInPractice</module>
     <module>thinkingInJavaPrj</module>
-    <module>jvm</module>
     <module>common</module>
     <module>assemblyTest</module>
         <module>designPattern</module>
