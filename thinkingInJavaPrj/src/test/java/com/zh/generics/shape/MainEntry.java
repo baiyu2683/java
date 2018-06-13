@@ -14,6 +14,6 @@ public class MainEntry {
         list = new ArrayList<Square>(); // list可能指向一个Square列表
         list = new ArrayList<Triangle>(); // list可能指向一个Triangle列表
         // 由于list可能指向任何Shape子类，但是类型擦除后不能确定是具体的那种类型，因此下面的add不成立
-        list.add(new Square());
+//        list.add(new Square());
     }
 }

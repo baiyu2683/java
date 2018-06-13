@@ -1,9 +1,22 @@
 package com.zh;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class TestEnum {
 
     enum Cases {
-        Name;
+        Name("asdf", () -> {
+            System.out.println(1);
+        });
+
+        Cases(String name, Runnable consumer) {
+            this.name = name;
+            this.consumer = consumer;
+        }
+
+        private String name;
+        private Runnable consumer;
     }
 
     public static void main(String[] args) {

@@ -11,7 +11,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * 利用GZIP进行压缩/解压
  */
-public class CompressUtils {
+public class CompressUtil {
 
     public static byte[] gzipCompress(String source){
         return gzipCompress(source, "utf-8");
