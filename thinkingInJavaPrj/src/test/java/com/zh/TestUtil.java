@@ -8,7 +8,6 @@ public class TestUtil {
         People people = new People();
         people.setName("123");
         JSONObject object = (JSONObject) JSONObject.toJSON(people);
-        System.out.println(object.toJSONString());
     }
 
     static class People {

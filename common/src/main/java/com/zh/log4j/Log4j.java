@@ -1,6 +1,8 @@
 package com.zh.log4j;
 
+import com.zh.constant.Consts;
 import jdk.nashorn.internal.runtime.PropertyMap;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -16,33 +18,48 @@ public class Log4j {
 
     private static final Logger logger = Logger.getLogger(Log4j.class);
 
-    // jar部署目录名字必须为lib
+    // 配置目录
     private static final String PATH_CONF = "/conf";
+    // 日志目录
     private static final String PATH_LOG = "/log";
-    private static final String PATH_LOG4j = "/log4j.properties";
-    private static final String PATH_FILE_LOG4j = PATH_CONF + PATH_LOG4j;
+    // 日志配置文件路径
+    private static final String PATH_FILE_LOG4j = PATH_CONF + "/log4j.properties";
+    // file这个路径和log4j.properties中的名字对应，因为需要动态设置，所以放在这里
+    private static final String CONFIG_LOG4J_APPENDER_FILE = "log4j.appender.file.File";
+    // 日志文件后缀
+    private static final String SUFFIX_FILE_LOG = ".log";
+    // jar
+    private static final String SUFFIX_JAR = "jar";
+    // lib
+    private static final String NAME_LIB = "lib";
+    // class文件目录名
+    private static final String NAME_CLASSES = "classes";
 
-    static {
+    /**
+     * 日志初始化
+     * @param clazz
+     */
+    static void init(Class<?> clazz) {
         // 加载配置文件
-        InputStream is = null;
+        InputStream is;
         String path = Log4j.class.getResource("").getPath();
         String logPath = PATH_LOG;
-        if (path.contains("jar")) {
+        // 打包为jar
+        if (path.contains(SUFFIX_JAR)) {
             try {
-                path = path.substring(0, path.lastIndexOf("lib"));
-                path = path.substring(0, path.lastIndexOf("/"));
+                path = path.substring(0, path.lastIndexOf(NAME_LIB));
+                path = path.substring(0, path.lastIndexOf(Consts.PATH_SEPARATOR));
                 URI uri = new URI(path);
                 is = new FileInputStream(new File(uri.getPath() + PATH_FILE_LOG4j));
-
                 logPath = uri.getPath() + logPath;
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("获取日志配置失败!");
             }
         } else {
+            // 在IDE中
             is = Log4j.class.getResourceAsStream(PATH_FILE_LOG4j);
-
-            logPath = path.substring(0, path.lastIndexOf("classes"));
+            logPath = path.substring(0, path.lastIndexOf(NAME_CLASSES));
             logPath = logPath + PATH_LOG;
         }
         File logDir = new File(logPath);
@@ -52,18 +69,18 @@ public class Log4j {
         Properties properties = new Properties();
         try {
             properties.load(new InputStreamReader(is));
-            System.out.println(new URI(logPath).getPath() + "/log.log");
-            properties.setProperty("log4j.appender.file.File", logDir.getPath() + "/log.log");
+            properties.setProperty(CONFIG_LOG4J_APPENDER_FILE, logDir.getPath() + File.separator + clazz.getSimpleName() + SUFFIX_FILE_LOG);
             PropertyConfigurator.configure(properties);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("初始化日志配置失败！");
         }
-
     }
 
     public static void main(String[] args) {
-        info("123");
+        Log4j.init(Log4j.class);
+        info("测试info");
+        debug("测试debug");
     }
 
     // 字符拼接
@@ -74,6 +91,36 @@ public class Log4j {
     };
 
     public static void info(String...infos) {
+        if (logger.isInfoEnabled())
+            logger.info(appendInfo(infos));
+    }
+
+    public static void debug(String...debugInfos) {
+        if (logger.isDebugEnabled())
+            logger.debug(appendInfo(debugInfos));
+    }
+
+    public static void warn(Throwable throwable, String...warnInfos) {
+        if (Level.WARN.isGreaterOrEqual(logger.getLevel()))
+            logger.warn(appendInfo(warnInfos), throwable);
+    }
+
+    public static void warn(String...warnInfos) {
+        if (Level.WARN.isGreaterOrEqual(logger.getLevel()))
+            logger.warn(appendInfo(warnInfos));
+    }
+
+    public static void error(String...errorInfos) {
+        if (Level.ERROR.isGreaterOrEqual(logger.getLevel()))
+            logger.error(appendInfo(errorInfos));
+    }
+
+    public static void error(Throwable throwable, String...errorInfos) {
+        if (Level.ERROR.isGreaterOrEqual(logger.getLevel()))
+            logger.error(appendInfo(errorInfos), throwable);
+    }
+
+    private static StringBuilder appendInfo(String[] infos) {
         StringBuilder stringBuilder = stringBuilderThreadLocal.get();
         stringBuilder.setLength(0);
         StackTraceElement[] stes = Thread.currentThread().getStackTrace();
@@ -87,17 +134,6 @@ public class Log4j {
         for (String info : infos) {
             stringBuilder.append(" [").append(info).append("]");
         }
-        logger.info(stringBuilder.toString());
-    }
-
-    public static void debug(String...debug) {
-        System.out.println(debug);
-    }
-
-    public static void error(String error, Throwable throwable) {
-        System.out.println(error);
-        throwable.getCause().printStackTrace();
-        StackTraceElement[] stackTraceElements = throwable.getStackTrace();
-        stackTraceElements[0].toString();
+        return stringBuilder;
     }
 }
