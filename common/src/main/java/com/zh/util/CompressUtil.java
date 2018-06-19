@@ -35,7 +35,7 @@ public class CompressUtil {
             gzipOutputStream.close();
             return baos.toByteArray();
         } catch (IOException e) {
-            Log4j.error("压缩失败", e);
+            Log4j.error(e, "压缩失败");
         } finally {
             if (bais != null) {
                 try {
@@ -65,7 +65,7 @@ public class CompressUtil {
             }
             return new String(baos.toByteArray(), charsetName);
         } catch (IOException e) {
-            Log4j.error("解压缩失败", e);
+            Log4j.error(e, "解压缩失败");
         } finally {
             if (gzipInputStream != null) {
                 try {

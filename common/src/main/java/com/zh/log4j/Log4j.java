@@ -39,7 +39,7 @@ public class Log4j {
      * 日志初始化
      * @param clazz
      */
-    static void init(Class<?> clazz) {
+    public static void init(Class<?> clazz) {
         // 加载配置文件
         InputStream is;
         String path = Log4j.class.getResource("").getPath();
