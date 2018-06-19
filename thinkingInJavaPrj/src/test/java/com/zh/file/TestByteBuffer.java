@@ -16,10 +16,10 @@ public class TestByteBuffer {
     public void test1() throws IOException {
         long start = System.currentTimeMillis();
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 1024);
-        FileInputStream fileInputStream = new FileInputStream("f:/zhangheng");
-        File file = new File("f:/zhanghengbackup1");
+        FileInputStream fileInputStream = new FileInputStream("d:/zhangheng");
+        File file = new File("d:/zhanghengbackup1");
         if(!file.exists()) file.createNewFile();
-        FileOutputStream fileOutputStream = new FileOutputStream("f:/zhanghengbackup1");
+        FileOutputStream fileOutputStream = new FileOutputStream("d:/zhanghengbackup1");
         FileChannel in = fileInputStream.getChannel();
         FileChannel out = fileOutputStream.getChannel();
         byteBuffer.clear();
@@ -36,10 +36,10 @@ public class TestByteBuffer {
     @Test
     public void test2() throws IOException {
         long start = System.currentTimeMillis();
-        FileInputStream fileInputStream = new FileInputStream("f:/zhangheng");
-        File file = new File("f:/zhanghengbackup2");
+        FileInputStream fileInputStream = new FileInputStream("d:/zhangheng");
+        File file = new File("d:/zhanghengbackup2");
         if(!file.exists()) file.createNewFile();
-        FileOutputStream fileOutputStream = new FileOutputStream("f:/zhanghengbackup2");
+        FileOutputStream fileOutputStream = new FileOutputStream("d:/zhanghengbackup2");
         byte[] buffer = new byte[10 * 1024];
         int index = 0;
         while ((index = fileInputStream.read(buffer)) > 0) {

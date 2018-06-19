@@ -17,20 +17,20 @@ import java.util.concurrent.TimeUnit;
 public class TestExercise12 {
 
     @Test
-    public void test1() throws IOException {
+    public void test1() throws InterruptedException {
         for(int i = 0; i < 10; i++) {
             new Thread(new Exercise1()).start();
         }
-        System.in.read();
+        TimeUnit.SECONDS.sleep(2);
     }
 
     @Test
-    public void test2() throws IOException {
+    public void test2() throws InterruptedException {
         Random r = new Random(47);
         for(int i = 0; i < 20; i++) {
             new Thread(new Exercise2Fibonacci(r.nextInt(100))).start();
         }
-        System.in.read();
+        TimeUnit.SECONDS.sleep(2);
     }
 
     @Test

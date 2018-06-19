@@ -15,12 +15,12 @@ public class TestMapped {
     @Test
     public void test1() throws IOException {
         long start = System.currentTimeMillis();
-        FileInputStream fis = new FileInputStream("f:/test1zhangheng");
+        FileInputStream fis = new FileInputStream("d:/test1zhangheng");
         FileChannel fileChannel = fis.getChannel();
         MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
         fis.close();
 
-        File file = new File("f:/test2zhangheng");
+        File file = new File("d:/test2zhangheng");
         if(!file.exists()) file.createNewFile();
 //        FileOutputStream fileOutputStream = new FileOutputStream(file, true);
         RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
@@ -37,8 +37,8 @@ public class TestMapped {
     public void test4() throws IOException {
         long start = System.currentTimeMillis();
         ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024 * 1024);
-        FileInputStream fileInputStream = new FileInputStream("f:/test1zhangheng");
-        File file = new File("f:/test2zhangheng");
+        FileInputStream fileInputStream = new FileInputStream("d:/test1zhangheng");
+        File file = new File("d:/test2zhangheng");
         if(!file.exists()) file.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         FileChannel in = fileInputStream.getChannel();
@@ -57,8 +57,8 @@ public class TestMapped {
     @Test
     public void test2() throws IOException {
         long start = System.currentTimeMillis();
-        FileInputStream fileInputStream = new FileInputStream("f:/test1zhangheng");
-        File file = new File("f:/test2zhangheng");
+        FileInputStream fileInputStream = new FileInputStream("d:/test1zhangheng");
+        File file = new File("d:/test2zhangheng");
         if(!file.exists()) file.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         byte[] buffer = new byte[10 * 1024 * 1024];
@@ -75,8 +75,8 @@ public class TestMapped {
     @Test
     public void test3() throws IOException {
         long start = System.currentTimeMillis();
-        FileInputStream fileInputStream = new FileInputStream("f:/test1zhangheng");
-        File file = new File("f:/test3zhangheng");
+        FileInputStream fileInputStream = new FileInputStream("d:/test1zhangheng");
+        File file = new File("d:/test3zhangheng");
         if(!file.exists()) file.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         FileChannel fin = fileInputStream.getChannel();
@@ -93,14 +93,14 @@ public class TestMapped {
      */
     @Test
     public void test5() throws IOException {
-        File file = new File("f:/testcreate2");
+        File file = new File("d:/testcreate2");
 //        if(!file.exists()) file.createNewFile();
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         randomAccessFile.setLength(2_048);
     }
     @Test
     public void test6() throws IOException {
-        File file = new File("f:/testcreate2");
+        File file = new File("d:/testcreate2");
 //        if(!file.exists()) file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file, true);
         FileChannel fileChannel = fos.getChannel();
