@@ -1,15 +1,15 @@
 package com.zh.log4j;
 
 import com.zh.constant.Consts;
-import jdk.nashorn.internal.runtime.PropertyMap;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * log4j日志记录
@@ -35,11 +35,28 @@ public class Log4j {
     // class文件目录名
     private static final String NAME_CLASSES = "classes";
 
+    private static final AtomicInteger init_count = new AtomicInteger(0);
+    private static final ReentrantLock lock = new ReentrantLock();
     /**
      * 日志初始化
      * @param clazz
      */
     public static void init(Class<?> clazz) {
+        int count = init_count.getAndIncrement();
+        try {
+            lock.lockInterruptibly();
+            lock.tryLock();
+            if (count != 0) return;
+            initLog4jConfig(clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getCause());
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private static void initLog4jConfig(Class<?> clazz) {
         // 加载配置文件
         InputStream is;
         String path = Log4j.class.getResource("").getPath();
