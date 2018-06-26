@@ -167,6 +167,10 @@ public class WordTest {
         run.setFontFamily("微软雅黑");
         run.setBold(true);
 
+        //翻页
+//        XWPFParagraph nextPage = document.createParagraph();
+//        nextPage.setPageBreak(true);
+
         int rowCount = 8;
         int colCount = 4;
         // 新建一个两行6列的表格
