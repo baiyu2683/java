@@ -3,6 +3,7 @@ package com.zh.poi;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -225,8 +226,11 @@ public class WordTest {
         mergeCellsHorizontal(table, rowCount - 1, 0, colCount - 1);
 
         //写出文件
-        FileOutputStream outputStream = new FileOutputStream("d:/out.docx");
+        String path = WordTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        File file = new File(path + "out.docx");
+        FileOutputStream outputStream = new FileOutputStream(file);
         document.write(outputStream);
         outputStream.close();
+        System.out.println("docx保存路径:" + file.getAbsolutePath());
     }
 }
