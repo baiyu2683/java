@@ -1,9 +1,14 @@
 package com.zh.poi;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.SchemaType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STDecimalNumberImpl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -37,37 +42,41 @@ public class WordTest {
         CTTc cttc = cell.getCTTc();
         CTTcPr cellPr = cttc.addNewTcPr();
         // 宽度设置
-        cellPr.addNewTcW().setW(BigInteger.valueOf(width));
-        CTTcPr ctPr = cttc.addNewTcPr();
-        //背景设置
-        CTShd ctshd = ctPr.addNewShd();
-        ctshd.setFill(bgcolor);
-        // 垂直对齐
-        ctPr.addNewVAlign().setVal(STVerticalJc.CENTER);
-        // 水平对齐
-        cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.CENTER);
-        // 边框
-        CTTcBorders borders = ctPr.addNewTcBorders();
-        // 左边框
-        CTBorder leftBorder = borders.addNewLeft();
-        leftBorder.setColor("FF8C00");
-        leftBorder.setSz(new BigInteger("1"));
-        leftBorder.setVal(STBorder.DECO_ARCH);
-        // 右边框
-        CTBorder rightBorder = borders.addNewRight();
-        rightBorder.setColor("CD853F");
-        rightBorder.setSz(new BigInteger("1"));
-        rightBorder.setVal(STBorder.DASHED);
-        // 上边框
-        CTBorder topBorder = borders.addNewTop();
-        topBorder.setColor("D2691E");
-        topBorder.setSz(new BigInteger("1"));
-        topBorder.setVal(STBorder.BASIC_THIN_LINES);
-        // 下边框
-        CTBorder bottomBorder = borders.addNewBottom();
-        bottomBorder.setColor("800000");
-        bottomBorder.setSz(new BigInteger("1"));
-        bottomBorder.setVal(STBorder.STARS_BLACK);
+        cellPr.addNewTcW().setW(BigInteger.valueOf(Math.round(px2pong(130))));
+        setBorderProp();
+    }
+
+    private static void setBorderProp() {
+        //        CTTcPr ctPr = cttc.addNewTcPr();
+//        //背景设置
+//        CTShd ctshd = ctPr.addNewShd();
+//        ctshd.setFill(bgcolor);
+//        // 垂直对齐
+//        ctPr.addNewVAlign().setVal(STVerticalJc.CENTER);
+//        // 水平对齐
+//        cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.CENTER);
+//        // 边框
+//        CTTcBorders borders = ctPr.addNewTcBorders();
+//        // 左边框
+//        CTBorder leftBorder = borders.addNewLeft();
+//        leftBorder.setColor("FF8C00");
+//        leftBorder.setSz(new BigInteger("1"));
+//        leftBorder.setVal(STBorder.DECO_ARCH);
+//        // 右边框
+//        CTBorder rightBorder = borders.addNewRight();
+//        rightBorder.setColor("CD853F");
+//        rightBorder.setSz(new BigInteger("1"));
+//        rightBorder.setVal(STBorder.DASHED);
+//        // 上边框
+//        CTBorder topBorder = borders.addNewTop();
+//        topBorder.setColor("D2691E");
+//        topBorder.setSz(new BigInteger("1"));
+//        topBorder.setVal(STBorder.BASIC_THIN_LINES);
+//        // 下边框
+//        CTBorder bottomBorder = borders.addNewBottom();
+//        bottomBorder.setColor("800000");
+//        bottomBorder.setSz(new BigInteger("1"));
+//        bottomBorder.setVal(STBorder.STARS_BLACK);
     }
 
     private static void setCellTextProp(XWPFTableCell firstCell, String text) {
@@ -76,9 +85,15 @@ public class WordTest {
         XWPFParagraph cellFirstParagraph = firstCell.getParagraph(cellFirstCTP);
         XWPFRun run1 = cellFirstParagraph.createRun();
         run1.setText(text);
-        run1.setBold(true);
+//        run1.setBold(true);
         run1.setFontSize(16);
-        run1.setFontFamily("Consoles");
+        run1.setFontFamily("微软雅黑");
+//        // 设置字体，低版本（3.10）
+//        CTRPr rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+//        CTFonts fonts = rpr.isSetRFonts() ? rpr.getRFonts() : rpr.addNewRFonts();
+//        fonts.setAscii("仿宋");
+//        fonts.setEastAsia("仿宋");
+//        fonts.setHAnsi("仿宋");
     }
 
     /**
@@ -151,32 +166,53 @@ public class WordTest {
         row.setHeight(380);
         XWPFTableCell cell = row.getCell(0);
         setCellProp(cell, "CCCCCC", 9000);
-
     }
 
-    public static void main(String[] args) throws IOException {
+    private static double cm2pong(double cm) {
+        return ((3 * 4800) / (4 * cm)) * 100;
+    }
+
+    private static double px2pong(double px) {
+        return (4 / 3d) * px * 10;
+    }
+
+    public static void main(String[] args) throws IOException, InvalidFormatException {
+        long start = System.currentTimeMillis();
         XWPFDocument document = new XWPFDocument();
 
         // 标题
-        XWPFParagraph paragraph = document.createParagraph();
-        paragraph.setAlignment(ParagraphAlignment.CENTER);
-        paragraph.setVerticalAlignment(TextAlignment.CENTER);
-        XWPFRun run = paragraph.createRun();
-        run.setText("这是整个表格的标题");
-        run.setFontSize(20);
-        run.setColor("2F4F4F");
-        run.setFontFamily("微软雅黑");
-        run.setBold(true);
+//        XWPFParagraph paragraph = document.createParagraph();
+//        paragraph.setAlignment(ParagraphAlignment.CENTER);
+//        paragraph.setVerticalAlignment(TextAlignment.CENTER);
+//        XWPFRun run = paragraph.createRun();
+//        run.setText("这是整个表格的标题");
+//        run.setFontSize(20);
+//        run.setColor("2F4F4F");
+//        run.setFontFamily("微软雅黑");
+//        run.setBold(true);
 
         //翻页
 //        XWPFParagraph nextPage = document.createParagraph();
 //        nextPage.setPageBreak(true);
+
+        CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+        CTPageSz pageSz = sectPr.addNewPgSz();
+        double h = cm2pong(21);
+        long inth = Math.round(h);
+        System.out.println(h);
+        pageSz.setH(BigInteger.valueOf(inth));
+        double w = cm2pong(29.7);
+        long intw = Math.round(w);
+        pageSz.setW(BigInteger.valueOf(intw));
 
         int rowCount = 8;
         int colCount = 4;
         // 新建一个两行6列的表格
         XWPFTable table = document.createTable(rowCount, colCount);
         setTableWidth(table, "8000");
+
+        CTTbl ctTbl = table.getCTTbl();
+        CTTblGrid grid = ctTbl.addNewTblGrid();
 
         // 首行作为表头，所有单元格合并
         XWPFTableRow firstRow = table.getRow(0);
@@ -187,25 +223,21 @@ public class WordTest {
         // 合并第一行所有单元格
         mergeCellsHorizontal(table, 0, 0, colCount - 1);
 
-
-        XWPFTableRow secondRow = table.getRow(1);
-        secondRow.setHeight(380);
-        XWPFTableCell fCell = secondRow.getCell(0);
-        fCell.setText("列");
-        // 合并第一列
-        mergeCellsVertically(table, 0, 1, rowCount - 2);
-
         // 其他行。。。。
         List<XWPFTableRow> tableRows = table.getRows();
         if (tableRows != null && tableRows.size() > 0) {
-            for (int ri = 1; ri < tableRows.size() - 1; ri++) {
+            for (int ri = 0; ri < tableRows.size() - 1; ri++) {
                 XWPFTableRow row = tableRows.get(ri);
-                row.setHeight(380);
+                double rh = px2pong(30);
+                int rhh = Double.valueOf(rh).intValue();
+                System.out.println("rh : " + rh + ", rhh: " + rhh);
+                row.setHeight(rhh);
                 List<XWPFTableCell> cells = row.getTableCells();
                 if (cells != null && cells.size() > 0) {
-                    for (int ci = 1; ci < cells.size(); ci++) {
+                    for (int ci = 0; ci < cells.size(); ci++) {
                         XWPFTableCell cell = cells.get(ci);
-                        cell.setText("单元格: " + ri + "-" + ci + " ");
+//                        cell.setText("单元格: " + ri + "-" + ci + " ");
+//                        setCellTextProp(cell, "单元格: " + ri + "-" + ci + " ");
                         if (ri % 2 == 0) {
                             setCellProp(cell, "D4DBED", 2000);
                         } else {
@@ -215,15 +247,18 @@ public class WordTest {
                 }
             }
         }
-
         // 表尾
         XWPFTableRow lastRow = table.getRow(rowCount - 1);
         lastRow.setHeight(380);
-        XWPFTableCell lastRowfirstCell = lastRow.getCell(0);
+        XWPFTableCell lastRowFirstCell = lastRow.getCell(0);
         // 设置表头单元格内字体属性, 其他单元格只是内部属性设置不同, 照抄即可
-        setCellTextProp(lastRowfirstCell, "表尾");
+//        setCellTextProp(lastRowFirstCell, "表尾");
         // 合并第一行所有单元格
         mergeCellsHorizontal(table, rowCount - 1, 0, colCount - 1);
+
+        XWPFParagraph picParagraph = lastRowFirstCell.getParagraphs().get(0);
+        XWPFRun picRun = picParagraph.createRun();
+        picRun.addPicture(new FileInputStream("D:/07docx.png"), Document.PICTURE_TYPE_PNG, "docx", Units.toEMU(200), Units.toEMU(120));
 
         //写出文件
         String path = WordTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -231,6 +266,8 @@ public class WordTest {
         FileOutputStream outputStream = new FileOutputStream(file);
         document.write(outputStream);
         outputStream.close();
+
         System.out.println("docx保存路径:" + file.getAbsolutePath());
+        System.out.println(System.currentTimeMillis() - start);
     }
 }
