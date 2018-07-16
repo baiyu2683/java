@@ -16,7 +16,7 @@ public class Context implements IContext {
 
     @Override
     public void request(String param) throws Exception{
-        System.out.println("param : " + param);
+//        System.out.println("param : " + param);
         state.handle(this);
     }
 

@@ -21,6 +21,10 @@ public class ProductInfo {
         }
     }
 
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     public String toString() {
         return Thread.currentThread().getName() + " " + info;
     }

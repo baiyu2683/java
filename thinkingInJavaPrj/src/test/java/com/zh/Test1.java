@@ -1,6 +1,5 @@
 package com.zh;
 
-import com.zh.innerclasses.DotThis;
 import com.zh.log4j.Log4j;
 
 import java.util.concurrent.TimeUnit;
