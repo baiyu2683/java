@@ -16,8 +16,9 @@ public class TestCompletedService {
     static public class MyExecutor implements Executor {
         @Override
         public void execute(Runnable command) {
-//            new Thread(command).start();    //这么写的时候future.get会超时TimeoutException
-            command.run();                    //这么写的时候future.get不会超时
+            new Thread(command).start();    //这么写的时候future.get会超时TimeoutException
+//            command.run();                    //这么写的时候future.get不会超时
+            // 这注释真的坑，run是同步的，根本执行不到future.get()...
         }
     }
 
@@ -29,6 +30,7 @@ public class TestCompletedService {
             for(;;);
         }, "zh's test case");
         try {
+            System.out.println(1);
             System.out.println(future.get(5, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -54,6 +56,7 @@ public class TestCompletedService {
         }
         System.out.println(s.toString());
         CompletionService<Integer> completionService = new ExecutorCompletionService<>(task -> {
+            // 这个保证是异步的，submit之后立即返回，不然就是同步的了
             new Thread(task).start();
         });
         for (Callable<Integer> callable : list) {

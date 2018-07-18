@@ -1,27 +1,42 @@
 package com.zh.chapter5;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 利用CountDownLatch控制任务启动和计算任务执行时间
  * Created by zh on 2017-07-30.
  */
 public class TestHarness {
+
+    public static void main(String[] args) throws InterruptedException {
+        TestHarness testHarness = new TestHarness();
+        testHarness.timeTasks(10, () -> {
+            try {
+                long time = Math.round(Math.random() * 10);
+                TimeUnit.SECONDS.sleep(time);
+                System.out.println(Thread.currentThread().getName() + ": " + time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public long timeTasks(int nThreads, final Runnable task) throws InterruptedException {
         //起始门和结束门
         final CountDownLatch startGate = new CountDownLatch(1);
         final CountDownLatch endGate = new CountDownLatch(nThreads);
         for(int i = 0; i < nThreads; i++) {
             Thread t = new Thread(() -> {
+                try {
+                    startGate.await();
                     try {
-                        startGate.await(); //所由线程阻塞等待起始门打开
-                        try {
-                            task.run();
-                        } finally {
-                            endGate.countDown(); //一个线程执行结束，计数减1
-                        }
-                    } catch (InterruptedException ignored) {
+                        task.run();
+                    } finally {
+                        endGate.await();
                     }
+                } catch (InterruptedException e) {
+                }
             });
             t.start();
         }

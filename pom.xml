@@ -25,7 +25,6 @@
         <module>assemblyTest</module>
         <module>designPattern</module>
         <module>web</module>
-        <module>web</module>
     </modules>
     <dependencies>
     <dependency>

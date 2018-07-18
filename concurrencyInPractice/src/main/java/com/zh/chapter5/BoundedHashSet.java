@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 /**
+ * 限制并发数的set
  * Created by zh on 2017-07-30.
  */
 public class BoundedHashSet<T> {
