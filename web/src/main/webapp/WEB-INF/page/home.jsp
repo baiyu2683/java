@@ -6,11 +6,45 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+%>
 <html>
 <head>
+    <base href="<%=basePath%>">
     <title>zhangheng2683's homepage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="<%=basePath%>/style/bootstrap/css/bootstrap.css">
+    <script src="<%=basePath%>/style/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
-首页面
+<%=basePath%>
+<div class="container-fluid">
+    <h2>h2的标题</h2>
+    <div class="row text-center">
+        <div class="col-4 bg-success">.col-4</div>
+        <div class="col-4 offset-4 bg-warning">.col-4 .offset-4</div>
+    </div>
+    <div class="row">
+        <div class="col-4 offset-3 bg-success">.col-4</div>
+        <div class="col-4 offset-4 bg-warning">.col-4 .offset-3</div>
+    </div>
+    <div class="row">
+        <div class="col-6 offset-3 bg-success">.col-6 .offset-3</div>
+    </div>
+    <p>The <abbr title="World Health Organization">Who</abbr>  was founded in 1948.</p>
+    <p>The <blockquote class="blockquote">Who</blockquote>  was founded in 1948.</p>
+    <h1>Description Lists</h1>
+    <p>The dl element indicates a description</p>
+    <dl>
+        <dt>Coffee</dt>
+        <dd>- blank hot drink</dd>
+        <dt>Milk</dt>
+        <dd>- white cold drink</dd>
+    </dl>
+</div>
 </body>
 </html>
