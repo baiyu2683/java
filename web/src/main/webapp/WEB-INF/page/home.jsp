@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>zhangheng2683's homepage</title>
+    <title>homepage</title>
 </head>
 <body>
 首页面
