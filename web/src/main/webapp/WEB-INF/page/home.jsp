@@ -40,11 +40,36 @@
     <h1>Description Lists</h1>
     <p>The dl element indicates a description</p>
     <dl>
-        <dt>Coffee</dt>
-        <dd>- blank hot drink</dd>
-        <dt>Milk</dt>
-        <dd>- white cold drink</dd>
+        <dt class="text-primary">Coffee</dt>
+        <dd class="text-info">- blank hot drink</dd>
+        <dt class="text-primary">Milk</dt>
+        <dd class="text-info">- white cold drink</dd>
     </dl>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="table-primary">
+                <th>FirshName</th>
+                <th>LastName</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-info">
+                <td>John</td>
+                <td>Doe</td>
+                <td>John@example.com</td>
+            </tr>
+            <tr class="table-info">
+                <td>Mary</td>
+                <td>Moe</td>
+                <td>mary@example.com</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>==========</div>
+    <div class="alert alert-info">
+        信息
+    </div>
 </div>
 </body>
 </html>
