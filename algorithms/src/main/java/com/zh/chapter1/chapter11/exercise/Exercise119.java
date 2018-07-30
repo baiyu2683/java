@@ -1,4 +1,4 @@
-package com.zh.chapter1.exercise;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * 将一个正整数N转换为一个二进制表示的字符串

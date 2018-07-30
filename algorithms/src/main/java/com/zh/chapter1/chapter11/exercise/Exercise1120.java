@@ -1,4 +1,4 @@
-package com.zh.chapter1.exercise;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * 递归方法计算log(N!)

@@ -1,4 +1,4 @@
-package com.zh.chapter1.exercise;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * 辗转相除法计算最大公约数，并打印每次递归参数
