@@ -9,12 +9,7 @@ import org.springframework.stereotype.Repository;
  * Date: 2018-07-18 <br/>
  */
 @Repository
-public class BaseDao implements BeanNameAware {
+public class BaseDao {
 
     private Logger logger = Logger.getLogger(BaseDao.class);
-
-    @Override
-    public void setBeanName(String s) {
-        logger.info(this.getClass().getSimpleName());
-    }
 }

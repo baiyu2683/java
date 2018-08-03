@@ -23,6 +23,6 @@ public class MyContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        logger.info("应用关闭销毁: " + Thread.currentThread().getName());
+        logger.info("应用关闭: " + Thread.currentThread().getName());
     }
 }

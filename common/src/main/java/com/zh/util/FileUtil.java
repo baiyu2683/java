@@ -1,5 +1,7 @@
 package com.zh.util;
 
+import com.zh.constant.Consts;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -50,5 +52,41 @@ public class FileUtil {
         while ((length = fis.read(buffer)) != -1) {
             fos.write(buffer, 0, length);
         }
+    }
+
+    /**
+     * 将文件读取为一个字符串
+     * @param input
+     * @return
+     */
+    public static String toString(File input, String charsetName) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(input);
+            FileChannel fisc = fileInputStream.getChannel();
+
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            while (true) {
+                byteBuffer.clear();
+                int count = fisc.read(byteBuffer);
+                if (count < 0) break;
+                output.write(byteBuffer.array(), 0, count);
+            }
+            return output.toString(charsetName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String toString(File input) {
+        return toString(input, "utf-8");
+    }
+
+    public static void main(String[] args) throws IOException {
+        File file = new File("D:\\projects\\HappyRptServlet\\pom.xml");
+        String s = toString(file, "gb2312");
+        System.out.println(s);
     }
 }

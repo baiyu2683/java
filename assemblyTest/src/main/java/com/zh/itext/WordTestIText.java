@@ -1,14 +1,11 @@
-package com.zh.poi;
+package com.zh.itext;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.table.RtfBorder;
 import com.lowagie.text.rtf.table.RtfBorderGroup;
 import com.lowagie.text.rtf.table.RtfCell;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 import java.awt.*;
 import java.io.FileOutputStream;
@@ -59,7 +56,6 @@ public class WordTestIText {
         table.addCell(cell);
         BigDecimal decimal = new BigDecimal(60 * 15);
         table.getRow(0).setHeight(decimal.intValue());
-
 
         document.add(table);
 

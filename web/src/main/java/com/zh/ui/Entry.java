@@ -1,15 +1,13 @@
-package com.zh.web;
+package com.zh.ui;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import com.zh.domain.User;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Author: Administrator <br/>
