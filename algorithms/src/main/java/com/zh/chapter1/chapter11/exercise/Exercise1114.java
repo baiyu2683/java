@@ -1,4 +1,4 @@
-package com.zh.chapter1.exercise;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * 接受一个整数N, 返回不大于log2N的最大整数

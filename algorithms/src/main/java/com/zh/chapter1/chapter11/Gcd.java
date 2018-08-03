@@ -1,4 +1,4 @@
-package com.zh.chapter1;
+package com.zh.chapter1.chapter11;
 
 /**
  * 求两个数字q和p的最大公约数

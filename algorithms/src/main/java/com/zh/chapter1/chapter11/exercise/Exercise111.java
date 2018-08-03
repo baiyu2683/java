@@ -1,4 +1,4 @@
-package com.zh.chapter1.exercise;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * @Author zh2683

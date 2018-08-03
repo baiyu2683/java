@@ -1,4 +1,4 @@
-package com.zh.chapter1;
+package com.zh.chapter1.chapter11;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdIn;

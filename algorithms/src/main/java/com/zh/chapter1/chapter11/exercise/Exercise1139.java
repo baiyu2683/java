@@ -1,6 +1,4 @@
-package com.zh.chapter1.exercise;
-
-import java.util.Random;
+package com.zh.chapter1.chapter11.exercise;
 
 /**
  * @Author zh2683
