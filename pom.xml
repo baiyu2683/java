@@ -26,6 +26,7 @@
         <module>designPattern</module>
         <module>web</module>
         <module>algorithms</module>
+        <module>mybatis</module>
     </modules>
     <dependencies>
         <dependency>
