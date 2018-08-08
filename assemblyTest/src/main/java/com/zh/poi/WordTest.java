@@ -201,7 +201,7 @@ public class WordTest {
         long inth = Math.round(h);
         System.out.println(h);
         pageSz.setH(BigInteger.valueOf(inth));
-        double w = cm2pong(29.7);
+        double w = cm2pong(20);
         long intw = Math.round(w);
         pageSz.setW(BigInteger.valueOf(intw));
 
