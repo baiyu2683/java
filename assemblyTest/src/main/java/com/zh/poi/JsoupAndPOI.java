@@ -252,7 +252,20 @@ public class JsoupAndPOI {
                     if (StringUtils.isNotBlank(size)) {
                         fontStyleMap.put("font-size", fontTagSizeMap.get(attribute.getValue()));
                     }
-                } else if ("color".equals(attribute.getKey())) { // TODO color方式过多，暂忽略
+                } else if ("color".equals(attribute.getKey())) {
+                    String value = attribute.getValue();
+                    if (StringUtils.isNotBlank(value)) {
+                        if (value.startsWith("#")) {
+                            Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
+                            fontStyleMap.put("color", color);
+                        } else if (value.startsWith("rgb")) {
+                            Color color = rgb2Color(value);
+                            fontStyleMap.put("color", color);
+                        } else {
+                            // TODO 颜色名称 转换
+                            // ......
+                        }
+                    }
                 }
             }
         }
@@ -368,7 +381,6 @@ public class JsoupAndPOI {
                         fontSize = fontSize.replace("pt", "");
                         run.setFontSize(Math.round(Float.parseFloat(fontSize)));
                     }
-
                 }
                 // 字体颜色
                 if (styleSheet.containsKey("color")) {
@@ -426,7 +438,7 @@ public class JsoupAndPOI {
 
                 // 颜色和背景色,需要特殊处理
                 if (key.equals("color") || key.equals("background-color")) {
-                    Color color = str2Color(value);
+                    Color color = rgb2Color(value);
                     styleMap.put(key, color);
                 } else {
                     styleMap.put(key, value);
@@ -472,7 +484,7 @@ public class JsoupAndPOI {
         return result;
     }
 
-    private static Color str2Color(String color) {
+    private static Color rgb2Color(String color) {
         try {
             color = color.toLowerCase();
             if (color.startsWith("rgb") && !color.startsWith("rgba")) {
