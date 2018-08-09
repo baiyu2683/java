@@ -1,7 +1,5 @@
 package com.zh.arrays;
 
-import com.sun.jndi.ldap.Ber;
-
 import java.util.Arrays;
 
 /**
