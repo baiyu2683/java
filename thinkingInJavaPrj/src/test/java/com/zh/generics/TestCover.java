@@ -14,7 +14,7 @@ public class TestCover {
 class Bean1 {}
 class Bean2 extends Bean1 {}
 
-class D<T> {
+class DT<T> {
     public <S extends T> List<S> show(S s) {
         System.out.println(s);
         return null;

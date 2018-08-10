@@ -2,7 +2,6 @@ package com.zh.ui;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zh.domain.User;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
