@@ -1,8 +1,14 @@
-package com.zh;
+package com.zh.poi.util;
 
 import java.awt.Color;
 
-public class ColorUtil {
+/**
+ * 各种格式颜色格式的互相转换
+ *
+ * @author zh
+ * 2018年8月10日
+ */
+public class ColorUtils {
 	/**
 	 *
 	 * @param bgr
@@ -36,15 +42,6 @@ public class ColorUtil {
 	 */
 	public static String getRGBShort(Color color) {
 		StringBuffer sb = new StringBuffer();
-//		String R = Integer.toHexString(color.getRed());
-//		R = R.length() < 2 ? ('0' + R) : R;
-//		sb.append(R);
-//		String G = Integer.toHexString(color.getGreen());
-//		G = G.length() < 2 ? ('0' + G) : G;
-//		sb.append(G);
-//		String B = Integer.toHexString(color.getBlue());
-//		B = B.length() < 2 ? ('0' + B) : B;
-//		sb.append(B);
 		if (color.getRed() < 16) {
 			sb.append('0');
 		}
@@ -113,4 +110,25 @@ public class ColorUtil {
 	public static String color2RGB(int color) {
 		return color2RGB(new Color(color));
 	}
+	
+    /**
+     * rgb(255, 0, 0)或者rgba(255, 0, 0, 0.5)格式转Color对象, 忽略透明度<br/>
+     * @param color
+     * @return
+     */
+    public static Color rgbStr2Color(String color) {
+        try {
+            color = color.toLowerCase();
+            color = color.replace("rgba(", "")
+                        .replace("rgb(", "")
+                        .replace(")", "");
+            String[] rgb = color.split(", ");
+            Color poiColor = new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]),
+                    Integer.parseInt(rgb[2]));
+            return poiColor;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

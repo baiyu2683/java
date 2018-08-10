@@ -1,10 +1,12 @@
 package com.zh.poi;
 
 import com.lowagie.text.DocumentException;
-import com.zh.ColorUtil;
+import com.zh.poi.util.ColorUtils;
+import com.zh.poi.util.UnitUtils;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
-import org.apache.poi.xwpf.usermodel.Document;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
@@ -26,15 +28,13 @@ import java.util.List;
 public class JsoupAndPOI {
 
     private static final String rootPath = JsoupAndPOI.class.getResource("/").getPath();
-
     private static final String htmlPath = rootPath + "/html";
-
-    private static final String fontPath = rootPath + "/font";
 
     /**
      * font标签size属性映射像素
      */
     private static final HashMap<String, String> fontTagSizeMap = new HashMap<String, String>();
+    
     static {
         fontTagSizeMap.put("1", "10");
         fontTagSizeMap.put("2", "14");
@@ -44,6 +44,8 @@ public class JsoupAndPOI {
         fontTagSizeMap.put("6", "32");
         fontTagSizeMap.put("7", "48");
     }
+    
+    private static final String NEW_LINE = "\r";
 
     public static void main(String[] args) throws IOException, com.lowagie.text.DocumentException {
         // 读取html文件
@@ -65,6 +67,8 @@ public class JsoupAndPOI {
         }
 
         doc.write(new FileOutputStream(rootPath + "/poi.doc", false));
+        System.out.println(rootPath);
+        System.out.println("finished...");
     }
 
     /**
@@ -76,7 +80,6 @@ public class JsoupAndPOI {
      */
     private static void recursionSubNodes(List<Node> nodes, XWPFDocument wordDocument) throws com.lowagie.text.DocumentException {
         for (Node node : nodes) {
-            System.out.println("recursionSubElement Doc: " + node.getClass().getSimpleName());
             if (node instanceof Element) {
                 handleNode((Element) node, wordDocument);
             }
@@ -86,206 +89,91 @@ public class JsoupAndPOI {
     private static void handleNode(Node node, XWPFDocument wordDocument) throws DocumentException {
         if (node instanceof Element) {
             Element ele = (Element) node;
-            List<Node> subNodes = ele.childNodes();
             Map<String, Object> styleSheet = getStyleSheet(ele);
             if ("p".equals(ele.tagName())) {
                 XWPFParagraph paragraph = wordDocument.createParagraph();
                 addStyle(paragraph, styleSheet);
-                // p标签下面可能有span, i，b，u，strike并可能嵌套，样式需要逐层传递
                 List<Node> eleChildNodes = ele.childNodes();
                 for (Node eleChildNode : eleChildNodes) {
                     if (eleChildNode instanceof TextNode) {
                         XWPFRun run = paragraph.createRun();
-                        String text = ((TextNode)eleChildNode).text();
-                        run.setText(br2newLine(text));
-                    } else if (eleChildNode instanceof Element) {
-                        Map<String, Object> subStyleSheet = getStyleSheet((Element) eleChildNode);
-                        Map<String, Object> mergeStyleSheet = mergeMap(styleSheet, subStyleSheet);
-                        handlParagraph(((Element)eleChildNode).childNodes(), mergeStyleSheet, paragraph);
+                        addStyle(run, styleSheet);
+                        run.setText(((TextNode)eleChildNode).text());
+                    } if (eleChildNode instanceof Element) {
+                        Element eleChildElement = (Element) eleChildNode;
+                        addContentToParagraph(eleChildElement, styleSheet, paragraph);
                     }
                 }
             } else if ("div".equals(ele.tagName())) {
-                boolean recursion = false;
-                for (Node subNode : ele.childNodes()) {
-                    if (subNode instanceof Element) {
-                        Element subElement = (Element) subNode;
-                        String tagName = subElement.tagName();
-                        if ("div".equals(tagName) || "p".equals(tagName) || "img".equals(tagName)) {
-                            recursion = true;
-                            break;
-                        }
-                    }
-                }
-                XWPFParagraph paragraph = wordDocument.createParagraph();
-                if (recursion) {
+                // body下首层的div不创建段落
+                Element parentEle = ele.parent();
+                if (parentEle == null || "body".equals(parentEle.tagName())) {
                     recursionSubNodes(ele.childNodes(), wordDocument);
                 } else {
-                    // div中直接有文字的情况
+                    XWPFParagraph paragraph = wordDocument.createParagraph();
                     addStyle(paragraph, styleSheet);
-                    String ownText = ele.html();
-                    if (ownText != null && ownText.length() > 0) {
-                        String texts = br2newLine(ownText);
-                        String text = htmlConverter(texts);
-                        XWPFRun run = paragraph.createRun();
-                        run.setText(text);
-                        // 字体样式需要设置在run上
-                        addStyle(run, styleSheet);
-                    }
-                }
-            } else if ("img".equals(ele.tagName())) {
-                // div中直接有文字的情况
-                XWPFParagraph paragraph = wordDocument.getLastParagraph();
-                addStyle(paragraph, styleSheet);
-                String text = ele.text();
-                XWPFRun imgRun = paragraph.createRun();
-                String src = ele.attr("src");
-                try {
-                    URL url = new URL(src);
-                    URLConnection urlconn = url.openConnection();
-                    urlconn.connect();
-                    InputStream imgStream = urlconn.getInputStream();
-                    imgRun.addPicture(imgStream, Document.PICTURE_TYPE_PNG, UUID.randomUUID().toString(), 3500000, 3500000);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    addContentToParagraph(ele, styleSheet, paragraph);
                 }
             }
         }
     }
 
     /**
-     * p标签下可能有i、b、u、strike等，样式需要逐层加入
-     * @param nodes
-     * @param styleSheet
-     */
-    private static void handlParagraph(List<Node> nodes, Map<String, Object> styleSheet, XWPFParagraph paragraph) {
-        for (Node node : nodes) {
-            if (node instanceof Element) {
-                Element element = (Element) node;
-                if ("span".equals(element.tagName())) {
-                    Map<String, Object> spanStyleSheet = getStyleSheet(element);
-                    styleSheet = mergeMap(styleSheet, spanStyleSheet);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("font".equals(element.tagName())) {
-                    // 字体样式处理
-                    Map<String, Object> fontStyleMap = getStyleSheet(element);
-                    Map<String, Object> mergeStyle = mergeMap(styleSheet, fontStyleMap);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("i".equals(element.tagName())) {
-                    // font标签的斜体
-                    styleSheet.put("font-italic", 1);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("b".equals(element.tagName())) {
-                    // font标签的粗体
-                    styleSheet.put("font-bold", 1);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("u".equals(element.tagName())) {
-                    // font标签的下划线
-                    styleSheet.put("font-underline", 1);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("strike".equals(element.tagName())) {
-                    // font标签的删除线
-                    styleSheet.put("font-strike", 1);
-                    addToParagraph(element.childNodes(), styleSheet, paragraph);
-                } else if ("br".equals(element.tagName())) {
-                    XWPFRun br = paragraph.createRun();
-                    br.setText("\r");
-                }
-            } else if (node instanceof TextNode) {
-                // TODO 段落中的文本，直接加入段落
-                TextNode textNode = (TextNode) node;
-                XWPFRun textRun = paragraph.createRun();
-                textRun.setText(textNode.text());
-                addStyle(textRun, styleSheet);
-            }
-        }
-    }
-
-    /**
-     * 将当前节点内容加入段落
-     * @param strikeSubNodes
+     * 将当前标签内容加入一个段落
+     * br标签实际上当做内容处理就可以了
+     * @param element
      * @param styleSheet
      * @param paragraph
      */
-    private static void addToParagraph(List<Node> strikeSubNodes, Map<String, Object> styleSheet, XWPFParagraph paragraph) {
-        for (Node strikeSubNode : strikeSubNodes) {
-            if (strikeSubNode instanceof TextNode) {
-                XWPFRun strikeSubRun = paragraph.createRun();
-                strikeSubRun.setText(((TextNode) strikeSubNode).text());
-                addStyle(strikeSubRun, styleSheet);
-            } if (strikeSubNode instanceof Element) {
-                Element strikeSubElement = (Element) strikeSubNode;
-                handlParagraph(strikeSubElement.childNodes(), styleSheet, paragraph);
+    private static void addContentToParagraph(Element element, Map<String, Object> styleSheet,
+            XWPFParagraph paragraph) {
+        Map<String, Object> subStyleSheet = getStyleSheet(element);
+        subStyleSheet = mergeMap(styleSheet, subStyleSheet);
+        if ("br".equals(element.tagName())) {
+            XWPFRun br = paragraph.createRun();
+            br.setText(NEW_LINE);
+        } else if ("hr".equals(element.tagName())) {
+            // TODO 分割线
+        } else if ("img".equals(element.tagName())) {
+            XWPFRun imgRun = paragraph.createRun();
+            addStyle(imgRun, subStyleSheet);
+            int width = 200;
+            int height = 200;
+            if (subStyleSheet.containsKey("height")) {
+                height = UnitUtils.pxString2Number(String.valueOf(subStyleSheet.get("height")));
             }
-        }
-    }
-
-    /**
-     * 获得一个元素上的样式表
-     * @param ele
-     * @return
-     */
-    private static Map<String, Object> getStyleSheet(Element ele) {
-        Map<String, Object> styleSheet = new HashMap<String, Object>();
-        String styleAttribute = ele.attr("style");
-        if (StringUtils.isNotBlank(styleAttribute)) {
-            styleSheet.putAll(styleAttr2StyleSheet(styleAttribute));
-        }
-        String align = ele.attr("align");
-        if (StringUtils.isNotBlank(align)) {
-            styleSheet.put("align", align);
-        }
-        // TODO 所有其他样式属性，慢慢补充吧。。。
-        // ........
-        if ("font".equals(ele.tagName())) {
-            Attributes attrs = ele.attributes();
-            // 字体样式处理
-            Map<String, Object> fontStyleMap = new HashMap<String, Object>();
-            for (Attribute attribute : attrs) {
-                if ("face".equals(attribute.getKey())) {
-                    String face = attribute.getValue();
-                    if (StringUtils.isNotBlank(face)) {
-                        String[] subFace = face.split(",");
-                        fontStyleMap.put("font-family", subFace[0].trim());
-                    }
-                } else if ("size".equals(attribute.getKey())) {
-                    String size = attribute.getValue();
-                    if (StringUtils.isNotBlank(size)) {
-                        fontStyleMap.put("font-size", fontTagSizeMap.get(attribute.getValue()));
-                    }
-                } else if ("color".equals(attribute.getKey())) {
-                    String value = attribute.getValue();
-                    if (StringUtils.isNotBlank(value)) {
-                        if (value.startsWith("#")) {
-                            Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
-                            fontStyleMap.put("color", color);
-                        } else if (value.startsWith("rgb")) {
-                            Color color = rgb2Color(value);
-                            fontStyleMap.put("color", color);
-                        } else {
-                            // TODO 颜色名称 转换
-                            // ......
-                        }
-                    }
+            if (subStyleSheet.containsKey("width")) {
+                width = UnitUtils.pxString2Number(String.valueOf(subStyleSheet.get("width")));
+            }
+            String src = element.attr("src");
+            try {
+                URL url = new URL(src);
+                URLConnection urlconn = url.openConnection();
+                urlconn.connect();
+                InputStream imgStream = urlconn.getInputStream();
+                imgRun.addPicture(imgStream, org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG, UUID.randomUUID().toString(), Units.toEMU(UnitUtils.px2Point(width)), Units.toEMU(UnitUtils.px2Point(height)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            List<Node> subNodes = element.childNodes();
+            for (Node subNode : subNodes) {
+                if (subNode instanceof Element) {
+                    Element subElement = (Element) subNode;
+                    Map<String, Object> subElementStyleSheet = getStyleSheet(subElement);
+                    Map<String, Object> mergeStyleSheet = mergeMap(subStyleSheet, subElementStyleSheet);
+                    addContentToParagraph(subElement, mergeStyleSheet, paragraph);
+                } else if (subNode instanceof TextNode) {
+                    XWPFRun subRun = paragraph.createRun();
+                    subRun.setText(((TextNode) subNode).text());
+                    addStyle(subRun, subStyleSheet);
                 }
             }
         }
-        if ("u".equals(ele.tagName())) {
-            styleSheet.put("font-underline", 1);
-        }
-        if ("i".equals(ele.tagName())) {
-            styleSheet.put("font-italic", 1);
-        }
-        if ("b".equals(ele.tagName())) {
-            styleSheet.put("font-bold", 1);
-        }
-        if ("strike".equals(ele.tagName())) {
-            styleSheet.put("font-strike", 1);
-        }
-        return styleSheet;
     }
 
     /**
-     * 解析样式
+     * 给组件增加样式
      * @param sdt
      * @param styleSheet
      */
@@ -300,15 +188,19 @@ public class JsoupAndPOI {
                     if (StringUtils.isBlank(align)) {
                         align = (String) styleSheet.get("align");
                     }
-                    if ("left".equals(align)) {
+                    if ("left".equals(align) || "start".equals(align)) {
                        paragraph.setAlignment(ParagraphAlignment.LEFT);
-                    } else if ("right".equals(align)) {
+                    } else if ("right".equals(align) || "end".equals(align)) {
                         paragraph.setAlignment(ParagraphAlignment.RIGHT);
                     } else if ("center".equals(align)) {
                         paragraph.setAlignment(ParagraphAlignment.CENTER);
                     } else if ("justify".equals(align)) {
                         paragraph.setAlignment(ParagraphAlignment.BOTH);
                     }
+                }
+                //行距
+                if (styleSheet.containsKey("line-height")) {
+                    paragraph.setSpacingLineRule(LineSpacingRule.AT_LEAST);
                 }
                 //外间距
                 String marginLeft = "0";
@@ -339,62 +231,62 @@ public class JsoupAndPOI {
                         marginBottom = margins[0];
                     }
                 }
-
-                //单位暂不清楚
-                if (StringUtils.isNotBlank(marginLeft) && !"0".equals(marginLeft)) {
-                    int left = Integer.parseInt(marginLeft);
-                    if (left > 0) {
-                        paragraph.setIndentationLeft(left * 5);
-                    }
+                // TODO 缩进的单位
+                if (StringUtils.isNotBlank(marginLeft)) {
+                    paragraph.setIndentationLeft(UnitUtils.pxString2Number(marginLeft) * 10);
                 }
-
-                if (StringUtils.isNotBlank(marginRight) && !"0".equals(marginRight)) {
-                    int right = Integer.parseInt(marginRight);
-                    if (right > 0) {
-                        paragraph.setIndentationRight(right * 5);
-                    }
+                if (StringUtils.isNotBlank(marginRight)) {
+                    paragraph.setIndentationRight(UnitUtils.pxString2Number(marginRight) * 10);
                 }
-
-                if (StringUtils.isNotBlank(marginTop) && !"0".equals(marginTop)) {
-                    paragraph.setSpacingBefore(Integer.parseInt(marginTop) * 5);
+                if (StringUtils.isNotBlank(marginTop)) {
+                    paragraph.setSpacingBefore(UnitUtils.pxString2Number(marginTop) * 10);
                 }
-
-                if (StringUtils.isNotBlank(marginBottom) && !"0".equals(marginBottom)) {
-                    paragraph.setSpacingAfter(Integer.parseInt(marginBottom) * 5);
+                if (StringUtils.isNotBlank(marginBottom)) {
+                    paragraph.setSpacingAfter(UnitUtils.pxString2Number(marginBottom) * 10);
                 }
-
-                // TODO 段落背景色(无法实现)
+                // TODO 段落背景色(poi无法设置背景色)
+                if (styleSheet.containsKey("background-color")) {
+                }
             } else if (sdt instanceof XWPFRun) {
                 XWPFRun run = (XWPFRun) sdt;
                 if (styleSheet.containsKey("font-family")) {
-                    run.setFontFamily((String) styleSheet.get("font-family"));
+                    String fontFamily = (String)styleSheet.get("font-family");
+                    run.setFontFamily(fontFamily);
                 } else {
                     run.setFontFamily("微软雅黑");
                 }
                 if (styleSheet.containsKey("font-size")) {
-                    // 像素转itext字体大小
                     String fontSize = (String) styleSheet.get("font-size");
-                    if (fontSize.endsWith("px")) {
-                        fontSize = fontSize.replace("px", "");
-                        run.setFontSize(Math.round(Float.parseFloat(fontSize) * 0.75f));
-                    } else if (fontSize.endsWith("pt")){
-                        fontSize = fontSize.replace("pt", "");
-                        run.setFontSize(Math.round(Float.parseFloat(fontSize)));
+                    if (StringUtils.isNoneBlank(fontSize)) {
+                        fontSize = fontSize.replace("px", "")
+                                            .replace("pt", "");
+                        Double fontSizeDouble = Double.valueOf(fontSize);
+                        if (fontSize.endsWith("px")) {
+                            run.setFontSize((int) Math.round(fontSizeDouble * 0.75f));
+                        } else {
+                            run.setFontSize((int) Math.round(fontSizeDouble));
+                        }
                     }
                 }
-                // 字体颜色
                 if (styleSheet.containsKey("color")) {
                     Color color = (Color) styleSheet.get("color");
-                    run.setColor(ColorUtil.color2String(color).replace("#", ""));
+                    run.setColor(ColorUtils.color2String(color).replace("#", ""));
                 }
-                // 粗体
                 if (styleSheet.containsKey("font-weight")) {
                     String weight = (String) styleSheet.get("font-weight");
                     if ("bold".equals(weight) || "bolder".equals(weight))
                         run.setBold(true);
                 }
-                // TODO 其他字体样式
-                // font 标签样式最后加
+                if (styleSheet.containsKey("font-style")) {
+                    String italic = (String) styleSheet.get("font-style");
+                    if ("italic".equals(italic))
+                        run.setItalic(true);
+                }
+                if (styleSheet.containsKey("text-decoration")) {
+                    String textDecoration = (String) styleSheet.get("text-decoration");
+                    if ("underline".equals(textDecoration))
+                        run.setUnderline(UnderlinePatterns.SINGLE);
+                }
                 if (styleSheet.containsKey("font-italic")) {
                     run.setItalic(true);
                 }
@@ -412,33 +304,89 @@ public class JsoupAndPOI {
     }
 
     /**
+     * 获得一个元素上的样式表
+     * @param ele
+     * @return
+     */
+    private static Map<String, Object> getStyleSheet(Element ele) {
+        Map<String, Object> styleSheet = new HashMap<String, Object>();
+        String styleAttribute = ele.attr("style");
+        if (StringUtils.isNotBlank(styleAttribute)) {
+            styleSheet.putAll(styleAttr2StyleSheet(styleAttribute));
+        }
+        String align = ele.attr("align");
+        if (StringUtils.isNotBlank(align)) {
+            styleSheet.put("text-align", align);
+        }
+        if ("font".equals(ele.tagName())) {
+            Attributes attrs = ele.attributes();
+            for (Attribute attribute : attrs) {
+                if ("face".equals(attribute.getKey())) {
+                    String face = attribute.getValue();
+                    if (StringUtils.isNotBlank(face)) {
+                        String[] subFace = face.split(",");
+                        styleSheet.put("font-family", subFace[0].trim());
+                    }
+                } else if ("size".equals(attribute.getKey())) {
+                    String size = attribute.getValue();
+                    if (StringUtils.isNotBlank(size)) {
+                        styleSheet.put("font-size", fontTagSizeMap.get(attribute.getValue()));
+                    }
+                } else if ("color".equals(attribute.getKey())) {
+                    String value = attribute.getValue();
+                    if (StringUtils.isNotBlank(value)) {
+                        value = value.toLowerCase();
+                        if (value.startsWith("#")) {
+                            Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
+                            styleSheet.put("color", color);
+                        } else if (value.startsWith("rgb") || value.startsWith("rgba")) {
+                            Color color = ColorUtils.rgbStr2Color(value);
+                            styleSheet.put("color", color);
+                        } else {
+                            // TODO colorname名字需要映射表映射
+                        }
+                    }
+                }
+            }
+        }
+        if ("u".equals(ele.tagName())) {
+            styleSheet.put("font-underline", 1);
+        }
+        if ("i".equals(ele.tagName())) {
+            styleSheet.put("font-italic", 1);
+        }
+        if ("b".equals(ele.tagName())) {
+            styleSheet.put("font-bold", 1);
+        }
+        if ("strike".equals(ele.tagName())) {
+            styleSheet.put("font-strike", 1);
+        }
+        return styleSheet;
+    }
+
+    /**
      * style属性转换为key—value样式表
      * @param styleStr
      * @return
      */
     private static Map<String, Object> styleAttr2StyleSheet(String styleStr) {
         if (StringUtils.isBlank(styleStr)) return null;
-
-        Map<String, Object> styleMap = new HashMap<>();
-
+        Map<String, Object> styleMap = new HashMap<String, Object>();
         String[] styleArr = styleStr.split(";");
         for (String style : styleArr) {
             String[] singleStyleArr = style.split(":");
             if (singleStyleArr.length == 2) {
                 String key = singleStyleArr[0].trim();
                 String value = singleStyleArr[1].trim();
-//                value = value.replace("px", "");
-
-                // bug :font-family: 微软雅黑, 'Microsoft YaHei'
+                // bug: font-family: '微软雅黑', 'Microsoft YaHei'
                 if (key.equals("font-family") && StringUtils.isNoneBlank(value)) {
                     value = value.replace("\"", "")
                             .replace("'", "");
                     value = value.split(",")[0].trim();
                 }
-
                 // 颜色和背景色,需要特殊处理
                 if (key.equals("color") || key.equals("background-color")) {
-                    Color color = rgb2Color(value);
+                    Color color = ColorUtils.rgbStr2Color(value);
                     styleMap.put(key, color);
                 } else {
                     styleMap.put(key, value);
@@ -449,66 +397,17 @@ public class JsoupAndPOI {
     }
 
     /**
-     * 处理某些html标签
-     * @param html
-     * @return
-     */
-    private static String br2newLine(String html) {
-        return html.replaceAll("<br\\s{0,}/{0,1}>", "\r"); // 空格标签换成换行
-    }
-
-    /**
-     * 去掉html标签，实体转标签
-     * @param html
-     * @return
-     */
-    private static String htmlConverter(String html) {
-        return html.replaceAll("<(.*?)>(.*?)</\1>", "$2")
-                .replace("&amp;", "&")
-                .replace("&quot;", "\"")
-                .replace("&lt;", "<")
-                .replace("&gt;", ">")
-                .replace("&nbsp;", " ");
-    }
-
-    /**
+     * 合并两个map
      * 两个的同名属性取第二个的值
      * @param map1
      * @param map2
      * @return
      */
     private static Map<String, Object> mergeMap(Map<String, Object> map1, Map<String, Object> map2) {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<String, Object>();
         result.putAll(map1);
         result.putAll(map2);
         return result;
     }
 
-    private static Color rgb2Color(String color) {
-        try {
-            color = color.toLowerCase();
-            if (color.startsWith("rgb") && !color.startsWith("rgba")) {
-                color = color
-                        .replace("rgb(", "")
-                        .replace(")", "");
-                // 34, 34, 34
-                String[] rgb = color.split(", ");
-                Color poiColor = new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]),
-                        Integer.parseInt(rgb[2]));
-                return poiColor;
-            } else if (color.startsWith("rgba")) {
-                color = color
-                        .replace("rgba(", "")
-                        .replace(")", "");
-                // 34, 34, 34
-                String[] rgb = color.split(", ");
-                Color poiColor = new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]),
-                        Integer.parseInt(rgb[2]));
-                return poiColor;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
