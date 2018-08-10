@@ -44,6 +44,12 @@ public class TestCases {
     }
 
     @Test
+    public void intConverter() {
+        Double d = Double.valueOf("12.511");
+        System.out.println((int)Math.round(d));
+    }
+
+    @Test
     public void splitTest() {
         String tagReg = "<(\\w*?) {0,}(.*?)>([\\w\\W]*?)</\\1>";
         String content = "font里 \n" +
