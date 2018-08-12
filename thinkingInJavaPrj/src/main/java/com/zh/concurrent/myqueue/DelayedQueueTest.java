@@ -1,22 +1,23 @@
 package com.zh.concurrent.myqueue;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 实现优先级队列，根据下次触发时间判定
  * Created by zh on 2017-06-29.
  */
 public class DelayedQueueTest {
     public static void main(String[] args) {
         Random random = new Random(47);
         DelayQueue<MyDelayedQueue> delayedQueues = new DelayQueue<>();
-        for(int i = 0; i < 10; i++)
-            delayedQueues.put(new MyDelayedQueue(random.nextInt(77)));
+        for(int i = 0; i < 10; i++) {
+            int nextInt = random.nextInt(30);
+            delayedQueues.put(new MyDelayedQueue(nextInt));
+        }
         do {
             MyDelayedQueue myDelayedQueue = null;
             try {
@@ -30,6 +31,7 @@ public class DelayedQueueTest {
 }
 class MyDelayedQueue implements Delayed {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // 单位：s
     private long nextTime;
     private static int counter = 0;
     private int id = counter++;
@@ -45,12 +47,15 @@ class MyDelayedQueue implements Delayed {
         return unit.convert(nextTime - System.nanoTime(), TimeUnit.NANOSECONDS);
     }
 
+    /**
+     * 根据nextTime升序排序
+     */
     @Override
     public int compareTo(Delayed o) {
         if (o == null) return 1;
         MyDelayedQueue myDelayedQueue = (MyDelayedQueue)o;
-        if(nextTime < myDelayedQueue.nextTime) return 1;
-        if(nextTime > myDelayedQueue.nextTime) return -1;
+        if(nextTime < myDelayedQueue.nextTime) return -1;
+        if(nextTime > myDelayedQueue.nextTime) return 1;
         return 0;
     }
 
