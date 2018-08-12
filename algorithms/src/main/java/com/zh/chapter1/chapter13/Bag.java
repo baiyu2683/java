@@ -46,7 +46,7 @@ public class Bag<T> implements Iterable<T> {
 	}
 	
 	public static void main(String[] args) {
-		Bag<String> bag = new Bag();
+		Bag<String> bag = new Bag<>();
 		bag.add("1");
 		bag.add("2");
 		bag.add("3");
