@@ -3,7 +3,7 @@ package com.zh.chapter1.chapter13;
 import java.util.Stack;
 
 /**
- *
+ * 双栈法计算表达式的值
  * @Author zh2683
  */
 public class Evaluate {

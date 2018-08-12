@@ -1,15 +1,16 @@
 package com.zh.chapter1.chapter13;
 
 /**
+ * 字符串定容栈
  * @Author zh2683
  */
-public class FixedCapacityStackOfStrings<Item> {
+public class FixedCapacityStackOfStrings {
 
-    private Item[] a; // stack entries
+    private String[] a; // stack entries
     private int N; // size
 
-    public FixedCapacityStackOfStrings(int cap) {
-        a = (Item[]) new Object[cap];
+	public FixedCapacityStackOfStrings(int cap) {
+        a = new String[cap];
     }
 
     public boolean isEmpty() {
@@ -20,16 +21,16 @@ public class FixedCapacityStackOfStrings<Item> {
         return N;
     }
 
-    public void push(Item item) {
+    public void push(String item) {
         a[N++] = item;
     }
-
-    public Item pop() {
+    
+    public String pop() {
         return a[--N];
     }
 
     public static void main(String[] args) {
-        FixedCapacityStackOfStrings<String> fixedCapacityStackOfStrings = new FixedCapacityStackOfStrings(100);
+        FixedCapacityStackOfStrings fixedCapacityStackOfStrings = new FixedCapacityStackOfStrings(100);
         String[] ss = {"1", "3", "5", "7", "-", "89", "23", "-"};
         for (String item : ss) {
             if (!item.equals("-")) {
