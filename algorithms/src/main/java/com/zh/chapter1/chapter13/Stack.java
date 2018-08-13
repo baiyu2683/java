@@ -46,6 +46,10 @@ public class Stack<T> implements Iterable<T> {
 		return temp;
 	}
 	
+	public T peek() {
+		return first.item;
+	}
+	
 	@Override
 	public Iterator<T> iterator() {
 		return new StackIterator();
@@ -74,6 +78,7 @@ public class Stack<T> implements Iterable<T> {
 		stack.push("2");
 		stack.push("3");
 		stack.push("4");
+		System.out.println(stack.peek());
 		for (String s : stack) {
 			System.out.println(s);
 		}
