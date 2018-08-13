@@ -1,6 +1,6 @@
 package com.zh.command.receiver;
 
-public class FiremanReceiver implements Receiver{
+public class FiremanReceiver implements Receiver {
 
     @Override
     public void doSomething() {
