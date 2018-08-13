@@ -1,13 +1,10 @@
 package com.zh;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 public class TestEnum {
 
     enum Cases {
-        Name("asdf", () -> {
-            System.out.println(1);
+        Name("Name", () -> {
+            System.out.println("打印名字..");
         });
 
         Cases(String name, Runnable consumer) {
@@ -21,6 +18,8 @@ public class TestEnum {
 
     public static void main(String[] args) {
         Cases cases = Cases.valueOf("Name");
+        System.out.println(cases.name);
+        cases.consumer.run();
         System.out.println(Cases.Name.name());
         System.out.println(Cases.Name.ordinal());
     }

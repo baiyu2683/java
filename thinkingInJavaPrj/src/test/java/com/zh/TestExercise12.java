@@ -2,7 +2,6 @@ package com.zh;
 
 import com.zh.concurrent.Exercise1;
 import com.zh.concurrent.Exercise2Fibonacci;
-import com.zh.concurrent.LiftOff;
 import org.junit.Test;
 
 import java.io.IOException;
