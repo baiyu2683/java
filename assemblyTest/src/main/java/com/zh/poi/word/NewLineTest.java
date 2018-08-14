@@ -1,20 +1,20 @@
-package com.zh.poi;
+package com.zh.poi.word;
 
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
+import org.apache.poi.xwpf.usermodel.Borders;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
-import org.apache.poi.xwpf.usermodel.XWPFHeaderFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
-
-import com.itextpdf.text.Paragraph;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.math.BigInteger;
 
 /**
  * Author: Administrator <br/>
@@ -25,14 +25,21 @@ public class NewLineTest {
     public static void main(String[] args) throws IOException, XmlException {
         XWPFDocument document = new XWPFDocument();
         
-        XWPFParagraph header = document.createParagraph();
-        XWPFRun headerRun = header.createRun();
-        headerRun.setText("页眉");
-        
-        XWPFHeaderFooter headerFooter = new XWPFHeader();
-        headerFooter.setXWPFDocument(document);
-        List<XWPFParagraph> ps = headerFooter.getParagraphs();
-        System.out.println(ps);
+        CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+        XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(document, sectPr);
+        XWPFHeader header = headerFooterPolicy.createHeader(XWPFHeaderFooterPolicy.DEFAULT);
+
+        XWPFParagraph paragraphHeader = header.getParagraphArray(0);
+        paragraphHeader.setAlignment(ParagraphAlignment.LEFT);
+        paragraphHeader.setBorderBottom(Borders.THICK);
+
+        CTTabStop tabStop = paragraphHeader.getCTP().getPPr().addNewTabs().addNewTab();
+        tabStop.setVal(STTabJc.RIGHT);
+        int twipsPerInch =  1440;
+        tabStop.setPos(BigInteger.valueOf(6 * twipsPerInch));
+
+        XWPFRun runHeader = paragraphHeader.createRun();
+        runHeader.setText("header");
         
         
         XWPFParagraph paragraph = document.createParagraph();

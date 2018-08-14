@@ -1,11 +1,9 @@
-package com.zh.poi;
+package com.zh.poi.word;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
-import org.apache.xmlbeans.SchemaType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STDecimalNumberImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +21,7 @@ import java.util.List;
  * @see <a href="http://www.cnblogs.com/xlj227/p/5672881.html"></a>
  */
 public class WordTest {
+    @SuppressWarnings("unused")
     private static void fillTable(XWPFTable table) {
         for (int rowIndex = 0; rowIndex < table.getNumberOfRows(); rowIndex++) {
             XWPFTableRow row = table.getRow(rowIndex);
@@ -117,6 +116,7 @@ public class WordTest {
      * @Description: 跨行合并
      * @quote  http://stackoverflow.com/questions/24907541/row-span-with-xwpftable
      */
+    @SuppressWarnings("unused")
     private static void mergeCellsVertically(XWPFTable table, int col, int fromRow, int toRow) {
         for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {
             XWPFTableCell cell = table.getRow(rowIndex).getCell(col);
@@ -141,6 +141,7 @@ public class WordTest {
         tblWidth.setType(STTblWidth.DXA);
     }
 
+    @SuppressWarnings("unused")
     private static void fillTable2(XWPFTable table) {
         for (int rowIndex = 0; rowIndex < table.getNumberOfRows(); rowIndex++) {
             XWPFTableRow row = table.getRow(rowIndex);
@@ -157,6 +158,7 @@ public class WordTest {
         }
     }
 
+    @SuppressWarnings("unused")
     private static void createTable(XWPFDocument doc, String str) {
         XWPFTable table = null;
         table = doc.createTable(1, 1);
@@ -211,8 +213,8 @@ public class WordTest {
         XWPFTable table = document.createTable(rowCount, colCount);
         setTableWidth(table, "8000");
 
-        CTTbl ctTbl = table.getCTTbl();
-        CTTblGrid grid = ctTbl.addNewTblGrid();
+//        CTTbl ctTbl = table.getCTTbl();
+//        CTTblGrid grid = ctTbl.addNewTblGrid();
 
         // 首行作为表头，所有单元格合并
         XWPFTableRow firstRow = table.getRow(0);

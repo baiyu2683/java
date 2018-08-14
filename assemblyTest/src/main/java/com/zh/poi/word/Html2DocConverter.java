@@ -1,14 +1,10 @@
-package com.zh.poi;
+package com.zh.poi.word;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.poifs.filesystem.DirectoryEntry;
-import org.apache.poi.poifs.filesystem.DocumentEntry;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import java.io.*;
-import java.net.URI;
-import java.nio.charset.Charset;
 
 /**
  * 将html文件转换成word文件
@@ -60,7 +56,8 @@ public class Html2DocConverter {
 		return null;
 	}
 
-	public static void main(String[] args) throws Exception {
+	@SuppressWarnings("resource")
+    public static void main(String[] args) throws Exception {
 		String htmlSource = IOUtils.toString(new FileInputStream("d:/temp.html"), "utf-8");
 		Html2DocConverter html2DocConverter = new Html2DocConverter(htmlSource);
 		ByteArrayOutputStream baos = html2DocConverter.getWord();
