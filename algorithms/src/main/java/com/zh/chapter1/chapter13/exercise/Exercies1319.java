@@ -2,37 +2,113 @@ package com.zh.chapter1.chapter13.exercise;
 
 /**
  * 删除链表的尾节点
+ * 
+ * 有很多测试，这里的Node里的item只能是数字
  * @author zh
  * 2018年8月14日
  */
-public class Exercies1219 {
-	private static class Node {
-		String item;
-		Node next;
-	}
+public class Exercies1319 {
 	
 	public static void main(String[] args) {
 		Node first = new Node();
 		first.item = "0";
 		Node current_node = first;
 		Node temp_node = null;
-		for (int i = 1 ; i < 20 ; i++) {
+		for (int i = 1 ; i < 200 ; i++) {
 			Node node = new Node();  
 			node.item = String.valueOf(i);
 			current_node.next = node;
 			current_node = node;
 			// 缓存一个节点，用于测试方法
-			if (i == 11) temp_node = node;
+			if (i == 19) temp_node = node;
 		}
-//		show(first);
+//		Utils.show(first);
 		System.out.println("=======================");
-//		show(deleteOn(1, first));
+//		Utils.show(deleteOn(1, first));
 //		System.out.println(find("10", first));
 //		removeAfter(temp_node);
-		Node newNode = new Node();
-		newNode.item = "插入的节点";
-		insertAfter(temp_node, newNode);
-		show(first);
+//		// 插入一个节点
+//		Node newNode = new Node();
+//		newNode.item = "zh";
+//		insertAfter(temp_node, newNode);
+//		Node newNode2 = new Node();
+//		newNode2.item = "zh";
+//		insertAfter(temp_node, newNode2);
+//		Utils.show(first);
+//		
+//		// 删除item为zh的节点
+//		Utils.show(remove("19", first));
+		
+		// 获得最大值
+//		System.out.println(max(first));
+		
+		// 递归获取最大值
+		System.out.println(recursionMax(first));
+	}
+	
+	/**
+	 * 递归求取队列中的最大值
+	 * @param first
+	 * @return
+	 */
+	private static int recursionMax(Node first) {
+		int max = Integer.MIN_VALUE;
+		if(first == null) return -1;
+		else {
+			max = Integer.valueOf(first.item);
+			int sub_max = recursionMax(first.next);
+			if (sub_max > max) max = sub_max;
+		}
+		return max;
+	}
+	
+	/**
+	 * 顺序求取链表中的最大值
+	 * @param first
+	 * @return
+	 */
+	private static int max(Node first) {
+		if (first == null) return -1;
+		
+		int max = Integer.MIN_VALUE;
+		Node current = first;
+		int current_value = 0;
+		while (current != null) {
+			current_value = Integer.valueOf(current.item);
+			if (current_value > max) max = current_value;
+			current = current.next;
+		}
+		return max;
+	}
+	
+	/**
+	 * 删除item为k的节点
+	 * @param k
+	 * @param first
+	 */
+	private static Node remove(String k, Node first) {
+		if (first == null) return null;
+		else {
+			if (k.equals(first.item)) {
+				first = first.next;
+			}
+			if (first == null) return first;
+			else {
+				Node before = first;
+				Node after = first.next;
+				while (after != null) {
+					if (k.equals(after.item)) {
+						// 删除
+						before.next = after.next;
+						after = after.next;
+					} else {
+						before = after;
+						after = after.next;
+					}
+				}
+			}
+		}
+		return first;
 	}
 	
 	/**
@@ -117,12 +193,5 @@ public class Exercies1219 {
 			temp = temp.next;
 		}
 		return false;
-	}
-	
-	private static void show(Node node) {
-		if (node != null) {
-			System.out.println(node.item);
-			show(node.next);
-		}
 	}
 }
