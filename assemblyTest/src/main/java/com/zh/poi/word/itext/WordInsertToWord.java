@@ -1,4 +1,4 @@
-package com.zh.poi;
+package com.zh.poi.word.itext;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -14,8 +14,6 @@ import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 测试word中插入word
@@ -31,6 +29,7 @@ public class WordInsertToWord {
     public static void main(String[] args) throws IOException, InvalidFormatException, DocumentException {
         convertWithIText();
     }
+    @SuppressWarnings({ "unused", "unchecked" })
     private static void convertWithIText() throws IOException, DocumentException {
         String outputWordPath = "d:/itext.doc";
         com.lowagie.text.Document document = new com.lowagie.text.Document();
@@ -46,6 +45,7 @@ public class WordInsertToWord {
         document.close();
     }
 
+    @SuppressWarnings("unused")
     private static void convertWithPOI() throws IOException, InvalidFormatException {
         String outputWordPath = "d:/poi.docx";
         FileOutputStream out = new FileOutputStream(outputWordPath);

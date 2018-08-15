@@ -1,4 +1,4 @@
-package com.zh.poi;
+package com.zh.poi.word.poi;
 
 import com.lowagie.text.DocumentException;
 import com.zh.poi.util.ColorUtils;
@@ -6,16 +6,29 @@ import com.zh.poi.util.UnitUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -29,6 +42,13 @@ public class JsoupAndPOI {
 
     private static final String rootPath = JsoupAndPOI.class.getResource("/").getPath();
     private static final String htmlPath = rootPath + "/html";
+    
+    /** 页脚样式 */
+    public static final String STYLE_FOOTER = "footer";
+    /** 页眉样式 */
+    public static final String STYLE_HEADER = "header";
+    /** 语言，简体中文 */
+    public static final String LANG_ZH_CN = "zh-CN";
 
     /**
      * font标签size属性映射像素
@@ -47,7 +67,7 @@ public class JsoupAndPOI {
     
     private static final String NEW_LINE = "\r";
 
-    public static void main(String[] args) throws IOException, com.lowagie.text.DocumentException {
+    public static void main(String[] args) throws IOException, com.lowagie.text.DocumentException, XmlException {
         // 读取html文件
         File htmlFile = new File(htmlPath + "/html.html");
         if (!htmlFile.exists()) {
@@ -56,7 +76,13 @@ public class JsoupAndPOI {
         }
 
         XWPFDocument doc = new XWPFDocument();
-
+        
+        // 设置页边距, 这个设置了页眉和页脚才有位置放
+        setDocumentMargin(doc, (int)(WordUtil.ONE_UNIT*2.5)+"", (WordUtil.ONE_UNIT*2)+"", (int)(WordUtil.ONE_UNIT*2.5)+"", (WordUtil.ONE_UNIT*2)+"");
+        // 设置页眉、页脚
+        createDefaultHeader(doc, "页眉。。");
+//        createDefaultFooter(doc);
+        
         org.jsoup.nodes.Document document = Jsoup.parse(htmlFile, "utf-8");
         Elements allElements = document.getAllElements();
         for (Element element : allElements) {
@@ -65,10 +91,89 @@ public class JsoupAndPOI {
                 recursionSubNodes(nodes, doc);
             }
         }
-
-        doc.write(new FileOutputStream(rootPath + "/poi.doc", false));
+        
+        doc.write(new FileOutputStream(rootPath + "/poi.docx", false));
         System.out.println(rootPath);
         System.out.println("finished...");
+    }
+    
+    /**
+     * 设置页边距 (word中1厘米约等于567) 
+     * @param document
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     */
+    public static void setDocumentMargin(XWPFDocument document, 
+            String left, String top, String right, String bottom) {
+      CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+      CTPageMar ctpagemar = sectPr.addNewPgMar();
+      if (StringUtils.isNotBlank(left)) {
+        ctpagemar.setLeft(new BigInteger(left));  
+      }
+      if (StringUtils.isNotBlank(top)) {
+        ctpagemar.setTop(new BigInteger(top));  
+      }
+      if (StringUtils.isNotBlank(right)) {
+        ctpagemar.setRight(new BigInteger(right));  
+      }
+      if (StringUtils.isNotBlank(bottom)) {
+        ctpagemar.setBottom(new BigInteger(bottom));  
+      }
+    }
+    
+    /**
+     * 创建默认页眉
+     *
+     * @param docx XWPFDocument文档对象
+     * @param text 页眉文本
+     * @return 返回文档帮助类对象，可用于方法链调用
+     * @throws XmlException XML异常
+     * @throws IOException IO异常
+     * @throws InvalidFormatException 非法格式异常
+     * @throws FileNotFoundException 找不到文件异常
+     */
+    public static void createDefaultHeader(final XWPFDocument docx, final String text) throws IOException, XmlException{
+        CTP ctp = CTP.Factory.newInstance();
+        XWPFParagraph paragraph = new XWPFParagraph(ctp, docx);
+        ctp.addNewR().addNewT().setStringValue(text);
+        ctp.addNewR().addNewT().setSpace(SpaceAttribute.Space.PRESERVE);
+        CTSectPr sectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
+        XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
+        XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] { paragraph });
+        header.setXWPFDocument(docx);
+    }
+    
+    /**
+     * 创建默认的页脚(该页脚主要只居中显示页码)
+     * 
+     * @param docx
+     *            XWPFDocument文档对象
+     * @return 返回文档帮助类对象，可用于方法链调用
+     * @throws XmlException
+     *             XML异常
+     * @throws IOException
+     *             IO异常
+     */
+    public static void createDefaultFooter(final XWPFDocument docx) throws IOException, XmlException {
+        // TODO 设置页码起始值
+        CTP pageNo = CTP.Factory.newInstance();
+        XWPFParagraph footer = new XWPFParagraph(pageNo, docx);
+        CTPPr begin = pageNo.addNewPPr();
+        begin.addNewPStyle().setVal(STYLE_FOOTER);
+        begin.addNewJc().setVal(STJc.CENTER);
+        pageNo.addNewR().addNewFldChar().setFldCharType(STFldCharType.BEGIN);
+        pageNo.addNewR().addNewInstrText().setStringValue("PAGE   \\* MERGEFORMAT");
+        pageNo.addNewR().addNewFldChar().setFldCharType(STFldCharType.SEPARATE);
+        CTR end = pageNo.addNewR();
+        CTRPr endRPr = end.addNewRPr();
+        endRPr.addNewNoProof();
+        endRPr.addNewLang().setVal(LANG_ZH_CN);
+        end.addNewFldChar().setFldCharType(STFldCharType.END);
+        CTSectPr sectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
+        XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
+        policy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[] { footer });
     }
 
     /**
