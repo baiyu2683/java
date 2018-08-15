@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zh.poi.word;
+package com.zh.poi.word.poi;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

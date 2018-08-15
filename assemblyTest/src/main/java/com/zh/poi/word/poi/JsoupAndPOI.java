@@ -1,4 +1,4 @@
-package com.zh.poi.word;
+package com.zh.poi.word.poi;
 
 import com.lowagie.text.DocumentException;
 import com.zh.poi.util.ColorUtils;
@@ -81,7 +81,7 @@ public class JsoupAndPOI {
         setDocumentMargin(doc, (int)(WordUtil.ONE_UNIT*2.5)+"", (WordUtil.ONE_UNIT*2)+"", (int)(WordUtil.ONE_UNIT*2.5)+"", (WordUtil.ONE_UNIT*2)+"");
         // 设置页眉、页脚
         createDefaultHeader(doc, "页眉。。");
-        createDefaultFooter(doc);
+//        createDefaultFooter(doc);
         
         org.jsoup.nodes.Document document = Jsoup.parse(htmlFile, "utf-8");
         Elements allElements = document.getAllElements();
@@ -105,22 +105,23 @@ public class JsoupAndPOI {
      * @param right
      * @param bottom
      */
-    public static void setDocumentMargin(XWPFDocument document, String left,String top, String right, String bottom) {  
+    public static void setDocumentMargin(XWPFDocument document, 
+            String left, String top, String right, String bottom) {
       CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
       CTPageMar ctpagemar = sectPr.addNewPgMar();
-      if (StringUtils.isNotBlank(left)) {  
+      if (StringUtils.isNotBlank(left)) {
         ctpagemar.setLeft(new BigInteger(left));  
-      }  
-      if (StringUtils.isNotBlank(top)) {  
+      }
+      if (StringUtils.isNotBlank(top)) {
         ctpagemar.setTop(new BigInteger(top));  
-      }  
-      if (StringUtils.isNotBlank(right)) {  
+      }
+      if (StringUtils.isNotBlank(right)) {
         ctpagemar.setRight(new BigInteger(right));  
-      }  
-      if (StringUtils.isNotBlank(bottom)) {  
+      }
+      if (StringUtils.isNotBlank(bottom)) {
         ctpagemar.setBottom(new BigInteger(bottom));  
-      }  
-    } 
+      }
+    }
     
     /**
      * 创建默认页眉

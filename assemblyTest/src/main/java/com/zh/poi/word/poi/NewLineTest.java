@@ -1,4 +1,4 @@
-package com.zh.poi.word;
+package com.zh.poi.word.poi;
 
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.Borders;

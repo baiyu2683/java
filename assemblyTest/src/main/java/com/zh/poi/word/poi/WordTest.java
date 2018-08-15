@@ -1,4 +1,4 @@
-package com.zh.poi.word;
+package com.zh.poi.word.poi;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;

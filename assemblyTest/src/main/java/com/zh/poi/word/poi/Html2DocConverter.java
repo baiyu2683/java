@@ -1,4 +1,4 @@
-package com.zh.poi.word;
+package com.zh.poi.word.poi;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.poifs.filesystem.DirectoryEntry;

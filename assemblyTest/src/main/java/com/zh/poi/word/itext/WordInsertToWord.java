@@ -1,4 +1,4 @@
-package com.zh.poi.word;
+package com.zh.poi.word.itext;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
