@@ -7,11 +7,17 @@ package com.zh.chapter1.chapter13.exercise;
  */
 public class Utils {
 	
-	public static void show(Node node) {
+	public static void show(Node node, StringBuffer sb) {
 		if (node != null) {
-			System.out.println(node.item);
-			show(node.next);
+			sb.append(node.item + ", ");
+			show(node.next, sb);
 		}
+	}
+	
+	public static void show(Node node) {
+		StringBuffer sb = new StringBuffer();
+		show(node, sb);
+		System.out.println(sb.toString());
 	}
 
 }

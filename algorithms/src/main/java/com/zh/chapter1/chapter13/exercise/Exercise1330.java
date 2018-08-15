@@ -23,7 +23,7 @@ public class Exercise1330 {
 		System.out.println("=========");
 		Utils.show(reverse(first));
 		Utils.show(reverse2(first));
-	}
+	} 
 	
 	/**
 	 * 翻转链表(破坏性的)
