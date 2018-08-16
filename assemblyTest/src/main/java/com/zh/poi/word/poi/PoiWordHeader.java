@@ -4,18 +4,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.impl.schema.SchemaTypeImpl;
-import org.apache.xmlbeans.impl.values.XmlObjectBase;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
@@ -24,12 +18,13 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
-import org.w3c.dom.Node;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabTlc;
 
 /**
  * poi设置word页眉
@@ -42,13 +37,13 @@ public class PoiWordHeader {
     public static void main(String[] args) throws IOException, XmlException {
         XWPFDocument document = new XWPFDocument();
         
-        int margin_left = WordUtil.ONE_UNIT * 2;
+        int margin_left = (int)(WordUtil.ONE_UNIT * 1.91);
         int margin_right = margin_left;
-        int margin_top = Math.round(WordUtil.ONE_UNIT * 2.5f);
+        int margin_top = (int)(WordUtil.ONE_UNIT * 2.54f);
         int margin_bottom = margin_top;
         
-        setDocumentMargin(document, margin_top, margin_right, margin_bottom, margin_left);
-        
+        setDocumentMargin(document, margin_left, margin_top, margin_right, margin_bottom);
+//        
         createDefaultHeader(document, "页眉");
         
         document.write(new FileOutputStream("d:/poi.docx"));
@@ -64,14 +59,14 @@ public class PoiWordHeader {
      * @param right
      * @param bottom
      */
-    public static void setDocumentMargin(XWPFDocument document, 
+    public static void setDocumentMargin(XWPFDocument document,
             int left, int top, int right, int bottom) {
       CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
       CTPageMar ctpagemar = sectPr.addNewPgMar();
       ctpagemar.setLeft(BigInteger.valueOf(left));  
-      ctpagemar.setTop(BigInteger.valueOf(top));  
-      ctpagemar.setRight(BigInteger.valueOf(right));  
-      ctpagemar.setBottom(BigInteger.valueOf(bottom));  
+      ctpagemar.setTop(BigInteger.valueOf(top));
+      ctpagemar.setRight(BigInteger.valueOf(right));
+      ctpagemar.setBottom(BigInteger.valueOf(bottom));
     }
     
     /**
@@ -87,12 +82,27 @@ public class PoiWordHeader {
      */
     public static void createDefaultHeader(final XWPFDocument docx, final String text) throws IOException, XmlException{
         CTP ctp = CTP.Factory.newInstance();
+        CTPPr begin = ctp.addNewPPr();
         
         XWPFParagraph left = new XWPFParagraph(ctp, docx);
         XWPFRun left_run = left.createRun();
-        left_run.setText("左边\t\t居中\t\t右边");
+        left_run.setText("左边");
+        left_run.addTab();
         
-        CTPPr begin = ctp.addNewPPr();
+        int twipsPerInch = 1440;
+        
+        CTTabStop tabLeft = begin.addNewTabs().addNewTab();
+        tabLeft.setPos(BigInteger.valueOf(6 * twipsPerInch));
+        tabLeft.setLeader(STTabTlc.DOT);
+        
+        left_run.setText("123");
+//        left_run.addTab();
+        
+//        CTTabStop tabCenter = begin.addNewTabs().addNewTab();
+//        tabCenter.setPos(BigInteger.valueOf(6 * twipsPerInch));
+//        
+//        left_run.setText("456");
+        
         begin.addNewPStyle().setVal("header");
         CTBorder border = begin.addNewPBdr().addNewBottom();
         border.setVal(STBorder.SINGLE);
@@ -100,8 +110,7 @@ public class PoiWordHeader {
         border.setSpace(BigInteger.valueOf(1));
         border.setColor("FF0000");
         
-        
-        ctp.addNewR().addNewT().setStringValue(text);
+//        ctp.addNewR().addNewT().setStringValue(text);
         ctp.addNewR().addNewT().setSpace(SpaceAttribute.Space.PRESERVE);
         CTSectPr sectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
