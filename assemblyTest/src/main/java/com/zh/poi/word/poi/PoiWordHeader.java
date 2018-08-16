@@ -12,9 +12,11 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTColumns;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
@@ -23,8 +25,11 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STSignedTwipsMeasure;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabTlc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPageSzImpl;
 
 /**
  * poi设置word页眉
@@ -42,12 +47,32 @@ public class PoiWordHeader {
         int margin_top = (int)(WordUtil.ONE_UNIT * 2.54f);
         int margin_bottom = margin_top;
         
+        setPageSz(document);
+        
         setDocumentMargin(document, margin_left, margin_top, margin_right, margin_bottom);
-//        
-        createDefaultHeader(document, "页眉");
+        
+        createDefaultHeader(document, "左边：123", "中间：456", "右边：789");
         
         document.write(new FileOutputStream("d:/poi.docx"));
         System.out.println("finished...");
+    }
+    
+    public static void setPageSz(XWPFDocument document) {
+        boolean isSetSectPr = document.getDocument().getBody().isSetSectPr(); 
+        CTSectPr sectPr = null;
+        if (isSetSectPr) {
+            sectPr = document.getDocument().getBody().getSectPr();
+        } else {
+            sectPr = document.getDocument().getBody().addNewSectPr();
+        }
+        
+        CTPageSz pageSz = sectPr.addNewPgSz();
+        pageSz.setW(BigInteger.valueOf(1l));
+        pageSz.setH(BigInteger.valueOf(2l));
+        
+        pageSz.setW(BigInteger.valueOf(11907));
+        pageSz.setH(BigInteger.valueOf(16840));
+//        pageSz.setOrient(STPageOrientation.PORTRAIT);
     }
 
 
@@ -61,12 +86,18 @@ public class PoiWordHeader {
      */
     public static void setDocumentMargin(XWPFDocument document,
             int left, int top, int right, int bottom) {
-      CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
-      CTPageMar ctpagemar = sectPr.addNewPgMar();
-      ctpagemar.setLeft(BigInteger.valueOf(left));  
-      ctpagemar.setTop(BigInteger.valueOf(top));
-      ctpagemar.setRight(BigInteger.valueOf(right));
-      ctpagemar.setBottom(BigInteger.valueOf(bottom));
+        boolean isSetSectPr = document.getDocument().getBody().isSetSectPr(); 
+        CTSectPr sectPr = null;
+        if (isSetSectPr) {
+            sectPr = document.getDocument().getBody().getSectPr();
+        } else {
+            sectPr = document.getDocument().getBody().addNewSectPr();
+        }
+        CTPageMar ctpagemar = sectPr.addNewPgMar();
+        ctpagemar.setLeft(BigInteger.valueOf(left));  
+        ctpagemar.setTop(BigInteger.valueOf(top));
+        ctpagemar.setRight(BigInteger.valueOf(right));
+        ctpagemar.setBottom(BigInteger.valueOf(bottom));
     }
     
     /**
@@ -80,28 +111,41 @@ public class PoiWordHeader {
      * @throws InvalidFormatException 非法格式异常
      * @throws FileNotFoundException 找不到文件异常
      */
-    public static void createDefaultHeader(final XWPFDocument docx, final String text) throws IOException, XmlException{
+    public static void createDefaultHeader(final XWPFDocument docx, 
+            final String left, final String center, final String right) throws IOException, XmlException{
+        CTSectPr sp = docx.getDocument().getBody().getSectPr();
+        
+        CTPageSz pageSz = sp.getPgSz();
+        BigInteger height = pageSz.getH();
+        BigInteger width = pageSz.getW();
+        System.out.println(height.intValue());
+        System.out.println(width.intValue());
+        
+        CTPageMar pm = sp.getPgMar();
+        System.out.println(pm.getLeft().toString());
+        System.out.println(pm.getRight().toString());
+        
         CTP ctp = CTP.Factory.newInstance();
         CTPPr begin = ctp.addNewPPr();
         
-        XWPFParagraph left = new XWPFParagraph(ctp, docx);
-        XWPFRun left_run = left.createRun();
-        left_run.setText("左边");
-        left_run.addTab();
+        XWPFParagraph headParagraph = new XWPFParagraph(ctp, docx);
+        XWPFRun headRun = headParagraph.createRun();
+        headRun.setText(left);
+        headRun.addTab();
         
-        int twipsPerInch = 1440;
+        CTTabStop tab1 = begin.addNewTabs().addNewTab();
+        tab1.setPos(BigInteger.valueOf(4810));
+//        tab1.setLeader(STTabTlc.DOT);
         
-        CTTabStop tabLeft = begin.addNewTabs().addNewTab();
-        tabLeft.setPos(BigInteger.valueOf(6 * twipsPerInch));
-        tabLeft.setLeader(STTabTlc.DOT);
+        headRun.setText(center);
+        headRun.addTab();
         
-        left_run.setText("123");
-//        left_run.addTab();
+        CTTabStop tab2 = begin.addNewTabs().addNewTab();
+        tab2.setPos(BigInteger.valueOf(9620));
+//        tab2.setLeader(STTabTlc.DOT);
         
-//        CTTabStop tabCenter = begin.addNewTabs().addNewTab();
-//        tabCenter.setPos(BigInteger.valueOf(6 * twipsPerInch));
-//        
-//        left_run.setText("456");
+        headRun.setText(right);
+//        headRun.addTab();
         
         begin.addNewPStyle().setVal("header");
         CTBorder border = begin.addNewPBdr().addNewBottom();
@@ -114,7 +158,7 @@ public class PoiWordHeader {
         ctp.addNewR().addNewT().setSpace(SpaceAttribute.Space.PRESERVE);
         CTSectPr sectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
-        XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {left});
+        XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {headParagraph});
         header.setXWPFDocument(docx);
     }
     
