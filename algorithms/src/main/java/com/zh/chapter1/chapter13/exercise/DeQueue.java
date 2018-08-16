@@ -80,9 +80,9 @@ public class DeQueue<T> {
         }
     }
     
-    public void insertBefore(T t) {
+    public void insertBefore(T t, T newItem) {
         DoubleNode node = new DoubleNode();
-        node.item = t;
+        node.item = newItem;
         
         DoubleNode dn = searchNode(t);
         if (dn != null) {
@@ -100,13 +100,18 @@ public class DeQueue<T> {
                 dn.previous = node;
                 head = node;
             }
-            
+            N++;
         }
     }
     
-    public void insertAfter(T t) {
+    /**
+     * 在t后面插入newItem
+     * @param t
+     * @param newItem
+     */
+    public void insertAfter(T t, T newItem) {
         DoubleNode node = new DoubleNode();
-        node.item = t;
+        node.item = newItem;
         
         DoubleNode dn = searchNode(t);
         if (dn != null) {
@@ -124,7 +129,34 @@ public class DeQueue<T> {
                 dn.next = node;
                 tail = node;
             }
+            N++;
         }
+    }
+    
+    /**
+     * 删除第一个t节点
+     * @param t
+     */
+    public void delete(T t) {
+    	DoubleNode dn = searchNode(t);
+    	if (dn == null) return;
+    	else {
+    		DoubleNode previous = dn.previous;
+    		DoubleNode next = dn.next;
+    		if (previous != null) {
+    			previous.next = next;
+    		} else {
+    			// 说明是首节点
+    			head = next;
+    		}
+    		if (next != null) {
+    			next.previous = previous;
+    		} else {
+    			// 说明是尾节点
+    			tail = previous;
+    		}
+    		N--;
+    	}
     }
     
     private DoubleNode searchNode(T t) {
@@ -138,4 +170,7 @@ public class DeQueue<T> {
         return null;
     }
     
+    public int size() {
+    	return N;
+    }
 }
