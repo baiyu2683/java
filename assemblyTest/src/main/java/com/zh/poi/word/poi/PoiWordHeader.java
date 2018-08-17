@@ -51,7 +51,11 @@ public class PoiWordHeader {
         
         setDocumentMargin(document, margin_left, margin_top, margin_right, margin_bottom);
         
-        createDefaultHeader(document, "左边：123", "中间：456", "右边：789");
+        createDefaultHeader(document, "左侧页眉", "中间页眉", "右侧页眉");
+        
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+        run.setText("正文正文正文正文");
         
         document.write(new FileOutputStream("d:/poi.docx"));
         System.out.println("finished...");
@@ -134,14 +138,14 @@ public class PoiWordHeader {
         headRun.addTab();
         
         CTTabStop tab1 = begin.addNewTabs().addNewTab();
-        tab1.setPos(BigInteger.valueOf(4810));
+        tab1.setPos(BigInteger.valueOf(4510));
 //        tab1.setLeader(STTabTlc.DOT);
         
         headRun.setText(center);
         headRun.addTab();
         
         CTTabStop tab2 = begin.addNewTabs().addNewTab();
-        tab2.setPos(BigInteger.valueOf(9620));
+        tab2.setPos(BigInteger.valueOf(9470));
 //        tab2.setLeader(STTabTlc.DOT);
         
         headRun.setText(right);

@@ -1,5 +1,7 @@
 package com.zh;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 /**
@@ -23,5 +25,10 @@ public class TestDate {
         long secondy = minutey % minute;
         long secondx = secondy / second;
         System.out.println(dayx + "-" + hourx + "-" + minutex + "-" + secondx);
+    }
+    
+    @Test
+    public void testTimestamp() {
+        System.out.println((new Date()).getTime());
     }
 }

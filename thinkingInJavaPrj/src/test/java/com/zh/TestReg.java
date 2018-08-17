@@ -24,8 +24,8 @@ public class TestReg {
      */
     @Test
     public void appendReplacement() {
-        Pattern p = Pattern.compile("cat");
-        Matcher m = p.matcher("one cat two cats in the yard");
+        Pattern p = Pattern.compile("htwFileName=([^;]*);{0,1}");
+        Matcher m = p.matcher("htwFileName=1234");
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             System.out.println(m.start());
@@ -35,5 +35,11 @@ public class TestReg {
         }
         m.appendTail(sb);
         System.out.println(sb.toString());
+    }
+    
+    @Test
+    public void replaceAll() {
+        Pattern p = Pattern.compile("htwFileName=([^;]*);{0,1}");
+        System.out.println("asdf;htwFileName=234;".replaceAll(p.pattern(), ""));
     }
 }
