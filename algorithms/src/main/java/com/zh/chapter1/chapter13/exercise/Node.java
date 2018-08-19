@@ -5,7 +5,7 @@ package com.zh.chapter1.chapter13.exercise;
  * @author zh
  * 2018年8月15日
  */
-public class Node {
-	public String item;
-	public Node next;
+public class Node<T> {
+	public T item;
+	public Node<T> next;
 }
