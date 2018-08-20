@@ -1,7 +1,6 @@
 package com.zh.fastjson;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
 
 import java.util.TreeMap;
 
