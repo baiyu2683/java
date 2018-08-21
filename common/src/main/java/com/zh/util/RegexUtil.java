@@ -1,6 +1,5 @@
 package com.zh.util;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -28,8 +27,8 @@ public class RegexUtil {
 
     public static void main(String[] args) {
         String regex = "publishPath=[^;]*;{0,1}";
-        String s = "publishPath=";
-        String ss = "publishPath=@#KLJOPSD;other=asdf;publishPath=111;publishPath=112;publishPath=113;publishPath=114";
+//        String s = "publishPath=";
+//        String ss = "publishPath=@#KLJOPSD;other=asdf;publishPath=111;publishPath=112;publishPath=113;publishPath=114";
         String sss = "publishPath=@#KLJOPSDF>>[p..    a;other=asdf";
         System.out.println(match(regex, sss));
     }

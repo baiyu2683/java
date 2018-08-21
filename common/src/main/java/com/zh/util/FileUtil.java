@@ -1,7 +1,5 @@
 package com.zh.util;
 
-import com.zh.constant.Consts;
-
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -11,6 +9,8 @@ import java.nio.channels.FileChannel;
  *
  */
 public class FileUtil {
+    
+    private static final int DEFAULT_BUFFER_SIZE = 2048;
 
     /**
      * 使用buffer进行文件复制，实际和普通io差别不大
@@ -22,18 +22,30 @@ public class FileUtil {
     public static void copyNIO(File from, File to) throws IOException {
         FileInputStream fis = new FileInputStream(from);
         FileOutputStream fos = new FileOutputStream(to);
-
-        FileChannel fisc = fis.getChannel();
-        FileChannel fosc = fos.getChannel();
-
-        ByteBuffer bb = ByteBuffer.allocate(2048);
-
-        while(true) {
-            bb.clear(); // 使用之前首先清空缓冲区
-            int count = fisc.read(bb);
-            if (count < 0) break;
-            bb.flip(); // position = 0，准备开始读数据
-            fosc.write(bb);
+        try {
+            FileChannel fisc = fis.getChannel();
+            FileChannel fosc = fos.getChannel();
+    
+            ByteBuffer bb = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+    
+            while(true) {
+                bb.clear(); // 使用之前首先清空缓冲区
+                int count = fisc.read(bb);
+                if (count < 0) break;
+                bb.flip(); // position = 0，准备开始读数据
+                fosc.write(bb);
+            }
+        } finally {
+            if (fis != null)
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                }
+            if (fos != null)
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                }
         }
     }
 
@@ -46,11 +58,23 @@ public class FileUtil {
     public static void copy(File from, File to) throws IOException {
         FileInputStream fis = new FileInputStream(from);
         FileOutputStream fos = new FileOutputStream(to);
-
-        int length = 0;
-        byte[] buffer = new byte[2048];
-        while ((length = fis.read(buffer)) != -1) {
-            fos.write(buffer, 0, length);
+        try {
+            int length = 0;
+            byte[] buffer = new byte[2048];
+            while ((length = fis.read(buffer)) != -1) {
+                fos.write(buffer, 0, length);
+            }
+        } finally {
+            if (fis != null)
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                }
+            if (fos != null)
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                }
         }
     }
 
@@ -60,8 +84,9 @@ public class FileUtil {
      * @return
      */
     public static String toString(File input, String charsetName) {
+        FileInputStream fileInputStream = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(input);
+            fileInputStream = new FileInputStream(input);
             FileChannel fisc = fileInputStream.getChannel();
 
             ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
@@ -76,6 +101,12 @@ public class FileUtil {
             return output.toString(charsetName);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (fileInputStream != null)
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                }
         }
         return null;
     }
