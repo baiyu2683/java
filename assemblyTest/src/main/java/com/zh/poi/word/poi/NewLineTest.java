@@ -41,7 +41,6 @@ public class NewLineTest {
         XWPFRun runHeader = paragraphHeader.createRun();
         runHeader.setText("header");
         
-        
         XWPFParagraph paragraph = document.createParagraph();
         paragraph.setSpacingAfter(0);
         XWPFRun run = paragraph.createRun();
