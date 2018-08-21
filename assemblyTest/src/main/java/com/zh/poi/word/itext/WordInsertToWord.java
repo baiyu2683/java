@@ -45,7 +45,7 @@ public class WordInsertToWord {
         document.close();
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({ "unused", "resource" })
     private static void convertWithPOI() throws IOException, InvalidFormatException {
         String outputWordPath = "d:/poi.docx";
         FileOutputStream out = new FileOutputStream(outputWordPath);

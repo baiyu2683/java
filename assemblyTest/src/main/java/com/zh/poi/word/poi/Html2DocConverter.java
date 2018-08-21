@@ -52,7 +52,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 
-import com.zh.poi.util.ColorUtils;
+import com.zh.poi.util.ColorUtil;
 import com.zh.poi.util.DateTimeUtil;
 import com.zh.poi.util.HtmlUtil;
 import com.zh.poi.util.UnitUtils;
@@ -495,7 +495,7 @@ public class Html2DocConverter {
                 }
                 if (styleSheet.containsKey("color")) {
                     Color color = (Color) styleSheet.get("color");
-                    run.setColor(ColorUtils.color2String(color).replace("#", ""));
+                    run.setColor(ColorUtil.color2String(color).replace("#", ""));
                 }
                 if (styleSheet.containsKey("font-weight")) {
                     String weight = (String) styleSheet.get("font-weight");
@@ -565,7 +565,7 @@ public class Html2DocConverter {
                             Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
                             styleSheet.put("color", color);
                         } else if (value.startsWith("rgb") || value.startsWith("rgba")) {
-                            Color color = ColorUtils.rgbStr2Color(value);
+                            Color color = ColorUtil.rgbStr2Color(value);
                             styleSheet.put("color", color);
                         } else {
                             // TODO colorname名字需要映射表映射
@@ -611,7 +611,7 @@ public class Html2DocConverter {
                 }
                 // 颜色和背景色,需要特殊处理
                 if (key.equals("color") || key.equals("background-color")) {
-                    Color color = ColorUtils.rgbStr2Color(value);
+                    Color color = ColorUtil.rgbStr2Color(value);
                     styleMap.put(key, color);
                 } else {
                     styleMap.put(key, value);

@@ -178,6 +178,7 @@ public class WordTest {
         return (4 / 3d) * px * 10;
     }
 
+    @SuppressWarnings("resource")
     public static void main(String[] args) throws IOException, InvalidFormatException {
         long start = System.currentTimeMillis();
         XWPFDocument document = new XWPFDocument();

@@ -8,7 +8,7 @@ import java.awt.Color;
  * @author zh
  * 2018年8月10日
  */
-public class ColorUtils {
+public class ColorUtil {
 	/**
 	 *
 	 * @param bgr
