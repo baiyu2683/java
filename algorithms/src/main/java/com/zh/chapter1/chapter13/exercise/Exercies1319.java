@@ -10,12 +10,12 @@ package com.zh.chapter1.chapter13.exercise;
 public class Exercies1319 {
 	
 	public static void main(String[] args) {
-		Node first = new Node();
+		Node<String> first = new Node<>();
 		first.item = "0";
-		Node current_node = first;
-		Node temp_node = null;
+		Node<String> current_node = first;
+		Node<String> temp_node = null;
 		for (int i = 1 ; i < 200 ; i++) {
-			Node node = new Node();  
+			Node<String> node = new Node<>();  
 			node.item = String.valueOf(i);
 			current_node.next = node;
 			current_node = node;
@@ -51,7 +51,7 @@ public class Exercies1319 {
 	 * @param first
 	 * @return
 	 */
-	private static int recursionMax(Node first) {
+	private static int recursionMax(Node<String> first) {
 		int max = Integer.MIN_VALUE;
 		if(first == null) return -1;
 		else {
@@ -71,7 +71,7 @@ public class Exercies1319 {
 		if (first == null) return -1;
 		
 		int max = Integer.MIN_VALUE;
-		Node current = first;
+		Node<String> current = first;
 		int current_value = 0;
 		while (current != null) {
 			current_value = Integer.valueOf(current.item);
