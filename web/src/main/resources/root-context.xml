@@ -19,10 +19,9 @@
 		<property name="jdbcUrl" value="${jdbc.url}"/>
 		<property name="user" value="${jdbc.user}"/>
 		<property name="password" value="${jdbc.password}"/>
-		<property name="acquireIncrement" value="5"/>
-		<property name="initialPoolSize" value="10"/>
-		<property name="minPoolSize" value="10"/>
-		<property name="maxPoolSize" value="50"/>
+		<property name="acquireIncrement" value="10"/>
+		<property name="initialPoolSize" value="20"/>
+		<property name="maxPoolSize" value="40"/>
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

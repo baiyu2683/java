@@ -1,7 +1,5 @@
 package com.zh;
 
-//import com.zh.dao.BaseDao;
-import com.zh.dao.BaseDao;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;

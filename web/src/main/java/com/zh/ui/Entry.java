@@ -2,13 +2,10 @@ package com.zh.ui;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zh.domain.User;
-import com.zh.domain.User.Sex;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,16 +38,8 @@ public class Entry {
 
     @RequestMapping(value = "/obj")
     @ResponseBody
-    public User getUser() {
-        User user = new User();
-        user.setAddress("杭州萧山");
-        user.setAge(18);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1999, 8, 9, 10, 10, 10);
-        user.setBrithday(calendar.getTime());
-        user.setName("...");
-        user.setSex(Sex.female);
-        return user;
+    public String getUser() {
+        return null;
     }
 
     /**
