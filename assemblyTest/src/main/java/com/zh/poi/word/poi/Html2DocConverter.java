@@ -24,9 +24,12 @@ import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
+import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.jsoup.Jsoup;
@@ -45,12 +48,14 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
 
 import com.zh.poi.util.ColorUtil;
 import com.zh.poi.util.DateTimeUtil;
@@ -107,7 +112,10 @@ public class Html2DocConverter {
         InputStream is = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
+            
             XWPFDocument doc = new XWPFDocument();
+            // 设置空样式，防止poi重新打开生成的文件时报错
+            doc.createStyles();
             
             // 设置纸张
             setPageProp(doc);
@@ -157,24 +165,23 @@ public class Html2DocConverter {
         BigInteger width = pageSz.getW();
         
         CTPageMar pm = sp.getPgMar();
-        // 按中文一字符，其他半个字符处理(实际和字母大小写还有关系，这里是个约数)
         BigInteger contentWidth = width.subtract(pm.getLeft()).subtract(pm.getRight());
-        // 获得页眉内容字节数, utf8一字符两字节
-        int centerByteCount = centerText.getBytes("utf-8").length;
-        int rightByteCount = rightText.getBytes("utf-8").length;
-        
-        // 计算宽度
-        BigInteger centerWidth = double2BigInteger(UnitUtils.cm2Twip((centerByteCount / 2) * 0.32));
-        BigInteger rightWidth = double2BigInteger(UnitUtils.cm2Twip((rightByteCount / 2) * 0.32));
+//        // 按中文一字符，其他半个字符处理(实际和字母大小写还有关系，这里是个约数)
+//        // 获得页眉内容字节数, utf8一字符两字节
+//        int centerByteCount = centerText.getBytes("utf-8").length;
+//        int rightByteCount = rightText.getBytes("utf-8").length;
+//        
+//        // 计算宽度
+//        BigInteger centerWidth = double2BigInteger(UnitUtils.cm2Twip((centerByteCount / 2) * 0.32));
+//        BigInteger rightWidth = double2BigInteger(UnitUtils.cm2Twip((rightByteCount / 2) * 0.32));
 
         // 第一个tab设置到中间页眉的左侧位置: (总宽度  / 2) - (中间页眉宽度  / 2)
-        BigInteger leftTabPos = contentWidth
-                .subtract(centerWidth)
-                .divide(BigInteger.valueOf(2));
+        BigInteger leftTabPos = contentWidth.divide(BigInteger.valueOf(2));
         // 第二个tab设置到右侧页眉左边: 总宽度 - 右侧页眉宽度
-        BigInteger rightTabPos = contentWidth.subtract(rightWidth);
+        BigInteger rightTabPos = contentWidth;
         
         CTP ctp = CTP.Factory.newInstance();
+        ctp.addNewR().addNewT().setSpace(SpaceAttribute.Space.DEFAULT);
         CTPPr begin = ctp.addNewPPr();
         
         XWPFParagraph headParagraph = new XWPFParagraph(ctp, docx);
@@ -184,14 +191,17 @@ public class Html2DocConverter {
         
         CTTabStop leftTab = begin.addNewTabs().addNewTab();
         leftTab.setPos(leftTabPos);
+        leftTab.setVal(STTabJc.CENTER);
         
         headRun.setText(centerText);
         headRun.addTab();
         
         CTTabStop rightTab = begin.addNewTabs().addNewTab();
         rightTab.setPos(rightTabPos);
+        rightTab.setVal(STTabJc.RIGHT);
         
         headRun.setText(rightText);
+        headRun.addTab();
         
         begin.addNewPStyle().setVal(STYLE_HEADER);
         CTBorder border = begin.addNewPBdr().addNewBottom();
@@ -199,11 +209,40 @@ public class Html2DocConverter {
         border.setSz(BigInteger.valueOf(4));
         border.setSpace(BigInteger.valueOf(1));
         
-        ctp.addNewR().addNewT().setSpace(SpaceAttribute.Space.PRESERVE);
         CTSectPr sectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
         XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {headParagraph});
         header.setXWPFDocument(docx);
+        
+        // 页脚
+        CTP foot = CTP.Factory.newInstance();
+        foot.addNewR().addNewT().setSpace(SpaceAttribute.Space.DEFAULT);
+        CTPPr end = foot.addNewPPr();
+        XWPFParagraph footer = new XWPFParagraph(foot, docx);
+        
+        XWPFRun footerRun = footer.createRun();
+        footerRun.setText("左侧页眉");
+        footerRun.addTab();
+        
+        CTTabStop footerLeftTab = end.addNewTabs().addNewTab();
+        footerLeftTab.setPos(leftTabPos);
+        footerLeftTab.setVal(STTabJc.CENTER);
+        
+        footerRun.setText("中间页眉");
+        footerRun.addTab();
+        
+        CTTabStop footerRightTab = end.addNewTabs().addNewTab();
+        footerRightTab.setPos(rightTabPos);
+        footerRightTab.setVal(STTabJc.RIGHT);
+        
+        footerRun.setText("右侧页眉");
+        
+        end.addNewPStyle().setVal(STYLE_FOOTER);
+        CTSectPr footSectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
+        XWPFHeaderFooterPolicy footPolicy = new XWPFHeaderFooterPolicy(docx, footSectPr);
+        XWPFFooter xwpfFooter = footPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[] { footer });
+        xwpfFooter.setXWPFDocument(docx);
+        
     }
     
     /**
@@ -353,7 +392,8 @@ public class Html2DocConverter {
         subStyleSheet = mergeMap(styleSheet, subStyleSheet);
         if ("br".equals(element.tagName())) {
             XWPFRun br = paragraph.createRun();
-            br.setText(NEW_LINE);
+//            br.setText(NEW_LINE);
+            br.addBreak();
         } if ("img".equals(element.tagName())) {
             XWPFRun imgRun = paragraph.createRun();
             addStyle(imgRun, subStyleSheet);
