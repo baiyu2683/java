@@ -119,10 +119,19 @@ public class ColorUtil {
     public static Color rgbStr2Color(String color) {
         try {
             color = color.toLowerCase();
-            color = color.replace("rgba(", "")
-                        .replace("rgb(", "")
+            String[] rgb = null;
+            if (color.startsWith("rgb(")) {
+                color = color.replace("rgb(", "")
+                            .replace(")", "");
+                rgb = color.split(", ");
+            } else {
+                color = color.replace("rgba(", "")
                         .replace(")", "");
-            String[] rgb = color.split(", ");
+                rgb = color.split(", ");
+                if ("0".equals(rgb[3])) {
+                    rgb[0] = rgb[1] = rgb[2] = "255";
+                }
+            }
             Color poiColor = new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]),
                     Integer.parseInt(rgb[2]));
             return poiColor;

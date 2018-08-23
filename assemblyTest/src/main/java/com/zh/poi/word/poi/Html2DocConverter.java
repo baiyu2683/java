@@ -3,6 +3,7 @@ package com.zh.poi.word.poi;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +29,6 @@ import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFStyle;
-import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.jsoup.Jsoup;
@@ -48,7 +47,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
@@ -87,8 +86,6 @@ public class Html2DocConverter {
         fontTagSizeMap.put("6", "32");
         fontTagSizeMap.put("7", "48");
     }
-    
-    private static final String NEW_LINE = "\r";
     
     /** 页脚样式 */
     public static final String STYLE_FOOTER = "footer";
@@ -166,14 +163,6 @@ public class Html2DocConverter {
         
         CTPageMar pm = sp.getPgMar();
         BigInteger contentWidth = width.subtract(pm.getLeft()).subtract(pm.getRight());
-//        // 按中文一字符，其他半个字符处理(实际和字母大小写还有关系，这里是个约数)
-//        // 获得页眉内容字节数, utf8一字符两字节
-//        int centerByteCount = centerText.getBytes("utf-8").length;
-//        int rightByteCount = rightText.getBytes("utf-8").length;
-//        
-//        // 计算宽度
-//        BigInteger centerWidth = double2BigInteger(UnitUtils.cm2Twip((centerByteCount / 2) * 0.32));
-//        BigInteger rightWidth = double2BigInteger(UnitUtils.cm2Twip((rightByteCount / 2) * 0.32));
 
         // 第一个tab设置到中间页眉的左侧位置: (总宽度  / 2) - (中间页眉宽度  / 2)
         BigInteger leftTabPos = contentWidth.divide(BigInteger.valueOf(2));
@@ -510,7 +499,21 @@ public class Html2DocConverter {
                 if (StringUtils.isNotBlank(marginBottom)) {
                     paragraph.setSpacingAfter(UnitUtils.pxString2Number(marginBottom) * 10);
                 }
-                // 段落背景色(无法实现)
+                // 设置段落背景色
+                if (styleSheet.containsKey("background-color")) {
+                    Color color = (Color) styleSheet.get("background-color");
+                    CTP ctp = paragraph.getCTP();
+                    CTR[] ctrArr = ctp.getRArray();
+                    CTR ctr = null;
+                    if (ctrArr != null && ctrArr.length > 0) {
+                        ctr = ctrArr[0];
+                    } else {
+                        ctr = ctp.addNewR();
+                    }
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();
+                    CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
+                    shd.setFill(ColorUtil.color2String(color).replace("#", ""));
+                }
             } else if (sdt instanceof XWPFRun) {
                 XWPFRun run = (XWPFRun) sdt;
                 if (styleSheet.containsKey("font-family")) {
@@ -563,6 +566,14 @@ public class Html2DocConverter {
                 }
                 if (styleSheet.containsKey("font-strike")) {
                     run.setStrikeThrough(true);
+                }
+                if (styleSheet.containsKey("background-color")) {
+                    Color color = (Color) styleSheet.get("background-color");
+                    
+                    CTR ctr = run.getCTR();
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();
+                    CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
+                    shd.setFill(ColorUtil.color2String(color).replace("#", ""));
                 }
             }
         }
@@ -686,8 +697,10 @@ public class Html2DocConverter {
     
     public static void main(String[] args) throws Exception {
         
-        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
-        String htmlContent = IOUtils.toString(is, "gbk");
+//        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
+//        String htmlContent = IOUtils.toString(is, "gbk");
+        
+        String htmlContent = IOUtils.toString(new FileInputStream("d:/html.html"), "utf-8");
         
         // 单位: px
         Paper paper = new Paper();
