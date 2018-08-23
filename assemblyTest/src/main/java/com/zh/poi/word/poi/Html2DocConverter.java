@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -77,6 +78,10 @@ public class Html2DocConverter {
      * font标签size属性映射像素
      */
     private static final Map<String, String> fontTagSizeMap = new HashMap<String, String>();
+    /**
+     * 颜色名和rgb值映射关系
+     */
+    private static final Properties colorName = new Properties();
     static {
         fontTagSizeMap.put("1", "10");
         fontTagSizeMap.put("2", "14");
@@ -85,6 +90,11 @@ public class Html2DocConverter {
         fontTagSizeMap.put("5", "24");
         fontTagSizeMap.put("6", "32");
         fontTagSizeMap.put("7", "48");
+        try {
+            InputStream is = Html2DocConverter.class.getResourceAsStream("colorname.properties");
+            colorName.load(is);
+        } catch (IOException e) {
+        }
     }
     
     /** 页脚样式 */
@@ -381,7 +391,6 @@ public class Html2DocConverter {
         subStyleSheet = mergeMap(styleSheet, subStyleSheet);
         if ("br".equals(element.tagName())) {
             XWPFRun br = paragraph.createRun();
-//            br.setText(NEW_LINE);
             br.addBreak();
         } if ("img".equals(element.tagName())) {
             XWPFRun imgRun = paragraph.createRun();
@@ -486,18 +495,22 @@ public class Html2DocConverter {
                         marginBottom = margins[0];
                     }
                 }
-                // 缩进的单位，暂时x10
+                // 缩进
                 if (StringUtils.isNotBlank(marginLeft)) {
-                    paragraph.setIndentationLeft(UnitUtils.pxString2Number(marginLeft) * 10);
+                    BigInteger indentationLeft = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginLeft)));
+                    paragraph.setIndentationLeft(indentationLeft.intValue());
                 }
                 if (StringUtils.isNotBlank(marginRight)) {
-                    paragraph.setIndentationRight(UnitUtils.pxString2Number(marginRight) * 10);
+                    BigInteger indentationRight = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginRight)));
+                    paragraph.setIndentationRight(indentationRight.intValue());
                 }
                 if (StringUtils.isNotBlank(marginTop)) {
-                    paragraph.setSpacingBefore(UnitUtils.pxString2Number(marginTop) * 10);
+                    BigInteger indentationBefore = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginTop)));
+                    paragraph.setSpacingBefore(indentationBefore.intValue());
                 }
                 if (StringUtils.isNotBlank(marginBottom)) {
-                    paragraph.setSpacingAfter(UnitUtils.pxString2Number(marginBottom) * 10);
+                    BigInteger indentationBottom = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginBottom)));
+                    paragraph.setSpacingAfter(indentationBottom.intValue());
                 }
                 // 设置段落背景色
                 if (styleSheet.containsKey("background-color")) {
@@ -610,7 +623,7 @@ public class Html2DocConverter {
                 } else if ("color".equals(attribute.getKey())) {
                     String value = attribute.getValue();
                     if (StringUtils.isNotBlank(value)) {
-                        value = value.toLowerCase();
+                        value = value.trim().toLowerCase();
                         if (value.startsWith("#")) {
                             Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
                             styleSheet.put("color", color);
@@ -618,7 +631,9 @@ public class Html2DocConverter {
                             Color color = ColorUtil.rgbStr2Color(value);
                             styleSheet.put("color", color);
                         } else {
-                            // TODO colorname名字需要映射表映射
+                            // colorname名字需要映射表映射
+                            String rgbValue = colorName.getProperty(value);
+                            styleSheet.put("color", ColorUtil.rgbStr2Color(rgbValue));
                         }
                     }
                 }
