@@ -569,7 +569,6 @@ public class Html2DocConverter {
                 }
                 if (styleSheet.containsKey("background-color")) {
                     Color color = (Color) styleSheet.get("background-color");
-                    
                     CTR ctr = run.getCTR();
                     CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();
                     CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();

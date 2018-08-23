@@ -10,7 +10,6 @@ import com.aspose.words.SaveFormat;
 
 /**
  * aspose操作word转pdf
- * 有水印。。。
  * 页眉格式混乱
  * @author zh
  * 2018年8月22日
