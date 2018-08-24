@@ -26,7 +26,6 @@ import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -50,6 +49,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabs;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
@@ -184,23 +184,35 @@ public class Html2DocConverter {
         CTPPr begin = ctp.addNewPPr();
         
         XWPFParagraph headParagraph = new XWPFParagraph(ctp, docx);
-        XWPFRun headRun = headParagraph.createRun();
-        headRun.setText(leftText);
-        headRun.addTab();
+        XWPFRun headerLeftRun = headParagraph.createRun();
+        headerLeftRun.setFontFamily("宋体");
+        headerLeftRun.setFontSize(9);
+        headerLeftRun.setText(leftText);
+        headerLeftRun.addTab();
         
-        CTTabStop leftTab = begin.addNewTabs().addNewTab();
+        CTTabs cttabs = begin.isSetTabs() ? 
+                begin.getTabs() : 
+                    begin.addNewTabs();
+        
+        CTTabStop leftTab = cttabs.addNewTab();
         leftTab.setPos(leftTabPos);
         leftTab.setVal(STTabJc.CENTER);
         
-        headRun.setText(centerText);
-        headRun.addTab();
+        XWPFRun headerCenterRun = headParagraph.createRun();
+        headerCenterRun.setFontFamily("宋体");
+        headerCenterRun.setFontSize(9);
+        headerCenterRun.setText(centerText);
+        headerCenterRun.addTab();
         
-        CTTabStop rightTab = begin.addNewTabs().addNewTab();
+        CTTabStop rightTab = cttabs.addNewTab();
         rightTab.setPos(rightTabPos);
         rightTab.setVal(STTabJc.RIGHT);
         
-        headRun.setText(rightText);
-        headRun.addTab();
+        XWPFRun headerRightRun = headParagraph.createRun();
+        headerRightRun.setFontFamily("宋体");
+        headerRightRun.setFontSize(9);
+        headerRightRun.setText(rightText);
+        headerRightRun.addTab();
         
         begin.addNewPStyle().setVal(STYLE_HEADER);
         CTBorder border = begin.addNewPBdr().addNewBottom();
@@ -212,36 +224,6 @@ public class Html2DocConverter {
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
         XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {headParagraph});
         header.setXWPFDocument(docx);
-        
-        // 页脚
-        CTP foot = CTP.Factory.newInstance();
-        foot.addNewR().addNewT().setSpace(SpaceAttribute.Space.DEFAULT);
-        CTPPr end = foot.addNewPPr();
-        XWPFParagraph footer = new XWPFParagraph(foot, docx);
-        
-        XWPFRun footerRun = footer.createRun();
-        footerRun.setText("左侧页眉");
-        footerRun.addTab();
-        
-        CTTabStop footerLeftTab = end.addNewTabs().addNewTab();
-        footerLeftTab.setPos(leftTabPos);
-        footerLeftTab.setVal(STTabJc.CENTER);
-        
-        footerRun.setText("中间页眉");
-        footerRun.addTab();
-        
-        CTTabStop footerRightTab = end.addNewTabs().addNewTab();
-        footerRightTab.setPos(rightTabPos);
-        footerRightTab.setVal(STTabJc.RIGHT);
-        
-        footerRun.setText("右侧页眉");
-        
-        end.addNewPStyle().setVal(STYLE_FOOTER);
-        CTSectPr footSectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
-        XWPFHeaderFooterPolicy footPolicy = new XWPFHeaderFooterPolicy(docx, footSectPr);
-        XWPFFooter xwpfFooter = footPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[] { footer });
-        xwpfFooter.setXWPFDocument(docx);
-        
     }
     
     /**
