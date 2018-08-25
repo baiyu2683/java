@@ -3,6 +3,7 @@ package com.zh.poi.word.poi;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -24,12 +26,9 @@ import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFStyle;
-import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.jsoup.Jsoup;
@@ -48,8 +47,9 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabs;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
@@ -78,6 +78,10 @@ public class Html2DocConverter {
      * font标签size属性映射像素
      */
     private static final Map<String, String> fontTagSizeMap = new HashMap<String, String>();
+    /**
+     * 颜色名和rgb值映射关系
+     */
+    private static final Properties colorName = new Properties();
     static {
         fontTagSizeMap.put("1", "10");
         fontTagSizeMap.put("2", "14");
@@ -86,9 +90,12 @@ public class Html2DocConverter {
         fontTagSizeMap.put("5", "24");
         fontTagSizeMap.put("6", "32");
         fontTagSizeMap.put("7", "48");
+        try {
+            InputStream is = Html2DocConverter.class.getResourceAsStream("colorname.properties");
+            colorName.load(is);
+        } catch (IOException e) {
+        }
     }
-    
-    private static final String NEW_LINE = "\r";
     
     /** 页脚样式 */
     public static final String STYLE_FOOTER = "footer";
@@ -166,14 +173,6 @@ public class Html2DocConverter {
         
         CTPageMar pm = sp.getPgMar();
         BigInteger contentWidth = width.subtract(pm.getLeft()).subtract(pm.getRight());
-//        // 按中文一字符，其他半个字符处理(实际和字母大小写还有关系，这里是个约数)
-//        // 获得页眉内容字节数, utf8一字符两字节
-//        int centerByteCount = centerText.getBytes("utf-8").length;
-//        int rightByteCount = rightText.getBytes("utf-8").length;
-//        
-//        // 计算宽度
-//        BigInteger centerWidth = double2BigInteger(UnitUtils.cm2Twip((centerByteCount / 2) * 0.32));
-//        BigInteger rightWidth = double2BigInteger(UnitUtils.cm2Twip((rightByteCount / 2) * 0.32));
 
         // 第一个tab设置到中间页眉的左侧位置: (总宽度  / 2) - (中间页眉宽度  / 2)
         BigInteger leftTabPos = contentWidth.divide(BigInteger.valueOf(2));
@@ -185,23 +184,35 @@ public class Html2DocConverter {
         CTPPr begin = ctp.addNewPPr();
         
         XWPFParagraph headParagraph = new XWPFParagraph(ctp, docx);
-        XWPFRun headRun = headParagraph.createRun();
-        headRun.setText(leftText);
-        headRun.addTab();
+        XWPFRun headerLeftRun = headParagraph.createRun();
+        headerLeftRun.setFontFamily("宋体");
+        headerLeftRun.setFontSize(9);
+        headerLeftRun.setText(leftText);
+        headerLeftRun.addTab();
         
-        CTTabStop leftTab = begin.addNewTabs().addNewTab();
+        CTTabs cttabs = begin.isSetTabs() ? 
+                begin.getTabs() : 
+                    begin.addNewTabs();
+        
+        CTTabStop leftTab = cttabs.addNewTab();
         leftTab.setPos(leftTabPos);
         leftTab.setVal(STTabJc.CENTER);
         
-        headRun.setText(centerText);
-        headRun.addTab();
+        XWPFRun headerCenterRun = headParagraph.createRun();
+        headerCenterRun.setFontFamily("宋体");
+        headerCenterRun.setFontSize(9);
+        headerCenterRun.setText(centerText);
+        headerCenterRun.addTab();
         
-        CTTabStop rightTab = begin.addNewTabs().addNewTab();
+        CTTabStop rightTab = cttabs.addNewTab();
         rightTab.setPos(rightTabPos);
         rightTab.setVal(STTabJc.RIGHT);
         
-        headRun.setText(rightText);
-        headRun.addTab();
+        XWPFRun headerRightRun = headParagraph.createRun();
+        headerRightRun.setFontFamily("宋体");
+        headerRightRun.setFontSize(9);
+        headerRightRun.setText(rightText);
+        headerRightRun.addTab();
         
         begin.addNewPStyle().setVal(STYLE_HEADER);
         CTBorder border = begin.addNewPBdr().addNewBottom();
@@ -213,36 +224,6 @@ public class Html2DocConverter {
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
         XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {headParagraph});
         header.setXWPFDocument(docx);
-        
-        // 页脚
-        CTP foot = CTP.Factory.newInstance();
-        foot.addNewR().addNewT().setSpace(SpaceAttribute.Space.DEFAULT);
-        CTPPr end = foot.addNewPPr();
-        XWPFParagraph footer = new XWPFParagraph(foot, docx);
-        
-        XWPFRun footerRun = footer.createRun();
-        footerRun.setText("左侧页眉");
-        footerRun.addTab();
-        
-        CTTabStop footerLeftTab = end.addNewTabs().addNewTab();
-        footerLeftTab.setPos(leftTabPos);
-        footerLeftTab.setVal(STTabJc.CENTER);
-        
-        footerRun.setText("中间页眉");
-        footerRun.addTab();
-        
-        CTTabStop footerRightTab = end.addNewTabs().addNewTab();
-        footerRightTab.setPos(rightTabPos);
-        footerRightTab.setVal(STTabJc.RIGHT);
-        
-        footerRun.setText("右侧页眉");
-        
-        end.addNewPStyle().setVal(STYLE_FOOTER);
-        CTSectPr footSectPr = docx.getDocument().getBody().isSetSectPr() ? docx.getDocument().getBody().getSectPr() : docx.getDocument().getBody().addNewSectPr();
-        XWPFHeaderFooterPolicy footPolicy = new XWPFHeaderFooterPolicy(docx, footSectPr);
-        XWPFFooter xwpfFooter = footPolicy.createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[] { footer });
-        xwpfFooter.setXWPFDocument(docx);
-        
     }
     
     /**
@@ -392,7 +373,6 @@ public class Html2DocConverter {
         subStyleSheet = mergeMap(styleSheet, subStyleSheet);
         if ("br".equals(element.tagName())) {
             XWPFRun br = paragraph.createRun();
-//            br.setText(NEW_LINE);
             br.addBreak();
         } if ("img".equals(element.tagName())) {
             XWPFRun imgRun = paragraph.createRun();
@@ -497,20 +477,38 @@ public class Html2DocConverter {
                         marginBottom = margins[0];
                     }
                 }
-                // 缩进的单位，暂时x10
+                // 缩进
                 if (StringUtils.isNotBlank(marginLeft)) {
-                    paragraph.setIndentationLeft(UnitUtils.pxString2Number(marginLeft) * 10);
+                    BigInteger indentationLeft = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginLeft)));
+                    paragraph.setIndentationLeft(indentationLeft.intValue());
                 }
                 if (StringUtils.isNotBlank(marginRight)) {
-                    paragraph.setIndentationRight(UnitUtils.pxString2Number(marginRight) * 10);
+                    BigInteger indentationRight = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginRight)));
+                    paragraph.setIndentationRight(indentationRight.intValue());
                 }
                 if (StringUtils.isNotBlank(marginTop)) {
-                    paragraph.setSpacingBefore(UnitUtils.pxString2Number(marginTop) * 10);
+                    BigInteger indentationBefore = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginTop)));
+                    paragraph.setSpacingBefore(indentationBefore.intValue());
                 }
                 if (StringUtils.isNotBlank(marginBottom)) {
-                    paragraph.setSpacingAfter(UnitUtils.pxString2Number(marginBottom) * 10);
+                    BigInteger indentationBottom = double2BigInteger(UnitUtils.px2Twip(UnitUtils.pxString2Number(marginBottom)));
+                    paragraph.setSpacingAfter(indentationBottom.intValue());
                 }
-                // 段落背景色(无法实现)
+                // 设置段落背景色
+                if (styleSheet.containsKey("background-color")) {
+                    Color color = (Color) styleSheet.get("background-color");
+                    CTP ctp = paragraph.getCTP();
+                    CTR[] ctrArr = ctp.getRArray();
+                    CTR ctr = null;
+                    if (ctrArr != null && ctrArr.length > 0) {
+                        ctr = ctrArr[0];
+                    } else {
+                        ctr = ctp.addNewR();
+                    }
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();
+                    CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
+                    shd.setFill(ColorUtil.color2String(color).replace("#", ""));
+                }
             } else if (sdt instanceof XWPFRun) {
                 XWPFRun run = (XWPFRun) sdt;
                 if (styleSheet.containsKey("font-family")) {
@@ -564,6 +562,13 @@ public class Html2DocConverter {
                 if (styleSheet.containsKey("font-strike")) {
                     run.setStrikeThrough(true);
                 }
+                if (styleSheet.containsKey("background-color")) {
+                    Color color = (Color) styleSheet.get("background-color");
+                    CTR ctr = run.getCTR();
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();
+                    CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
+                    shd.setFill(ColorUtil.color2String(color).replace("#", ""));
+                }
             }
         }
     }
@@ -600,7 +605,7 @@ public class Html2DocConverter {
                 } else if ("color".equals(attribute.getKey())) {
                     String value = attribute.getValue();
                     if (StringUtils.isNotBlank(value)) {
-                        value = value.toLowerCase();
+                        value = value.trim().toLowerCase();
                         if (value.startsWith("#")) {
                             Color color = new Color(Integer.parseInt(value.replace("#", ""), 16));
                             styleSheet.put("color", color);
@@ -608,7 +613,9 @@ public class Html2DocConverter {
                             Color color = ColorUtil.rgbStr2Color(value);
                             styleSheet.put("color", color);
                         } else {
-                            // TODO colorname名字需要映射表映射
+                            // colorname名字需要映射表映射
+                            String rgbValue = colorName.getProperty(value);
+                            styleSheet.put("color", ColorUtil.rgbStr2Color(rgbValue));
                         }
                     }
                 }
@@ -686,8 +693,10 @@ public class Html2DocConverter {
     
     public static void main(String[] args) throws Exception {
         
-        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
-        String htmlContent = IOUtils.toString(is, "gbk");
+//        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
+//        String htmlContent = IOUtils.toString(is, "gbk");
+        
+        String htmlContent = IOUtils.toString(new FileInputStream("d:/html.html"), "utf-8");
         
         // 单位: px
         Paper paper = new Paper();

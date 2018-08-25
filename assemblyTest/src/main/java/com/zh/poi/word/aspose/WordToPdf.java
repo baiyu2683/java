@@ -4,13 +4,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import org.apache.poi.hslf.model.HeadersFooters;
+
 import com.aspose.words.Document;
+import com.aspose.words.HeaderFooter;
+import com.aspose.words.HeaderFooterCollection;
 import com.aspose.words.License;
+import com.aspose.words.Paragraph;
+import com.aspose.words.Run;
 import com.aspose.words.SaveFormat;
 
 /**
  * aspose操作word转pdf
- * 有水印。。。
  * 页眉格式混乱
  * @author zh
  * 2018年8月22日
@@ -26,12 +31,17 @@ public class WordToPdf {
         if (!getLicense()) {
             return;
         }
-        
         try {
             long start = System.currentTimeMillis();
             File file = new File(pdfPath);
             FileOutputStream fos = new FileOutputStream(file);
             Document doc = new Document(wordPath);
+            HeaderFooterCollection hfs = doc.getFirstSection().getHeadersFooters();
+            HeaderFooter hf = hfs.get(0);
+            Paragraph paragraph = hf.getFirstParagraph();
+            for(Run run : paragraph.getRuns()) {
+                System.out.println(run.getText());
+            }
             doc.save(fos, SaveFormat.PDF);
             fos.close();
             long end = System.currentTimeMillis();

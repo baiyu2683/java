@@ -47,7 +47,7 @@ public class NewLineTest {
         run.setText("不缩进");
         run = paragraph.createRun();
         run.setText("123");
-
+        
         XWPFParagraph paragraph2 = document.createParagraph();
         XWPFRun run2 = paragraph2.createRun();
         paragraph2.setSpacingBefore(0);
