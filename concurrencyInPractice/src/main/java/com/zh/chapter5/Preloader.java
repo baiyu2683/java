@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
+ * 这个为啥get()回来会延迟呢?
+ * 看start执行之后，任务也很快返回了，是不是future的状态没有及时改变?
  * Created by zh on 2017-07-30.
  */
 public class Preloader {
@@ -18,6 +20,7 @@ public class Preloader {
     private final FutureTask<ProductInfo> future = new FutureTask<>(new Callable<ProductInfo>() {
         @Override
         public ProductInfo call() throws Exception {
+            System.out.println("task start execute: " + System.currentTimeMillis());
             ProductInfo productInfo = new ProductInfo();
             productInfo.setInfo("消息...");
             return productInfo;
@@ -27,6 +30,7 @@ public class Preloader {
     private final Thread thread = new Thread(future);
 
     public void start() {
+        System.out.println("start task: " + System.currentTimeMillis());
         thread.start();
     }
 
@@ -41,7 +45,9 @@ public class Preloader {
 
     public ProductInfo get() throws InterruptedException, ExecutionException {
         try {
-            return future.get();
+            ProductInfo pi = future.get();
+            System.out.println("finished: " + System.currentTimeMillis());
+            return pi;
         } catch (InterruptedException e) {
             throw e;
         } catch (ExecutionException e) {

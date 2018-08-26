@@ -9,6 +9,9 @@ import java.util.Random;
 import java.util.concurrent.*;
 
 /**
+ * 这个CompletedService可以实现添加的任务，先执行完的先返回，而不是按添加顺序返回，有助于提高效率，
+ * 当然总时间都是执行最长的任务的时间
+ *  原理是封装了QueueingFuture，每个任务完成时调用done()方法，将任务加入完成队列，就可以take到了
  * Created by zh on 2017-08-07.
  */
 public class TestCompletedService {
@@ -66,7 +69,9 @@ public class TestCompletedService {
         for (int i = 0; i < list.size(); i++) {
             try {
                 Future<Integer> future = completionService.take();
-                s.append(future.get() + ", ");
+                Integer result = future.get();
+                System.out.println("result: " + result);
+                s.append(result + ", ");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
