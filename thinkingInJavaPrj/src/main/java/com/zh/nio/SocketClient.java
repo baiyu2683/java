@@ -22,7 +22,7 @@ public class SocketClient {
     public static void main(String[] args) throws IOException, InterruptedException {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10,
                 TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
-        for (int i = 0 ; i < 10 ; i++) {
+        for (int i = 0 ; i < 8 ; i++) {
             threadPoolExecutor.execute(new Thread(() -> {
                 OutputStream outputStream = null;
                 while (true) {

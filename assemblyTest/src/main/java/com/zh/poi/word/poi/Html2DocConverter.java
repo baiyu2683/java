@@ -21,14 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
-import org.apache.poi.xwpf.usermodel.ISDTContents;
-import org.apache.poi.xwpf.usermodel.LineSpacingRule;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFHeader;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute;
 import org.jsoup.Jsoup;
@@ -39,23 +32,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabs;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
 import com.zh.poi.util.ColorUtil;
 import com.zh.poi.util.DateTimeUtil;
@@ -224,6 +201,7 @@ public class Html2DocConverter {
         XWPFHeaderFooterPolicy policy = new XWPFHeaderFooterPolicy(docx, sectPr);
         XWPFHeader header = policy.createHeader(STHdrFtr.DEFAULT, new XWPFParagraph[] {headParagraph});
         header.setXWPFDocument(docx);
+        
     }
     
     /**
@@ -322,6 +300,10 @@ public class Html2DocConverter {
         for (Node node : nodes) {
             if (node instanceof Element) {
                 handleNode((Element) node, wordDocument);
+            } else if (node instanceof TextNode) {
+                XWPFParagraph paragraph = wordDocument.createParagraph();
+                XWPFRun subRun = paragraph.createRun();
+                subRun.setText(((TextNode) node).text());
             }
         }
     }
@@ -330,23 +312,7 @@ public class Html2DocConverter {
         if (node instanceof Element) {
             Element ele = (Element) node;
             Map<String, Object> styleSheet = getStyleSheet(ele);
-            if ("p".equals(ele.tagName())) {
-                XWPFParagraph paragraph = wordDocument.createParagraph();
-                addStyle(paragraph, styleSheet);
-                List<Node> eleChildNodes = ele.childNodes();
-                for (Node eleChildNode : eleChildNodes) {
-                    if (eleChildNode instanceof TextNode) {
-                        XWPFRun run = paragraph.createRun();
-                        addStyle(run, styleSheet);
-                        run.setText(((TextNode)eleChildNode).text());
-                    } else if (eleChildNode instanceof Element) {
-                        Element eleChildElement = (Element) eleChildNode;
-                        Map<String, Object> subStyleSheet = getStyleSheet(eleChildElement);
-                        Map<String, Object> mergeStyleSheet = mergeMap(styleSheet, subStyleSheet);
-                        addContentToParagraph(eleChildElement, mergeStyleSheet, paragraph);
-                    }
-                }
-            } else if ("div".equals(ele.tagName())) {
+            if ("div".equals(ele.tagName())) {
                 // 例子中html最外层加了一个div的，因此这里body下首层的div不创建段落
                 Element parentEle = ele.parent();
                 if (parentEle == null || "body".equals(parentEle.tagName())) {
@@ -356,8 +322,92 @@ public class Html2DocConverter {
                     addStyle(paragraph, styleSheet);
                     addContentToParagraph(ele, styleSheet, paragraph);
                 }
+            } else if ("table".equals(ele.tagName())) {
+                // TODO 表格处理
+                XWPFTable table = wordDocument.createTable();
+                table.setWidth(6000);
+                parseTable(ele, table, 0);
+            } else {
+                XWPFParagraph paragraph = wordDocument.createParagraph();
+                addStyle(paragraph, styleSheet);
+                addContentToParagraph(ele, styleSheet, paragraph);
             }
         }
+    }
+
+    /**
+     * table标签生成
+     * @param table
+     */
+    private void parseTable(Element tableEle, XWPFTable table, int rowCount) {
+        Elements elements = tableEle.children();
+        for (Element ele : elements) {
+            String tagName = ele.tagName();
+            switch (tagName) {
+                case "tbody":
+                    parseTable(ele, table, 0);
+                    break;
+                case "tr":
+                    // 标记是第一行...
+                    if (rowCount > 0) {
+                        table.createRow();
+                    }
+                    rowCount++;
+                    int size = table.getRows().size();
+                    XWPFTableRow row = table.getRow(size - 1);
+                    parseRow(ele, row);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 单元格
+     * @param tr
+     * @param row
+     */
+    private void parseRow(Element tr, XWPFTableRow row) {
+        Elements elements = tr.children();
+        for (int ci = 0 ; ci < elements.size() ; ci++) {
+            Element td = elements.get(ci);
+            XWPFTableCell cell = row.getCell(ci);
+            if (cell == null) {
+                cell = row.createCell();
+            }
+            cell.setText(td.text());
+            CTTc cttc = cell.getCTTc();
+            CTTcPr ctPr = cttc.addNewTcPr();
+            CTTblWidth tcw = ctPr.getTcW();
+            if (tcw == null) {
+                tcw = ctPr.addNewTcW();
+            }
+            tcw.setW(BigInteger.valueOf(4000));
+            tcw.setType(STTblWidth.DXA);
+        }
+    }
+
+    /**
+     * 获取索引为index的table
+     * @return
+     */
+    private XWPFTable getTable(XWPFDocument document) {
+        XWPFTable table = document.createTable();
+        setTableProp(table);
+        return table;
+    }
+
+    /**
+     * 设置表格属性
+     * @param table
+     */
+    private void setTableProp(XWPFTable table) {
+        CTTbl ttbl = table.getCTTbl();
+        CTTblPr tblPr = ttbl.getTblPr() == null ? ttbl.addNewTblPr() : ttbl.getTblPr();
+        CTTblWidth tblWidth = tblPr.isSetTblW() ? tblPr.getTblW() : tblPr.addNewTblW();
+        CTJc cTJc=tblPr.addNewJc();
+        cTJc.setVal(STJc.CENTER);
+        tblWidth.setW(BigInteger.valueOf(8000));
+        tblWidth.setType(STTblWidth.DXA);
     }
 
     /**
@@ -369,26 +419,24 @@ public class Html2DocConverter {
      */
     private void addContentToParagraph(Element element, Map<String, Object> styleSheet,
             XWPFParagraph paragraph) {
-        Map<String, Object> subStyleSheet = getStyleSheet(element);
-        subStyleSheet = mergeMap(styleSheet, subStyleSheet);
         if ("br".equals(element.tagName())) {
             XWPFRun br = paragraph.createRun();
             br.addBreak();
         } if ("img".equals(element.tagName())) {
             XWPFRun imgRun = paragraph.createRun();
-            addStyle(imgRun, subStyleSheet);
+            addStyle(imgRun, styleSheet);
             int width = 200;
             int height = 200;
-            if (subStyleSheet.containsKey("height")) {
-                String heightStr = String.valueOf(subStyleSheet.get("height"));
+            if (styleSheet.containsKey("height")) {
+                String heightStr = String.valueOf(styleSheet.get("height"));
                 if (!"auto".equals(heightStr)) {
                     height = UnitUtils.pxString2Number(heightStr);
                 }
             }
-            if (subStyleSheet.containsKey("width")) {
-                String widthStr = String.valueOf(subStyleSheet.get("width"));
+            if (styleSheet.containsKey("width")) {
+                String widthStr = String.valueOf(styleSheet.get("width"));
                 if (!"auto".equals(widthStr)) {
-                    width = UnitUtils.pxString2Number(String.valueOf(subStyleSheet.get("width")));
+                    width = UnitUtils.pxString2Number(String.valueOf(styleSheet.get("width")));
                 }
             }
             String src = element.attr("src");
@@ -407,7 +455,7 @@ public class Html2DocConverter {
                 if (subNode instanceof Element) {
                     Element subElement = (Element) subNode;
                     Map<String, Object> subElementStyleSheet = getStyleSheet(subElement);
-                    Map<String, Object> mergeStyleSheet = mergeMap(subStyleSheet, subElementStyleSheet);
+                    Map<String, Object> mergeStyleSheet = mergeMap(styleSheet, subElementStyleSheet);
                     addContentToParagraph(subElement, mergeStyleSheet, paragraph);
                 } else if (subNode instanceof TextNode) {
                     XWPFRun subRun = paragraph.createRun();
@@ -696,7 +744,7 @@ public class Html2DocConverter {
 //        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
 //        String htmlContent = IOUtils.toString(is, "gbk");
         
-        String htmlContent = IOUtils.toString(new FileInputStream("d:/html.html"), "utf-8");
+        String htmlContent = IOUtils.toString(new FileInputStream("d:/table.html"), "utf-8");
         
         // 单位: px
         Paper paper = new Paper();

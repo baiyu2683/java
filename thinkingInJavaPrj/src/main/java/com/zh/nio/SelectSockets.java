@@ -6,6 +6,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author zh2683
@@ -16,10 +20,16 @@ public class SelectSockets {
 
     private ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
 
+    private static AtomicInteger count = new AtomicInteger(0);
+
     public static void main(String[] args) throws Exception {
         if (args == null || args.length <= 0) {
             args = new String[]{String.valueOf(PORT_NUMBER)};
         }
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            System.out.println(count.getAndSet(0));
+        },0, 1, TimeUnit.SECONDS);
         new SelectSockets().go(args);
     }
 
@@ -44,6 +54,9 @@ public class SelectSockets {
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
                 if (key.isAcceptable()) {
+                    // 请求数+1
+                    count.getAndIncrement();
+
                     ServerSocketChannel server = (ServerSocketChannel) key.channel();
                     SocketChannel channel = server.accept();
                     // 注册读操作
@@ -93,9 +106,9 @@ public class SelectSockets {
             buffer.clear();
         }
 
-        if (count < 0) {
-            System.out.println(new String(result, "utf-8"));
-            System.out.println("完结...");
+        if (count <= 0) {
+//            System.out.println(new String(result, "utf-8"));
+//            System.out.println("完结...");
             socketChannel.close();
         }
     }

@@ -2,6 +2,7 @@ package com.zh.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -21,5 +22,16 @@ public class TestCollection {
         collection.remove("123");
         System.out.println(collection.toString());
         collection.clear();
+    }
+    
+    @Test
+    public void testFastFail() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0 ; i < 10 ; i++) {
+            list.add(i + "");
+        }
+        for (String s : list) {
+            list.add("12");
+        }
     }
 }
