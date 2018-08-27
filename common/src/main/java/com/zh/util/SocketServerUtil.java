@@ -65,11 +65,10 @@ public class SocketServerUtil {
                         content = Arrays.copyOf(content, contentLength + count);
                         System.arraycopy(read, 0, content, contentLength, count);
                         buffer.clear();
-                        System.out.println("count: " + count);
                         // 处理数据
                         handler.accept(new String(content));
                     }
-
+                    System.out.println("count: " + count);
                 }
                 // 处理完成需要删除，不会自动删除
                 iterator.remove();
