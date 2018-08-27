@@ -5,10 +5,7 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -261,7 +258,8 @@ public class WordTest {
 
         XWPFParagraph picParagraph = lastRowFirstCell.getParagraphs().get(0);
         XWPFRun picRun = picParagraph.createRun();
-        picRun.addPicture(new FileInputStream("D:/07docx.png"), Document.PICTURE_TYPE_PNG, "docx", Units.toEMU(200), Units.toEMU(120));
+        InputStream is = WordTest.class.getResourceAsStream("/image/07docx.png");
+        picRun.addPicture(is, Document.PICTURE_TYPE_PNG, "docx", Units.toEMU(200), Units.toEMU(120));
 
         //写出文件
         String path = WordTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
