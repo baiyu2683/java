@@ -1,11 +1,8 @@
 package com.zh.util;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
 public class SocketUtil {
@@ -21,6 +18,7 @@ public class SocketUtil {
                         for (int j = 0; j < 4; j++) {
                             os.write(String.valueOf(j).getBytes());
                         }
+                        TimeUnit.SECONDS.sleep(1);
                     }
                     os.write(Thread.currentThread().getName().getBytes());
                 } catch (Exception e) {
