@@ -21,8 +21,10 @@ public class SocketUtil {
                         for (int j = 0; j < 4; j++) {
                             os.write(String.valueOf(j).getBytes());
                         }
+                        TimeUnit.SECONDS.sleep(1);
                     }
                     os.write(Thread.currentThread().getName().getBytes());
+//                    TimeUnit.SECONDS.sleep(10);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
