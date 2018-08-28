@@ -1,11 +1,8 @@
 package com.zh.util;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
 public class SocketUtil {

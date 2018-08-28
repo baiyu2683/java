@@ -75,11 +75,11 @@ public class Html2DocConverter {
     }
     
     /** 页脚样式 */
-    public static final String STYLE_FOOTER = "footer";
+    private static final String STYLE_FOOTER = "footer";
     /** 页眉样式 */
-    public static final String STYLE_HEADER = "header";
+    private static final String STYLE_HEADER = "header";
     /** 语言，简体中文 */
-    public static final String LANG_ZH_CN = "zh-CN";
+    private static final String LANG_ZH_CN = "zh-CN";
     
     public Html2DocConverter(ReportInfo reportInfo) {
         this.reportInfo = reportInfo;
@@ -109,6 +109,7 @@ public class Html2DocConverter {
             // 解析正文
             String html = HtmlUtil.perfectHtml(reportInfo.getContent());
             Document document = Jsoup.parse(html);
+            System.out.println(document.toString());
             Elements allElements = document.getAllElements();
             for (Element element : allElements) {
                 String elementName  = element.tagName();
@@ -141,7 +142,7 @@ public class Html2DocConverter {
      * @throws IOException
      * @throws XmlException
      */
-    public void createDefaultHeader(final XWPFDocument docx, 
+    private void createDefaultHeader(final XWPFDocument docx,
             final String leftText, final String centerText, final String rightText) throws IOException, XmlException{
         CTSectPr sp = docx.getDocument().getBody().getSectPr();
         
@@ -215,7 +216,7 @@ public class Html2DocConverter {
      * @throws IOException
      *             IO异常
      */
-    public static void createDefaultFooter(final XWPFDocument docx) throws IOException, XmlException {
+    private static void createDefaultFooter(final XWPFDocument docx) throws IOException, XmlException {
         // 设置页码起始值
         CTP pageNo = CTP.Factory.newInstance();
         XWPFParagraph footer = new XWPFParagraph(pageNo, docx);
@@ -323,9 +324,7 @@ public class Html2DocConverter {
                     addContentToParagraph(ele, styleSheet, paragraph);
                 }
             } else if ("table".equals(ele.tagName())) {
-                // TODO 表格处理
                 XWPFTable table = wordDocument.createTable();
-                table.setWidth(6000);
                 parseTable(ele, table, 0);
             } else {
                 XWPFParagraph paragraph = wordDocument.createParagraph();
@@ -341,6 +340,13 @@ public class Html2DocConverter {
      */
     private void parseTable(Element tableEle, XWPFTable table, int rowCount) {
         Elements elements = tableEle.children();
+        Map<String, Object> subStyleSheet = getStyleSheet(tableEle);
+        addStyle(table, subStyleSheet);
+
+        // 宽度为0,忽略
+        if (table.getWidth() <= 0) return;
+
+        int columnSize = 0;
         for (Element ele : elements) {
             String tagName = ele.tagName();
             switch (tagName) {
@@ -351,11 +357,22 @@ public class Html2DocConverter {
                     // 标记是第一行...
                     if (rowCount > 0) {
                         table.createRow();
+                    } else {
+                        //遇到首行时，计算表格列数
+                        Elements cells = ele.children();
+                        for (Element  cell : cells) {
+                            String colspan = cell.attr("colspan");
+                            if (StringUtils.isNotBlank(colspan)) {
+                                columnSize += Integer.parseInt(colspan);
+                            } else {
+                                columnSize++;
+                            }
+                        }
                     }
                     rowCount++;
                     int size = table.getRows().size();
                     XWPFTableRow row = table.getRow(size - 1);
-                    parseRow(ele, row);
+                    parseRow(ele, columnSize, row);
                     break;
             }
         }
@@ -366,23 +383,29 @@ public class Html2DocConverter {
      * @param tr
      * @param row
      */
-    private void parseRow(Element tr, XWPFTableRow row) {
+    private void parseRow(Element tr, int columnSize, XWPFTableRow row) {
+        XWPFTable table = row.getTable();
+        // TODO 每个单元格宽度
+//        BigInteger cellWidth = BigInteger.valueOf(table.getWidth()).divide(BigInteger.valueOf(columnSize));
+        // 添加单元格
         Elements elements = tr.children();
-        for (int ci = 0 ; ci < elements.size() ; ci++) {
-            Element td = elements.get(ci);
+        for (int ci = 0 ; ci < columnSize ; ci++) {
             XWPFTableCell cell = row.getCell(ci);
             if (cell == null) {
                 cell = row.createCell();
             }
-            cell.setText(td.text());
-            CTTc cttc = cell.getCTTc();
-            CTTcPr ctPr = cttc.addNewTcPr();
-            CTTblWidth tcw = ctPr.getTcW();
-            if (tcw == null) {
-                tcw = ctPr.addNewTcW();
+            // 可能出现columnSize大于td个数的情况
+            if (ci < elements.size()) {
+                Element td = elements.get(ci);
+                cell.setText(td.text());
+                Map<String, Object> tdStyle = getStyleSheet(td);
+                addStyle(cell, tdStyle);
+                // 在单元格中加入内容
+                addContentToParagraph(td, tdStyle, cell.getParagraphs().get(0));
+            } else {
+                // TODO 默认样式
+                addStyle(cell, null);
             }
-            tcw.setW(BigInteger.valueOf(4000));
-            tcw.setType(STTblWidth.DXA);
         }
     }
 
@@ -401,6 +424,9 @@ public class Html2DocConverter {
      * @param table
      */
     private void setTableProp(XWPFTable table) {
+
+        XWPFDocument document = table.getBody().getXWPFDocument();
+
         CTTbl ttbl = table.getCTTbl();
         CTTblPr tblPr = ttbl.getTblPr() == null ? ttbl.addNewTblPr() : ttbl.getTblPr();
         CTTblWidth tblWidth = tblPr.isSetTblW() ? tblPr.getTblW() : tblPr.addNewTblW();
@@ -424,19 +450,21 @@ public class Html2DocConverter {
             br.addBreak();
         } if ("img".equals(element.tagName())) {
             XWPFRun imgRun = paragraph.createRun();
-            addStyle(imgRun, styleSheet);
+            Map<String, Object> subElementStyleSheet = getStyleSheet(element);
+            Map<String, Object> mergeStyleSheet = mergeMap(styleSheet, subElementStyleSheet);
+            addStyle(imgRun, mergeStyleSheet);
             int width = 200;
             int height = 200;
-            if (styleSheet.containsKey("height")) {
-                String heightStr = String.valueOf(styleSheet.get("height"));
+            if (mergeStyleSheet.containsKey("height")) {
+                String heightStr = String.valueOf(mergeStyleSheet.get("height"));
                 if (!"auto".equals(heightStr)) {
                     height = UnitUtils.pxString2Number(heightStr);
                 }
             }
-            if (styleSheet.containsKey("width")) {
-                String widthStr = String.valueOf(styleSheet.get("width"));
+            if (mergeStyleSheet.containsKey("width")) {
+                String widthStr = String.valueOf(mergeStyleSheet.get("width"));
                 if (!"auto".equals(widthStr)) {
-                    width = UnitUtils.pxString2Number(String.valueOf(styleSheet.get("width")));
+                    width = UnitUtils.pxString2Number(String.valueOf(mergeStyleSheet.get("width")));
                 }
             }
             String src = element.attr("src");
@@ -449,6 +477,15 @@ public class Html2DocConverter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if ("hr".equals(element.tagName())){
+            // TODO 只能在段落上下，中间实现不了。。
+            CTP ctp = paragraph.getCTP();
+            CTPPr ctpPr = ctp.addNewPPr();
+            CTPBdr ctpBdr = ctpPr.addNewPBdr();
+            CTBorder ctBorder = ctpBdr.addNewTop();
+            ctBorder.setSz(BigInteger.valueOf(4));
+            ctBorder.setVal(STBorder.BASIC_THIN_LINES);
+            ctBorder.setColor("9A9A9A");
         } else {
             List<Node> subNodes = element.childNodes();
             for (Node subNode : subNodes) {
@@ -473,7 +510,7 @@ public class Html2DocConverter {
      */
     private void addStyle(ISDTContents sdt, Map<String, Object> styleSheet) {
         if (styleSheet != null && styleSheet.size() > 0) {
-            if (sdt instanceof XWPFParagraph) {
+            if (sdt instanceof XWPFParagraph) { // 段落
                 XWPFParagraph paragraph = (XWPFParagraph) sdt;
                 // 对齐
                 if (styleSheet.containsKey("text-align") ||
@@ -557,7 +594,7 @@ public class Html2DocConverter {
                     CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
                     shd.setFill(ColorUtil.color2String(color).replace("#", ""));
                 }
-            } else if (sdt instanceof XWPFRun) {
+            } else if (sdt instanceof XWPFRun) { // 内容
                 XWPFRun run = (XWPFRun) sdt;
                 if (styleSheet.containsKey("font-family")) {
                     String fontFamily = (String)styleSheet.get("font-family");
@@ -617,6 +654,60 @@ public class Html2DocConverter {
                     CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
                     shd.setFill(ColorUtil.color2String(color).replace("#", ""));
                 }
+            } else if (sdt instanceof XWPFTable) { // 表格
+                XWPFTable table = (XWPFTable) sdt;
+
+                if (styleSheet.containsKey("width")) {
+                    Double width = Double.valueOf(String.valueOf(styleSheet.get("width")));
+                    table.setWidth(double2BigInteger(UnitUtils.px2Twip(width)).intValue());
+                }
+            }
+        }
+    }
+
+    /**
+     * 给组件增加样式
+     * @param body
+     * @param styleSheet
+     */
+    private void addStyle(IBody body, Map<String, Object> styleSheet) {
+        if (styleSheet != null && styleSheet.size() > 0) {
+            if (body instanceof XWPFTableCell) {
+                XWPFTableCell cell = (XWPFTableCell) body;
+                CTTc cttc = cell.getCTTc();
+                CTTcPr ctPr = cttc.addNewTcPr();
+
+                // 设置单元格宽度
+                CTTblWidth tcw = ctPr.getTcW();
+                if (tcw == null) {
+                    tcw = ctPr.addNewTcW();
+                }
+                // 设置宽度,必须有..
+                String width = String.valueOf(styleSheet.get("width"));
+                tcw.setW(double2BigInteger(UnitUtils.px2Twip(Double.valueOf(width))));
+                tcw.setType(STTblWidth.DXA);
+
+                // 设置边框
+                CTTcBorders borders = ctPr.addNewTcBorders();
+                CTBorder leftBorder = borders.addNewLeft();
+                leftBorder.setColor("000000");
+                leftBorder.setSz(BigInteger.valueOf(1));
+                leftBorder.setVal(STBorder.BASIC_THIN_LINES);
+
+                CTBorder topBorder = borders.addNewLeft();
+                topBorder.setColor("000000");
+                topBorder.setSz(BigInteger.valueOf(1));
+                topBorder.setVal(STBorder.BASIC_THIN_LINES);
+
+                CTBorder rightBorder = borders.addNewLeft();
+                rightBorder.setColor("000000");
+                rightBorder.setSz(BigInteger.valueOf(1));
+                rightBorder.setVal(STBorder.BASIC_THIN_LINES);
+
+                CTBorder bottomBorder = borders.addNewLeft();
+                bottomBorder.setColor("000000");
+                bottomBorder.setSz(BigInteger.valueOf(1));
+                bottomBorder.setVal(STBorder.BASIC_THIN_LINES);
             }
         }
     }
@@ -635,6 +726,14 @@ public class Html2DocConverter {
         String align = ele.attr("align");
         if (StringUtils.isNotBlank(align)) {
             styleSheet.put("text-align", align);
+        }
+        String valign = ele.attr("valign");
+        if (StringUtils.isNotBlank(valign)) {
+            styleSheet.put("valign", align);
+        }
+        String width = ele.attr("width");
+        if (StringUtils.isNotBlank(width)) {
+            styleSheet.put("width", width);
         }
         if ("font".equals(ele.tagName())) {
             Attributes attrs = ele.attributes();
@@ -744,7 +843,7 @@ public class Html2DocConverter {
 //        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
 //        String htmlContent = IOUtils.toString(is, "gbk");
         
-        String htmlContent = IOUtils.toString(new FileInputStream("d:/table.html"), "utf-8");
+        String htmlContent = IOUtils.toString(new FileInputStream("d:/RGB颜色对照表.htm"), "utf-8");
         
         // 单位: px
         Paper paper = new Paper();

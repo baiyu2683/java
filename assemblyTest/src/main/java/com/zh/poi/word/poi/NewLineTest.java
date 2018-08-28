@@ -8,9 +8,7 @@ import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTabStop;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTabJc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,7 +45,16 @@ public class NewLineTest {
         run.setText("不缩进");
         run = paragraph.createRun();
         run.setText("123");
-        
+
+        XWPFParagraph hrParagraph = document.createParagraph();
+        CTP ctp = hrParagraph.getCTP();
+        CTPPr ctpPr = ctp.addNewPPr();
+        CTPBdr ctpBdr = ctpPr.addNewPBdr();
+        CTBorder ctBorder = ctpBdr.addNewBetween();
+        ctBorder.setSz(BigInteger.valueOf(4));
+        ctBorder.setVal(STBorder.BASIC_THIN_LINES);
+        ctBorder.setColor("9A9A9A");
+
         XWPFParagraph paragraph2 = document.createParagraph();
         XWPFRun run2 = paragraph2.createRun();
         paragraph2.setSpacingBefore(0);

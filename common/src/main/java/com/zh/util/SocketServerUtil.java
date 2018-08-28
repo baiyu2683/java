@@ -7,9 +7,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -17,13 +15,15 @@ import java.util.function.Consumer;
  * 当OP_READ时间触发，int readByteNum = channel.read(buffer)会返回读到的字节数
  * 1. 当readByteNum > 0, 表示从channel中读取到了readByteNum个字节到buffer中
  * 2. 当readByteNum = 0, 表示channel中已经没有数据可以读取了，这个时候buffer的position==limit
- * 3. 当readByteNum==-1，表示远端channel正常关闭了。这个时候我们就需要进行钙通道的关闭和注销操作了
+ * 3. 当readByteNum==-1，表示远端channel正常关闭了。这个时候我们就需要进行该通道的关闭和注销操作了
  */
 public class SocketServerUtil {
 
     private static Integer DEFAULT_PORT = 1234;
 
     private static AtomicInteger counter = new AtomicInteger(0);
+
+    private static Map<Object, Integer> datasMap = new HashMap<>();
 
     public static void start(int port, Consumer<Integer> callback, Consumer<String> handler) throws IOException {
         Selector selector = null;
@@ -66,7 +66,7 @@ public class SocketServerUtil {
                             SocketChannel sc = (SocketChannel) selectionKey.channel();
                             ByteBuffer buffer = ByteBuffer.allocate(2048);
                             buffer.clear();
-                            int count = 0;
+                            int count;
                             byte[] content = new byte[0];
                             while ((count = sc.read(buffer)) > 0) {
                                 System.out.println("counter: " + counter.getAndSet(0));
@@ -88,13 +88,13 @@ public class SocketServerUtil {
                                 return;
                             }
 
-                            System.out.println("读完了.." + count);
-                            System.out.println("结束");
                             handler.accept(new String(content));
 
                             //继续监听读取事件
                             selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_READ);
                             selectionKey.selector().wakeup();
+                            System.out.println("key: " + datasMap.get(selectionKey));
+                            datasMap.put(selectionKey, 1);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
