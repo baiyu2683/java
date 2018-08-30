@@ -9,35 +9,12 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
-	<context:component-scan base-package="com.zh" />
+	<!-- 扫描除controller之外的bean -->
+	<context:component-scan base-package="com.zh">
+	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan> 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
 	<context:property-placeholder location="classpath:db.properties"/>
 	
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-		<property name="driverClass" value="${jdbc.driver}"/>
-		<property name="jdbcUrl" value="${jdbc.url}"/>
-		<property name="user" value="${jdbc.user}"/>
-		<property name="password" value="${jdbc.password}"/>
-		<property name="acquireIncrement" value="10"/>
-		<property name="initialPoolSize" value="20"/>
-		<property name="maxPoolSize" value="40"/>
-	</bean>
-	
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="typeAliasesPackage" value="com.zh.domain"/>
-		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
-		<property name="mapperLocations" value="classpath:com/zh/dao/*Mapper.xml"></property>
-	</bean>
-	
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-		<property name="basePackage" value="com.zh.dao"/>
-	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"/>
-	</bean>
-	<tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

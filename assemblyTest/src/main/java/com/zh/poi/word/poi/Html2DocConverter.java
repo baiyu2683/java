@@ -60,7 +60,7 @@ public class Html2DocConverter {
      */
     private static final Properties colorName = new Properties();
     static {
-        fontTagSizeMap.put("1", "10");
+        fontTagSizeMap.put("1", "12");
         fontTagSizeMap.put("2", "14");
         fontTagSizeMap.put("3", "16");
         fontTagSizeMap.put("4", "18");
