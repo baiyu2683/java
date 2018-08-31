@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * 线程异常捕获，线程池异常捕获
  * Created by zh on 2017-12-22.
  */
 public class TestExceptionCaught {
@@ -24,10 +25,10 @@ public class TestExceptionCaught {
                 }
             }
         };
-//        scheduledThreadPoolExecutor.submit(() -> {
-//            System.out.println(1);
-//            throw new RuntimeException("123");
-//        });
+        scheduledThreadPoolExecutor.submit(() -> {
+            System.out.println(1);
+            throw new RuntimeException("123");
+        });
         new Thread(() -> {
             System.out.println("2");
             throw new RuntimeException("456");

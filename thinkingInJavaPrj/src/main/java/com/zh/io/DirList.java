@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
 
 /**
  * File类
+ * 
+ * 接收正则表达式参数进行匹配
+ * 
  * Created by zh on 2017-02-26.
  */
 public class DirList {
@@ -34,8 +37,8 @@ public class DirList {
         else {
 //            list = path.list(new DirFilter(args[0]));
 //            list = path.list(fileter(args[0]));
+            Pattern pattern = Pattern.compile(args[0]);
             list = path.list((dir, name) -> {
-                Pattern pattern = Pattern.compile(args[0]);
                 return pattern.matcher(name).matches();
             });
         }
