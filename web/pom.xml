@@ -13,7 +13,6 @@
     <packaging>war</packaging>
 
     <name>web Maven Webapp</name>
-    <!-- FIXME change it to the project's website -->
     <url>http://www.zh2683.xyz</url>
 
     <properties>
@@ -111,12 +110,12 @@
             <artifactId>mybatis</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <!--c3p0 连接池 -->
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-        </dependency>
+        <!--数据库连接池依赖-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.9</version>
+		</dependency>
     </dependencies>
 
     <build>

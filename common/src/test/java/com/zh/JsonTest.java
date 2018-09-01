@@ -1,9 +1,5 @@
 package com.zh;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 public class JsonTest {
 
     private static class Dimension {
