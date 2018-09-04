@@ -654,6 +654,18 @@ public class Html2DocConverter {
                     CTShd shd = rpr.isSetShd() ? rpr.getShd() : rpr.addNewShd();
                     shd.setFill(ColorUtil.color2String(color).replace("#", ""));
                 }
+                if (styleSheet.containsKey("sub")) {
+                    CTR ctr = run.getCTR();
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();;
+                    CTVerticalAlignRun vertAlign = rpr.addNewVertAlign();
+                    vertAlign.setVal(STVerticalAlignRun.SUBSCRIPT);
+                }
+                if (styleSheet.containsKey("sup")) {
+                    CTR ctr = run.getCTR();
+                    CTRPr rpr = ctr.isSetRPr() ? ctr.getRPr() : ctr.addNewRPr();;
+                    CTVerticalAlignRun vertAlign = rpr.addNewVertAlign();
+                    vertAlign.setVal(STVerticalAlignRun.SUPERSCRIPT);
+                }
             } else if (sdt instanceof XWPFTable) { // 表格
                 XWPFTable table = (XWPFTable) sdt;
 
@@ -780,6 +792,12 @@ public class Html2DocConverter {
         if ("strike".equals(ele.tagName())) {
             styleSheet.put("font-strike", 1);
         }
+        if ("sub".equals(ele.tagName())) {
+            styleSheet.put("sub", 1);
+        }
+        if ("sup".equals(ele.tagName())) {
+            styleSheet.put("sup", 1);
+        }
         return styleSheet;
     }
 
@@ -840,10 +858,10 @@ public class Html2DocConverter {
     
     public static void main(String[] args) throws Exception {
         
-//        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
-//        String htmlContent = IOUtils.toString(is, "gbk");
+        InputStream is = Html2DocConverter.class.getResourceAsStream("/html/html.html");
+        String htmlContent = IOUtils.toString(is, "gbk");
         
-        String htmlContent = IOUtils.toString(new FileInputStream("d:/RGB颜色对照表.htm"), "utf-8");
+//        String htmlContent = IOUtils.toString(new FileInputStream("d:/RGB颜色对照表.htm"), "utf-8");
         
         // 单位: px
         Paper paper = new Paper();
