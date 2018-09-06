@@ -12,6 +12,6 @@
 		<package name="com.zh.domain"/>
 	</typeAliases>
 	<mappers>
-		<mapper resource="com/zh/mappers/UserMapper.xml"/>
+		<mapper resource=""></mapper>
 	</mappers>
 </configuration>
