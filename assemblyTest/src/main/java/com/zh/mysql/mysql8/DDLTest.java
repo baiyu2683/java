@@ -1,6 +1,7 @@
 package com.zh.mysql.mysql8;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -90,23 +91,35 @@ public class DDLTest {
         String useDataBaseSql = "use test;";
         String describeTableSql = "describe test;";
         try {
-            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
-            boolean result = pstat.execute();
-            Assert.assertEquals(false, result);
-            pstat = conn.prepareStatement(describeTableSql);
-            ResultSet rs = pstat.executeQuery();
-            while(rs.next()) {
-                System.out.println("field: " + rs.getString(1));
-                System.out.println("type: " + rs.getString("type"));
-                System.out.println("null: " + rs.getString("Null"));
-                System.out.println("key: " + rs.getString("Key"));
-                System.out.println("default: " + rs.getString("Default"));
-                System.out.println("extra: " + rs.getString("Extra"));
-                System.out.println("===============================");
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet rst = dmd.getTables("%_%", "test", null, new String[] { "TABLE", "VIEW",
+            "SYSTEM TABLE" });
+            while (rst.next()) {
+                String tableName = rst.getString("TABLE_NAME");
+                System.out.println(tableName);
             }
         } catch (SQLException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+//        try {
+//            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
+//            boolean result = pstat.execute();
+//            Assert.assertEquals(false, result);
+//            pstat = conn.prepareStatement(describeTableSql);
+//            ResultSet rs = pstat.executeQuery();
+//            while(rs.next()) {
+//                System.out.println("field: " + rs.getString(1));
+//                System.out.println("type: " + rs.getString("type"));
+//                System.out.println("null: " + rs.getString("Null"));
+//                System.out.println("key: " + rs.getString("Key"));
+//                System.out.println("default: " + rs.getString("Default"));
+//                System.out.println("extra: " + rs.getString("Extra"));
+//                System.out.println("===============================");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
     
     /**
