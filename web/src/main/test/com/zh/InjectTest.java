@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,7 +26,7 @@ public class InjectTest {
 
     @Autowired
     @Qualifier("messageConverters")
-    private List list;
+    private List<String> list;
 
     @Test
     public void test() {
