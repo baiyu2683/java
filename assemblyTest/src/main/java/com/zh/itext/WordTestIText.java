@@ -2,6 +2,7 @@ package com.zh.itext;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.table.RtfBorder;
 import com.lowagie.text.rtf.table.RtfBorderGroup;
@@ -20,8 +21,6 @@ import java.net.URL;
  * Date: 2018-07-10 <br/>
  */
 public class WordTestIText {
-
-    private static String outPutWordPath = "d:/itext.doc";
 
     public static void main(String[] args) throws IOException, DocumentException {
         Document document = new Document();
@@ -43,7 +42,6 @@ public class WordTestIText {
         URL url = WordTestIText.class.getClassLoader().getResource("");
         FontFactory.registerDirectory(url.getPath());
         Font font = FontFactory.getFont("微软雅黑");
-//        Font font = new Font(bfChinese, 9);
         paragraph.setFont(font);
         paragraph.setSpacingBefore(0);
         paragraph.setSpacingAfter(0);
@@ -59,8 +57,9 @@ public class WordTestIText {
 
         document.add(table);
 
-//        Rectangle rectangle = new Rectangle(1000, 1000);
-//        document.setPageSize(rectangle);
+        Rectangle rectangle = new Rectangle(1000, 1000);
+        
+        document.setPageSize(rectangle);
         document.close();
     }
 }

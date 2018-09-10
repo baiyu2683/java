@@ -1,20 +1,10 @@
 package com.zh.itext;
 
 import com.lowagie.text.*;
-import com.lowagie.text.Font;
-import com.lowagie.text.List;
-import com.lowagie.text.html.simpleparser.HTMLWorker;
-import com.lowagie.text.html.simpleparser.StyleSheet;
 import com.lowagie.text.rtf.RtfWriter2;
-import com.lowagie.text.rtf.style.RtfFont;
-import com.lowagie.text.rtf.table.RtfCell;
-import com.lowagie.text.rtf.table.RtfRow;
 
-import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 
 public class WordGenerator {
 

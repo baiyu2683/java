@@ -21,6 +21,7 @@ import org.junit.Test;
 public class DMLTest {
     // &serverTimezone=Asia/Shanghai
     // allowPublicKeyRetrieval=true
+    // nullCatalogMeansCurrent=true&
     private String jdbcUrl = "jdbc:mysql://localhost:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
     private Connection conn;
     

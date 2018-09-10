@@ -13,6 +13,7 @@
 
     <mvc:default-servlet-handler/>
     <mvc:resources mapping="/style/*" location="style"/>
+    <mvc:resources mapping="/js/*" location="js"/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -33,8 +34,9 @@
     </bean>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView"/>
-        <property name="prefix" value="WEB-INF/page/"/>
+    	<!-- 最前面的/必须要加，否则会从controller请求路径开始拼接url，url会多几层 -->
+    	<!-- 比如当前/test/addCookie, 不加/,则jsp路径为/test/WEB-INF/page/xx.jsp, 多了/test这一层 -->
+        <property name="prefix" value="/WEB-INF/page/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 

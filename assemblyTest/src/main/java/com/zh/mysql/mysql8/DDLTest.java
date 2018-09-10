@@ -25,9 +25,10 @@ import org.junit.Test;
  * 2018年9月3日
  */
 public class DDLTest {
-    // &serverTimezone=Asia/Shanghai
+    // serverTimezone=Asia/Shanghai
     // allowPublicKeyRetrieval=true
-    private String jdbcUrl = "jdbc:mysql://localhost:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
+    // nullCatalogMeansCurrent=true
+    private String jdbcUrl = "jdbc:mysql://localhost:3306/test?nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
     private Connection conn;
     
     @BeforeClass
@@ -91,35 +92,66 @@ public class DDLTest {
         String useDataBaseSql = "use test;";
         String describeTableSql = "describe test;";
         try {
+            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
+            boolean result = pstat.execute();
+            Assert.assertEquals(false, result);
+            pstat = conn.prepareStatement(describeTableSql);
+            ResultSet rs = pstat.executeQuery();
+            while(rs.next()) {
+                System.out.println("field: " + rs.getString(1));
+                System.out.println("type: " + rs.getString("type"));
+                System.out.println("null: " + rs.getString("Null"));
+                System.out.println("key: " + rs.getString("Key"));
+                System.out.println("default: " + rs.getString("Default"));
+                System.out.println("extra: " + rs.getString("Extra"));
+                System.out.println("===============================");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 获取所有表
+     */
+    @Test
+    public void testGetAllTables() {
+        String useDataBaseSql = "use test;";
+        try {
+            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
+            boolean result = pstat.execute();
+            System.out.println(result);
             DatabaseMetaData dmd = conn.getMetaData();
-            ResultSet rst = dmd.getTables("%_%", "test", null, new String[] { "TABLE", "VIEW",
-            "SYSTEM TABLE" });
+            ResultSet rst = dmd.getTables(null, "test", null, 
+                    new String[] {"TABLE", "VIEW", "SYSTEM TABLE"});
             while (rst.next()) {
                 String tableName = rst.getString("TABLE_NAME");
                 System.out.println(tableName);
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-//        try {
-//            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
-//            boolean result = pstat.execute();
-//            Assert.assertEquals(false, result);
-//            pstat = conn.prepareStatement(describeTableSql);
-//            ResultSet rs = pstat.executeQuery();
-//            while(rs.next()) {
-//                System.out.println("field: " + rs.getString(1));
-//                System.out.println("type: " + rs.getString("type"));
-//                System.out.println("null: " + rs.getString("Null"));
-//                System.out.println("key: " + rs.getString("Key"));
-//                System.out.println("default: " + rs.getString("Default"));
-//                System.out.println("extra: " + rs.getString("Extra"));
-//                System.out.println("===============================");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+    }
+    
+    /**
+     * 获取所有存储过程
+     */
+    @Test
+    public void testGetAllProc() {
+        String useDataBaseSql = "use test;";
+        try {
+            PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
+            boolean result = pstat.execute();
+            System.out.println(result);
+            DatabaseMetaData dmd = conn.getMetaData();
+            ResultSet rst = dmd.getProcedures(null, "test", null);
+            while (rst.next()) {
+                String tableName = rst.getString("PROCEDURE_NAME");
+                System.out.println(tableName);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     /**

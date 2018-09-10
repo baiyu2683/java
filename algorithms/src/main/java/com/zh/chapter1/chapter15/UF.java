@@ -14,14 +14,16 @@ public class UF {
     }
 
     public int find(int p) {
+        return p;
 
     }
 
     public boolean connected(int p, int q) {
+        return false;
 
     }
 
     public int count() {
-
+        return 0;
     }
 }
