@@ -20,8 +20,8 @@ public class CookieControllerTest {
     @RequestMapping("/addCookie")
     public String addCookie(HttpServletResponse response) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0 ; i < 2 ; i++) {
-            sb.append("zhangheng").append(i).append(";");
+        for (int i = 0 ; i < 100 ; i++) {
+            sb.append("zhangheng").append(i).append("...");
         }
         Cookie cookie = new Cookie("name", sb.toString());
         cookie.setHttpOnly(true);
