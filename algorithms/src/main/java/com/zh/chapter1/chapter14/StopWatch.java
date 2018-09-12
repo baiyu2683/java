@@ -10,7 +10,11 @@ public class StopWatch {
     private long start = System.currentTimeMillis();
 
     public double elapseTime() {
-        return (System.currentTimeMillis() - start) / 1000;
+        return elapseMillTime() / 1000;
+    }
+    
+    public double elapseMillTime() {
+    	return System.currentTimeMillis() - start;
     }
 
     public static void main(String[] args) throws InterruptedException {

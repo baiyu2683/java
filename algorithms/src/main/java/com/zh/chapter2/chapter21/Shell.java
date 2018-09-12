@@ -3,25 +3,26 @@ package com.zh.chapter2.chapter21;
 import utils.IntGenerator;
 
 /**
- * 插入排序
- * 平均情况(所有元素随机排列): N^2/4次比较，N^2/4次交换
- * 最坏(逆序): N^2/2次比较，N^2/2次交换
- * 最好(有序): N次比较，0次交换 
+ * 希尔排序
  * @author zh
- * 2018年9月11日
+ * 2018年9月12日
  */
-public class Insertion {
+public class Shell {
 
 	public static void sort(Comparable[] a) {
-		// 升序
 		int N = a.length;
-		for (int i = 1 ; i < N ; i++) {
-			// 将a[i] 插入a[i-1]、a[i-2]... 之中
-			for (int j = i ; j > 0 && less(a[j], a[j - 1]) ; j--) {
-//				if (less(a[j], a[j - 1]))
-					exch(a, j, j-1);
-//				else break;
+		int h = 1;
+		// h为a长度的三分之一
+		while (h < N / 3)
+			h = 3 * h + 1; // 1, 4, 13, 40, 121...
+		while (h >= 1) {
+			// 步长为h的插入排序
+			for (int i = h ; i < N ; i++) {
+				for (int j = i ; j >= h && less(a[j], a[j-h]) ; j -= h) {
+					exch(a, j, j-h);
+				}
 			}
+			h /= 3;
 		}
 	}
 	
