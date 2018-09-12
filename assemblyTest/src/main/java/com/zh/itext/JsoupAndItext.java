@@ -8,7 +8,6 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.style.RtfFont;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,9 +29,6 @@ public class JsoupAndItext {
     private static final String htmlPath = rootPath + "/html";
 
     private static final String fontPath = rootPath + "/font";
-
-    // 换行
-    private static final Chunk new_line = new Chunk("\n");
 
     public static void main(String[] args) throws IOException, com.lowagie.text.DocumentException {
 

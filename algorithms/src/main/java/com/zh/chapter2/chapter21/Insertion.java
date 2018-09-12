@@ -1,4 +1,4 @@
-package com.zh.chapter2;
+package com.zh.chapter2.chapter21;
 
 import utils.IntGenerator;
 
@@ -12,7 +12,7 @@ import utils.IntGenerator;
  */
 public class Insertion {
 
-	public static void sort(Comparable[] a) {
+	public static <T> void sort(Comparable<T>[] a) {
 		// 升序
 		int N = a.length;
 		for (int i = 1 ; i < N ; i++) {

@@ -20,8 +20,8 @@ public class Dom4jAndItext {
 
     private static final String htmlPath = rootPath + "/html";
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException, com.lowagie.text.DocumentException, DocumentException {
-
         // 读取html文件
         File htmlFile = new File(htmlPath + "/html.html");
         if (!htmlFile.exists()) {

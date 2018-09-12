@@ -1,4 +1,4 @@
-package com.zh.chapter2;
+package com.zh.chapter2.chapter21;
 
 import utils.IntGenerator;
 

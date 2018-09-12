@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class HtmlToWord {
 
+    @SuppressWarnings("rawtypes")
     public static void main(String[] args) throws DocumentException, IOException {
         OutputStream out = new FileOutputStream("d://text.doc");
         Document document = new Document(PageSize.A4);
