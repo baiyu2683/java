@@ -2,6 +2,7 @@ package com.zh.chapter2;
 
 import com.zh.chapter1.chapter14.StopWatch;
 import com.zh.chapter2.chapter21.Insertion;
+import com.zh.chapter2.chapter21.InsertionAdvance;
 import com.zh.chapter2.chapter21.Selection;
 import com.zh.chapter2.chapter21.Shell;
 
@@ -17,6 +18,7 @@ public class SortCompare {
 	public static double time(String alg, Double[] a) {
 		StopWatch sw = new StopWatch();
 		if (alg.equals("Insertion")) Insertion.sort(a);
+		if (alg.equals("InsertionAdvance")) InsertionAdvance.sort(a);
 		if (alg.equals("Selection")) Selection.sort(a);
 		if (alg.equals("Shell")) Shell.sort(a);
 		// ...
@@ -43,9 +45,11 @@ public class SortCompare {
 		int T = 1;
 		double t1 = SortCompare.timeRandomInput("Insertion", N, T);
 		System.out.println("insertion: " + t1);
-		double t2 = SortCompare.timeRandomInput("Selection", N, T);
-		System.out.println("selection: " + t2);
-		double t3 = SortCompare.timeRandomInput("Shell", N, T);
-		System.out.println("Shell: " + t3);
+		double t4 = SortCompare.timeRandomInput("InsertionAdvance", N, T);
+		System.out.println("InsertionAdvance: " + t4);
+//		double t2 = SortCompare.timeRandomInput("Selection", N, T);
+//		System.out.println("Selection: " + t2);
+//		double t3 = SortCompare.timeRandomInput("Shell", N, T);
+//		System.out.println("Shell: " + t3);
 	}
 }
