@@ -41,7 +41,7 @@ public class SortCompare {
 	
 	// 插入排序比选择排序快一倍
 	public static void main(String[] args) {
-		int N = Double.valueOf(Math.pow(2, 15)).intValue();
+		int N = Double.valueOf(Math.pow(2, 17)).intValue();
 		int T = 1;
 		double t1 = SortCompare.timeRandomInput("Insertion", N, T);
 		System.out.println("insertion: " + t1);
