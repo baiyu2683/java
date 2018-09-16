@@ -8,6 +8,7 @@ import com.zh.chapter2.chapter21.InsertionSentry;
 import com.zh.chapter2.chapter21.Selection;
 import com.zh.chapter2.chapter21.Shell;
 import com.zh.chapter2.chapter21.example.Exercise2134;
+import com.zh.chapter2.chapter22.Merge;
 
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -24,6 +25,7 @@ public class SortCompare {
 		if (alg.equals("InsertionAdvance")) InsertionAdvance.sort(a);
 		if (alg.equals("Selection")) Selection.sort(a);
 		if (alg.equals("Shell")) Shell.sort(a);
+		if (alg.equals("Merge")) Merge.sort(a);
 		// ...
 		return sw.elapseMillTime();
 	}
@@ -68,13 +70,15 @@ public class SortCompare {
 		int T = 1;
 		double t1 = SortCompare.timeRandomInput("Insertion", N, T);
 		System.out.println("insertion: " + t1);
-		double t5 = SortCompare.timeRandomIntInput("InsertionInt", N, T);
-		System.out.println("InsertionInt: " + t5);
-//		double t4 = SortCompare.timeRandomInput("InsertionAdvance", N, T);
-//		System.out.println("InsertionAdvance: " + t4);
-//		double t2 = SortCompare.timeRandomInput("Selection", N, T);
-//		System.out.println("Selection: " + t2);
-//		double t3 = SortCompare.timeRandomInput("Shell", N, T);
-//		System.out.println("Shell: " + t3);
+//		double t5 = SortCompare.timeRandomIntInput("InsertionInt", N, T);
+//		System.out.println("InsertionInt: " + t5);
+		double t4 = SortCompare.timeRandomInput("InsertionAdvance", N, T);
+		System.out.println("InsertionAdvance: " + t4);
+		double t2 = SortCompare.timeRandomInput("Selection", N, T);
+		System.out.println("Selection: " + t2);
+		double t3 = SortCompare.timeRandomInput("Shell", N, T);
+		System.out.println("Shell: " + t3);
+		double t6 = SortCompare.timeRandomInput("Merge", N, T);
+		System.out.println("Merge: " + t6);
 	}
 }
