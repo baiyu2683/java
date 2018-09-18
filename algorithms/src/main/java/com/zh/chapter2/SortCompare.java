@@ -9,6 +9,7 @@ import com.zh.chapter2.chapter21.Selection;
 import com.zh.chapter2.chapter21.Shell;
 import com.zh.chapter2.chapter21.example.Exercise2134;
 import com.zh.chapter2.chapter22.Merge;
+import com.zh.chapter2.chapter23.Quick;
 
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -26,6 +27,7 @@ public class SortCompare {
 		if (alg.equals("Selection")) Selection.sort(a);
 		if (alg.equals("Shell")) Shell.sort(a);
 		if (alg.equals("Merge")) Merge.sort(a);
+		if (alg.equals("Quick")) Quick.sort(a);
 		// ...
 		return sw.elapseMillTime();
 	}
@@ -80,5 +82,7 @@ public class SortCompare {
 		System.out.println("Shell: " + t3);
 		double t6 = SortCompare.timeRandomInput("Merge", N, T);
 		System.out.println("Merge: " + t6);
+		double t7 = SortCompare.timeRandomInput("Quick", N, T);
+		System.out.println("Quick: " + t7);
 	}
 }

@@ -26,7 +26,7 @@ public class ForwardAndRedirectTest {
 	
 	@RequestMapping(path="/redirectAddress", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public JSONObject redirectAddress(@ModelAttribute("name") String name,
+	public JSONObject redirectAddress(@ModelAttribute(value="name") String name,
 			@ModelAttribute("success") Boolean success) {
 		JSONObject result = new JSONObject();
 		result.put("name", name);
@@ -40,14 +40,14 @@ public class ForwardAndRedirectTest {
 	 * @return
 	 */
 	@RequestMapping("/redirect")
-	public ModelAndView redirect(RedirectAttributes ra) {
+	public String redirect(RedirectAttributes ra) {
 		ra.addFlashAttribute("name", "redirectName");
 		// attribute会在url上带上参数: path?success=true
 //		ra.addAttribute("success", true);
 		ra.addFlashAttribute("success", true);
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:redirectAddress");
-		return mv;
+		return "redirect:redirectAddress";
 	}
 	
 	@RequestMapping(path="/forwardAddress", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)

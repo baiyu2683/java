@@ -22,5 +22,4 @@ public class SpecialtyDO implements Serializable {
 	private String name;
 	/**显示名称*/
 	private String dispName;
-	// 
 }
