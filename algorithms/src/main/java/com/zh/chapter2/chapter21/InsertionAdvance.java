@@ -16,11 +16,15 @@ import utils.IntGenerator;
  * 2018年9月13日
  */
 public class InsertionAdvance {
+
     public static void sort(Comparable[] a) {
-        int N = a.length;
-        for (int i = 1 ; i < N ; i++) {
+        sort(a, 0, a.length - 1);
+    }
+
+    public static void sort(Comparable[] a, int lo, int hi) {
+        for (int i = lo + 1 ; i <= hi ; i++) {
             Comparable temp = a[i];
-            for (int j = i - 1 ; j >= 0 ; j--) {
+            for (int j = i - 1 ; j >= lo ; j--) {
                 if (less(temp, a[j])) {
                     a[j+1] = a[j];
                 } else {

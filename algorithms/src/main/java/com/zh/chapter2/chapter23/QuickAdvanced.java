@@ -1,16 +1,20 @@
 package com.zh.chapter2.chapter23;
 
+import com.zh.chapter2.chapter21.InsertionAdvance;
+
 /**
- * 快速排序
- * 平均需要:2NlnN次比较，2NlnN * 1/6的交换(交换很少，比归并排序快是因为交换次数少)
- * 最坏: N^2/2次比较
+ * 快速排序改进
  *
- * 需要注意数组切分，如果切分不平衡，会导致最坏情况, 将数组打乱会降低此种概率
+ * 基于下面两点:
+ * 1. 对于小数组，快速排序比插入排序慢
+ * 2. 因为递归，快速排序的sort()方法在小数组中也会调用自己
  *
  * @author zh
  * 2018年9月18日
  */
-public class Quick {
+public class QuickAdvanced {
+
+	private static Integer THREHOLD_SIZE = 8;
 
 	public static void sort(Comparable[] a) {
 		sort(a, 0, a.length - 1);
@@ -18,6 +22,10 @@ public class Quick {
 	
 	private static void sort(Comparable[] a, int lo, int hi) {
 		if (hi <= lo) return;
+		if (hi <= lo + THREHOLD_SIZE - 1) {
+			InsertionAdvance.sort(a, lo, hi);
+			return;
+		}
 		int j = partition(a, lo, hi);
 		sort(a, lo, j - 1);
 		sort(a, j + 1, hi);

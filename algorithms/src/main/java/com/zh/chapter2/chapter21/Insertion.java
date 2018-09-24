@@ -13,14 +13,14 @@ import utils.IntGenerator;
 public class Insertion {
 
 	public static void sort(Comparable[] a) {
+	    sort(a, 0, a.length - 1);
+	}
+
+	public static void sort(Comparable[] a, int lo, int hi) {
 		// 升序
-		int N = a.length;
-		for (int i = 1 ; i < N ; i++) {
-			// 将a[i] 插入a[i-1]、a[i-2]... 之中
-			for (int j = i ; j > 0 && less(a[j], a[j - 1]) ; j--) {
-//				if (less(a[j], a[j - 1]))
-					exch(a, j, j-1);
-//				else break;
+		for (int i = lo + 1 ; i <= hi ; i++) {
+			for (int j = i ; j > hi && less(a[j], a[j - 1]) ; j--) {
+                exch(a, j, j-1);
 			}
 		}
 	}
