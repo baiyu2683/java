@@ -12,6 +12,7 @@ import com.zh.chapter2.chapter22.Merge;
 import com.zh.chapter2.chapter23.Quick;
 
 import com.zh.chapter2.chapter23.QuickAdvanced;
+import com.zh.chapter2.chapter23.QuickAdvancedThreeMedian;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class SortCompare {
 		if (alg.equals("Merge")) Merge.sort(a);
 		if (alg.equals("Quick")) Quick.sort(a);
 		if (alg.equals("QuickAdvanced")) QuickAdvanced.sort(a);
+		if (alg.equals("QuickAdvancedThreeMedian")) QuickAdvancedThreeMedian.sort(a);
 		// ...
 		return sw.elapseMillTime();
 	}
@@ -81,7 +83,7 @@ public class SortCompare {
 	}
 	
 	public static void main(String[] args) {
-		int N = Double.valueOf(Math.pow(2, 15)).intValue();
+		int N = Double.valueOf(Math.pow(2, 20)).intValue();
 		int T = 1;
 //		double t1 = SortCompare.timeRandomInput("Insertion", N, T);
 //		System.out.println("insertion: " + t1);
@@ -97,7 +99,9 @@ public class SortCompare {
 		System.out.println("Quick: " + t7);
 		double t8 = SortCompare.timeRandomInput("QuickAdvanced", N, T);
 		System.out.println("QuickAdvanced: " + t8);
-		double t6 = SortCompare.timeRandomInput("Merge", N, T);
-		System.out.println("Merge: " + t6);
+		double t9 = SortCompare.timeRandomInput("QuickAdvancedThreeMedian", N, T);
+		System.out.println("QuickAdvancedThreeMedian: " + t9);
+//		double t6 = SortCompare.timeRandomInput("Merge", N, T);
+//		System.out.println("Merge: " + t6);
 	}
 }

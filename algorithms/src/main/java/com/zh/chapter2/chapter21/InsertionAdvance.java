@@ -24,18 +24,15 @@ public class InsertionAdvance {
     public static void sort(Comparable[] a, int lo, int hi) {
         for (int i = lo + 1 ; i <= hi ; i++) {
             Comparable temp = a[i];
-            for (int j = i - 1 ; j >= lo ; j--) {
-                if (less(temp, a[j])) {
-                    a[j+1] = a[j];
-                } else {
-                    a[j+1] = temp;
+            int j = i - 1;
+            for (; j >= 0 ; j--) {
+                if (less(temp, a[j])) a[j + 1] = a[j];
+                else {
+                    a[j + 1] = temp;
                     break;
                 }
-                // 考虑是第一个元素的情况
-                if (j == 0) {
-                    a[0] = temp;
-                }
             }
+            if (j == -1) a[0] = temp;
         }
     }
     
@@ -67,7 +64,7 @@ public class InsertionAdvance {
         for (int i = 0 ; i < N ; i++) {
             a[i] = StdRandom.uniform();
         }
-        sort(a);
+        sort(a,2, 9);
         assert isSorted(a);
         show(a);
     }
