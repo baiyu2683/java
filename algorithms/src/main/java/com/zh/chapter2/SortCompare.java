@@ -83,7 +83,7 @@ public class SortCompare {
 	}
 	
 	public static void main(String[] args) {
-		int N = Double.valueOf(Math.pow(2, 20)).intValue();
+		int N = Double.valueOf(Math.pow(2, 25)).intValue();
 		int T = 1;
 //		double t1 = SortCompare.timeRandomInput("Insertion", N, T);
 //		System.out.println("insertion: " + t1);
@@ -95,10 +95,10 @@ public class SortCompare {
 //		System.out.println("Selection: " + t2);
 //		double t3 = SortCompare.timeRandomInput("Shell", N, T);
 //		System.out.println("Shell: " + t3);
-		double t7 = SortCompare.timeRandomInput("Quick", N, T);
-		System.out.println("Quick: " + t7);
-		double t8 = SortCompare.timeRandomInput("QuickAdvanced", N, T);
-		System.out.println("QuickAdvanced: " + t8);
+//		double t7 = SortCompare.timeRandomInput("Quick", N, T);
+//		System.out.println("Quick: " + t7);
+//		double t8 = SortCompare.timeRandomInput("QuickAdvanced", N, T);
+//		System.out.println("QuickAdvanced: " + t8);
 		double t9 = SortCompare.timeRandomInput("QuickAdvancedThreeMedian", N, T);
 		System.out.println("QuickAdvancedThreeMedian: " + t9);
 //		double t6 = SortCompare.timeRandomInput("Merge", N, T);
