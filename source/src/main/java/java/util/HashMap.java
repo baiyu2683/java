@@ -195,12 +195,12 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * 6:    0.00001316
      * 7:    0.00000094
      * 8:    0.00000006
-     * more: less than 1 in ten million
+     * more: less than 1 in ten million // 小于千万分之一
      *
-     * The root of a tree bin is normally its first node.  However,
-     * sometimes (currently only upon Iterator.remove), the root might
+     * The root of a tree bin is normally its first node.  However,  // 通常情况下树根节点是第一个节点，
+     * sometimes (currently only upon Iterator.remove), the root might // 有些情况下不是，目前只有Iterator.remove不是
      * be elsewhere, but can be recovered following parent links
-     * (method TreeNode.root()).
+     * (method TreeNode.root()).  // 可以通过方法TreeNode.root()获得根节点
      *
      * All applicable internal methods accept a hash code as an
      * argument (as normally supplied from a public method), allowing
@@ -218,7 +218,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * rebalancings, we compare classes and identityHashCodes as
      * tie-breakers.
      *
-     * The use and transitions among plain vs tree modes is  // 这一段啥意思?
+     * The use and transitions among plain vs tree modes is
      * complicated by the existence of subclass LinkedHashMap. See
      * below for hook methods defined to be invoked upon insertion,
      * removal and access that allow LinkedHashMap internals to
@@ -231,11 +231,13 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
 
     /**
+     * 默认大小，16，必须是2的幂次
      * The default initial capacity - MUST be a power of two.
      */
     static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
 
     /**
+     * 最大值，当指定的值比这个大时，取这个最大值，必须是2的幂次
      * The maximum capacity, used if a higher value is implicitly(隐含) specified
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<30.
@@ -243,21 +245,25 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
+     * 默认负载因子，当元素数量大于这个百分比就会触发扩容
      * The load factor used when none specified in constructor.
      */
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
+     * 对于一个bin，如果元素大于这个值，会转换为树
+     * TODO 为什么大于2，并且至少为8？ 和元素从书中移除并缩容有关?
      * The bin count threshold for using a tree rather than list for a
      * bin.  Bins are converted to trees when adding an element to a
-     * bin with at least this many nodes. The value must be greater
+     * bin with at least this many nodes. <b>The value must be greater
      * than 2 and should be at least 8 to mesh with assumptions in
      * tree removal about conversion back to plain bins upon
-     * shrinkage.
+     * shrinkage.</b>
      */
     static final int TREEIFY_THRESHOLD = 8;
 
     /**
+     * 比TREEIFY_THRESHOLD小，比此值大时，会从树节点转换为list
      * The bin count threshold for untreeifying a (split) bin during a
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
@@ -265,6 +271,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     static final int UNTREEIFY_THRESHOLD = 6;
 
     /**
+     * bins可能会被转换为树结构的最小table容量，否则当前table会在一个bin中resize太多的节点
+     *
      * The smallest table capacity for which bins may be treeified.
      * (Otherwise the table is resized if too many nodes in a bin.)
      * Should be at least 4 * TREEIFY_THRESHOLD to avoid conflicts
