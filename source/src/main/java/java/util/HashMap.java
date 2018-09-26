@@ -251,7 +251,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
-     * 对于一个bin，如果元素大于这个值，会转换为树
+     * 对于一个bin，如果元素大于8个，会转换为树
      * TODO 为什么大于2，并且至少为8？ 和元素从书中移除并缩容有关?
      * The bin count threshold for using a tree rather than list for a
      * bin.  Bins are converted to trees when adding an element to a
@@ -263,7 +263,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     static final int TREEIFY_THRESHOLD = 8;
 
     /**
-     * 比TREEIFY_THRESHOLD小，比此值大时，会从树节点转换为list
+     * 比TREEIFY_THRESHOLD小，比此值大时，会从树节点转换为链表
      * The bin count threshold for untreeifying a (split) bin during a
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
@@ -286,7 +286,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
      */
     static class Node<K,V> implements Map.Entry<K,V> {
-        final int hash;
+        final int hash;   // 这里居然存了hash值
         final K key;
         V value;
         Node<K,V> next;
@@ -328,6 +328,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /* ---------------- Static utilities -------------- */
 
     /**
+     * TODO 为什么这么写hash？
      * Computes key.hashCode() and spreads (XORs) higher bits of hash
      * to lower.  Because the table uses power-of-two masking, sets of
      * hashes that vary only in bits above the current mask will  // 采用2的倍数做掩码，在一个集合中hash，总是会碰撞？
@@ -387,6 +388,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * 对给定的容量，换算为2的幂次
      * 不超过最大值
+     * TODO 测试这个方法
      * Returns a power of two size for the given target capacity.
      */
     static final int tableSizeFor(int cap) {
@@ -402,6 +404,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /* ---------------- Fields -------------- */
 
     /**
+     * 第一次使用是初始化此table，length总是2的次幂
      * The table, initialized on first use, and resized as
      * necessary. When allocated, length is always a power of two.
      * (We also tolerate length zero in some operations to allow
@@ -410,17 +413,20 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     transient Node<K,V>[] table;
 
     /**
+     * TODO 看下怎么使用的
      * Holds cached entrySet(). Note that AbstractMap fields are used
      * for keySet() and values().
      */
     transient Set<Map.Entry<K,V>> entrySet;
 
     /**
+     * map当前大小
      * The number of key-value mappings contained in this map.
      */
     transient int size;
 
     /**
+     * 记录此map的结构变化次数，用于快速出错
      * The number of times this HashMap has been structurally modified
      * Structural modifications are those that change the number of mappings in
      * the HashMap or otherwise modify its internal structure (e.g.,
@@ -430,6 +436,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     transient int modCount;
 
     /**
+     *  下一次需要resize时的元素个数： threshold = capacity * loadFactor
      * The next size value at which to resize (capacity * load factor).
      *
      * @serial
@@ -441,6 +448,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     int threshold;
 
     /**
+     * 负载因子
      * The load factor for the hash table.
      *
      * @serial
@@ -579,15 +587,22 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @return the node, or null if none
      */
     final Node<K,V> getNode(int hash, Object key) {
-        Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+        Node<K,V>[] tab;
+        Node<K,V> first, e;
+        int n;
+        K k;
         if ((tab = table) != null && (n = tab.length) > 0 &&
-            (first = tab[(n - 1) & hash]) != null) {
+            (first = tab[(n - 1) & hash]) != null) { // TODO 首节点first的计算？
+            // 首节点是否是需要选的节点
             if (first.hash == hash && // always check first node
                 ((k = first.key) == key || (key != null && key.equals(k))))
                 return first;
+            // 下一个节点
             if ((e = first.next) != null) {
-                if (first instanceof TreeNode)
+                // 节点是树结构
+                if (first instanceof TreeNode) // TODO 此节点是树节点，遍历得到相等的节点。遍历算法
                     return ((TreeNode<K,V>)first).getTreeNode(hash, key);
+                // 不是树结构
                 do {
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
@@ -638,24 +653,33 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
-        Node<K,V>[] tab; Node<K,V> p; int n, i;
+        Node<K,V>[] tab;
+        Node<K,V> p;
+        int n, i;
         if ((tab = table) == null || (n = tab.length) == 0)
             n = (tab = resize()).length;
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
         else {
-            Node<K,V> e; K k;
+            Node<K,V> e;
+            K k;
             if (p.hash == hash &&
                 ((k = p.key) == key || (key != null && key.equals(k))))
                 e = p;
-            else if (p instanceof TreeNode)
+            else if (p instanceof TreeNode) // TODO 树插入算法
                 e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
             else {
+                // bincount计算的是一个bin中除首节点wait的节点数量-1
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
                         p.next = newNode(hash, key, value, null);
+                        // binCount为7，其从零开始，则此桶中除首节点外节点数为8
+                        // 此时加上首节点，共有9个节点，此桶中节点数大于8个，进行树转化
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        {
+                            // TODO
                             treeifyBin(tab, hash);
+                        }
                         break;
                     }
                     if (e.hash == hash &&
@@ -672,9 +696,12 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 return oldValue;
             }
         }
+        // 修改次数+1
         ++modCount;
+        // 大于阈值，扩容
         if (++size > threshold)
             resize();
+        //
         afterNodeInsertion(evict);
         return null;
     }
@@ -768,6 +795,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     final void treeifyBin(Node<K,V>[] tab, int hash) {
         int n, index; Node<K,V> e;
+        // table中的元素数量小于MIN_TREEIFY_CAPACITY时，进行扩容，而不是树型化
         if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
             resize();
         else if ((e = tab[index = (n - 1) & hash]) != null) {
