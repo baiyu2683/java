@@ -281,6 +281,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     static final int MIN_TREEIFY_CAPACITY = 64;
 
     /**
+     * TODO 看起来像是list的节点
      * Basic hash bin node, used for most entries.  (See below for
      * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
      */
@@ -329,7 +330,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * Computes key.hashCode() and spreads (XORs) higher bits of hash
      * to lower.  Because the table uses power-of-two masking, sets of
-     * hashes that vary only in bits above the current mask will
+     * hashes that vary only in bits above the current mask will  // 采用2的倍数做掩码，在一个集合中hash，总是会碰撞？
      * always collide. (Among known examples are sets of Float keys
      * holding consecutive whole numbers in small tables.)  So we
      * apply a transform that spreads the impact of higher bits
@@ -340,7 +341,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * collisions in bins, we just XOR some shifted bits in the
      * cheapest possible way to reduce systematic lossage, as well as
      * to incorporate impact of the highest bits that would otherwise
-     * never be used in index calculations because of table bounds.
+     * never be used in index calculations because of table bounds. // TODO 最高位的bits将用不到，因为表范围？
      */
     static final int hash(Object key) {
         int h;
@@ -348,6 +349,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
+     * 如果x是class C implements Comparable<C>这种格式的话，返回x的Class
+     * 否则返回null
      * Returns x's Class if it is of the form "class C implements
      * Comparable<C>", else null.
      */
@@ -371,6 +374,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
+     * x和k的class类型(kc)一致的话，返回k.compareTo(x)的值，否则返回0
      * Returns k.compareTo(x) if x matches kc (k's screened comparable
      * class), else 0.
      */
@@ -381,6 +385,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
+     * 对给定的容量，换算为2的幂次
+     * 不超过最大值
      * Returns a power of two size for the given target capacity.
      */
     static final int tableSizeFor(int cap) {
