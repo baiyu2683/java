@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class BlockingIoExample {
 
@@ -37,6 +40,7 @@ public class BlockingIoExample {
                 if (clientSocket != null)
                     clientSocket.close();
             }
+            ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 15, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
         }
     }
 

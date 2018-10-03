@@ -25,7 +25,7 @@
         <module>web</module>
         <module>algorithms</module>
         <module>netty</module>
-    <module>source</module>
+        <module>source</module>
   </modules>
     <dependencies>
         <dependency>
