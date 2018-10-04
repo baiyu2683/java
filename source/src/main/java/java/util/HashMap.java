@@ -643,6 +643,12 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
     /**
      * Implements Map.put and related methods
+     * 问题:
+     * 为什么这里对元素位置的计算使用的是(n - 1) & hash
+     * n = tab.length()
+     * hash = key.hashCode() && key.hashCode >>> 16
+     *
+     * 因为在长度n为2的幂次时: <b>hash % n = hash & (n - 1)</b>
      *
      * @param hash hash for key
      * @param key the key
@@ -1834,7 +1840,6 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             }
         }
     }
-
     /* ------------------------------------------------------------ */
     // Tree bins
 
