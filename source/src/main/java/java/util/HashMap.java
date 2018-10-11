@@ -715,7 +715,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * Initializes or doubles table size.  If null, allocates in
      * accord with initial capacity target held in field threshold.
-     * Otherwise, because we are using power-of-two expansion, the
+     * Otherwise, because we are using power-of-two expansion, the // 元素rehash是或者在原地不动，或者在新table的2的幂次处。。
      * elements from each bin must either stay at same index, or move
      * with a power of two offset in the new table.
      *
@@ -727,13 +727,13 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         int oldThr = threshold;
         int newCap, newThr = 0;
         if (oldCap > 0) {
-            if (oldCap >= MAXIMUM_CAPACITY) {
+            if (oldCap >= MAXIMUM_CAPACITY) { // 如果达到最大值时，不会进行任何扩容操作，直接返回了
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
             }
-            else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
+            else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&  // (newCap = oldCap << 1),newCap扩容为之前的两倍
                      oldCap >= DEFAULT_INITIAL_CAPACITY)
-                newThr = oldThr << 1; // double threshold
+                newThr = oldThr << 1; // double threshold  // 同时threshold也曾大伟之前的两倍
         }
         else if (oldThr > 0) // initial capacity was placed in threshold
             newCap = oldThr;
