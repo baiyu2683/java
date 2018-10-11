@@ -329,6 +329,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
     /**
      * TODO 为什么这么写hash？
+     * 当两个key差别很大时，较大的key的高位得不到运算机会，会增加hash碰撞几率
+     * 高位移位并抑或让高位可以参与运算
      * Computes key.hashCode() and spreads (XORs) higher bits of hash
      * to lower.  Because the table uses power-of-two masking, sets of
      * hashes that vary only in bits above the current mask will  // 采用2的倍数做掩码，在一个集合中hash，总是会碰撞？
@@ -388,16 +390,15 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * 对给定的容量，换算为2的幂次
      * 不超过最大值
-     * TODO 测试这个方法
      * Returns a power of two size for the given target capacity.
      */
     static final int tableSizeFor(int cap) {
-        int n = cap - 1;
-        n |= n >>> 1;
-        n |= n >>> 2;
-        n |= n >>> 4;
-        n |= n >>> 8;
-        n |= n >>> 16;
+        int n = cap - 1; // 减1是为了防止cap已经是2的次幂的情况，此种情况下，下面移位操作结果是cap的两倍
+        n |= n >>> 1; // 最高位的1右移一位，之后或操作，则结果最高位有两个1
+        n |= n >>> 2; // 最高位有两个1，右移两位，这两个1右移两位，或操作，则结果最高位有4个1
+        n |= n >>> 4; // 依上面类推
+        n |= n >>> 8; // ..
+        n |= n >>> 16; // 总共32位，到此为止了。。。
         return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
     }
 
@@ -476,6 +477,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             throw new IllegalArgumentException("Illegal load factor: " +
                                                loadFactor);
         this.loadFactor = loadFactor;
+        // TODO 这里为什么赋值给了threshold，貌似没用，在首次put时，会重新计算
         this.threshold = tableSizeFor(initialCapacity);
     }
 
@@ -592,7 +594,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         int n;
         K k;
         if ((tab = table) != null && (n = tab.length) > 0 &&
-            (first = tab[(n - 1) & hash]) != null) { // TODO 首节点first的计算？
+            (first = tab[(n - 1) & hash]) != null) { // n为2的次幂，(n-1) & hash相当于hash对n取模
             // 首节点是否是需要选的节点
             if (first.hash == hash && // always check first node
                 ((k = first.key) == key || (key != null && key.equals(k))))
@@ -602,7 +604,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 // 节点是树结构
                 if (first instanceof TreeNode) // TODO 此节点是树节点，遍历得到相等的节点。遍历算法
                     return ((TreeNode<K,V>)first).getTreeNode(hash, key);
-                // 不是树结构
+                // 不是树结构，依次遍历链表
                 do {
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
@@ -662,11 +664,14 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         Node<K,V>[] tab;
         Node<K,V> p;
         int n, i;
+        // 首次添加时需要先扩容
         if ((tab = table) == null || (n = tab.length) == 0)
             n = (tab = resize()).length;
+        // tab的指定位置为null，则新建一个普通节点
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
         else {
+            // 指定位置存在节点
             Node<K,V> e;
             K k;
             if (p.hash == hash &&
@@ -737,7 +742,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         }
         else if (oldThr > 0) // initial capacity was placed in threshold
             newCap = oldThr;
-        else {               // zero initial threshold signifies using defaults
+        else {               // zero initial threshold signifies using defaults 首次初始化
             newCap = DEFAULT_INITIAL_CAPACITY;
             newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }
