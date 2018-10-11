@@ -42,4 +42,10 @@ public class TestReg {
         Pattern p = Pattern.compile("htwFileName=([^;]*);{0,1}");
         System.out.println("asdf;htwFileName=234;".replaceAll(p.pattern(), ""));
     }
+
+    @Test
+    public void replaceAll2() {
+        String url = "jdbc:mysql://127.0.0.1:10155/zsk?user=root&password=123456&useUnicode=true&characterEncoding=gb2312&autoReconnect=true&failOverReadOnly=false";
+        System.out.println(url.replaceAll("(password=)([^&]*)&{0,1}", "$1******"));
+    }
 }
