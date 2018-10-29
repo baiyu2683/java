@@ -3,10 +3,7 @@ package com.zh.string;
 public class TestStringBuilder {
 
     public static void main(String[] args) {
-        StringBuilder tem = new StringBuilder();
-        for (int index = 0; index < 10; index++) {
-            tem.append("11");
-        }
-        System.out.println(tem);
+        String s = "\"第\" + @PageNO + \"页,共\" + @PageCount + \"页\"";
+        System.out.println(s);
     }
 }
