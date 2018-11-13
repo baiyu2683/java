@@ -20,14 +20,21 @@ public class TestPdf {
         PdfPTable table = new PdfPTable(2);
         table.setSplitLate(false);
         table.setSplitRows(false);
+        table.setTotalWidth(new float[]{250, 250});
+        table.setLockedWidth(true);
         for (int i = 0 ; i < 15 ; i++) {
-            Chunk chunk = new Chunk(i + "张张张张张张张张张张张张张张张张张张张张张张张张张张张张张");
-            PdfPCell pdfPCell = new PdfPCell(new Phrase(chunk));
-            pdfPCell.setFixedHeight(90);
+            Chunk chunk = new Chunk(i + "asdfsasfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf");
+            Paragraph paragraph = new Paragraph("iasddddddasdfasdfasdfdssssddddffffqqqqwwwweeeerrrr");
+            PdfPCell pdfPCell = new PdfPCell();
+            pdfPCell.addElement(paragraph);
+            pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            pdfPCell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+            pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            pdfPCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+            pdfPCell.setFixedHeight(30);
             if (i == 0) {
                 pdfPCell.setRowspan(12);
                 pdfPCell.setBorderColor(BaseColor.BLUE);
-//                pdfPCell.setFixedHeight(1000);
             }
             table.addCell(pdfPCell);
             if (i >= 1) {
@@ -35,32 +42,6 @@ public class TestPdf {
             }
         }
         document.add(table);
-
-        // 复制一个
-//        PdfPTable newTable = new PdfPTable(2);
-//        for (int i = 0 ; i < 7 ; i++) {
-//            PdfPRow row = table.getRow(i);
-//            for (PdfPCell cell : row.getCells()) {
-//                if (cell != null) {
-//                    newTable.addCell(cell);
-//                } else {
-//
-//                }
-//            }
-//            newTable.completeRow();
-//        }
-//        document.add(newTable);
-////        document.newPage();
-//        newTable = new PdfPTable(2);
-//        for (int i = 7 ; i < 8 ; i++) {
-//            PdfPRow row = table.getRow(i);
-//            for (PdfPCell cell : row.getCells()) {
-//                if (cell != null) newTable.addCell(cell);
-//            }
-//            newTable.completeRow();
-//        }
-//        document.add(newTable);
-
         document.close();
         pdfWriter.flush();
     }

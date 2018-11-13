@@ -179,6 +179,11 @@
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.6.3</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
