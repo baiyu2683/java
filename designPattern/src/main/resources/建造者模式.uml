@@ -211,7 +211,7 @@
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="doNPYeLCLEWPHJelNyJsBgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ovgsv4o0r0OlCL9CtH8h/QAA">
 <XPD:ATTR name="FontStyle" type="integer">1</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">ConcreteBuilderA</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">ConcreteBuilder</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="CvMJs9P3dUirP7g/ilfJ6AAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -451,7 +451,7 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[3]" type="UMLClass" guid="cOkoahxgsUGtHgoo+yaj3gAA">
-<XPD:ATTR name="Name" type="string">ConcreteBuilderA</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">ConcreteBuilder</XPD:ATTR>
 <XPD:REF name="Namespace">G2CBt8a8tUKsiJZBq8QK7wAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">4ogOeTT3+0a53dwTrg29fAAA</XPD:REF>
