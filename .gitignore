@@ -7,3 +7,5 @@ log/
 /.setting/
 
 *.hprof
+*.pdf
+*.~ml
