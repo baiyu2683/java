@@ -74,8 +74,9 @@ public class HtmlToWordAspose {
      */
     @Test
     public void toWordTable() throws Exception {
-        String url = "e:/html.html";
+        String url = "d:/viewScene.html";
         Document document = new Document(url);
-        document.save("e:/html.docx", SaveFormat.DOCX);
+        SaveOptions saveOptions = new DocSaveOptions();
+        document.save("d:/html.docx", SaveFormat.DOCX);
     }
 }

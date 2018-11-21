@@ -8,8 +8,8 @@ import com.aspose.html.rendering.pdf.PdfRenderingOptions;
 public class HtmlToPdfAspose {
 
     public static void main(String[] args) {
-        HTMLDocument html = new HTMLDocument("e:/html.html");
+        HTMLDocument html = new HTMLDocument("d:/viewScene.html");
         HtmlRenderer renderer = new HtmlRenderer();
-        renderer.render(new PdfDevice(new PdfRenderingOptions(), "e:/html.pdf"), html);
+        renderer.render(new PdfDevice(new PdfRenderingOptions(), "d:/html.pdf"), html);
     }
 }
