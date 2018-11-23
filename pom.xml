@@ -25,7 +25,7 @@
         <module>algorithms</module>
         <module>netty</module>
         <module>source</module>
-  </modules>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>dom4j</groupId>
