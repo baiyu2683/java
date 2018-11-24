@@ -3,6 +3,7 @@ package com.zh.array;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class TestArray {
 
@@ -26,5 +27,20 @@ public class TestArray {
             readIndex += size;
             System.out.println(Arrays.toString(userIdsTemp));
         }
+    }
+
+    @Test
+    public void test2() {
+        testArray(new String[]{"1"});
+        testArray(new Date[]{new Date(), new Date()});
+    }
+
+    /**
+     * 动态获取泛型数组的元素类型
+     * @param a
+     * @param <T>
+     */
+    private <T> void testArray(T[] a) {
+        System.out.println(a.getClass().getComponentType());
     }
 }

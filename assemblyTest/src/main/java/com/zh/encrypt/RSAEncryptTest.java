@@ -32,7 +32,7 @@ public class RSAEncryptTest {
 	private static Cipher cipher;  
     
     static{  
-        try {  
+        try {
             cipher = Cipher.getInstance("RSA");  
         } catch (NoSuchAlgorithmException e) {  
             e.printStackTrace();  

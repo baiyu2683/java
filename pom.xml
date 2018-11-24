@@ -22,11 +22,10 @@
         <module>common</module>
         <module>assemblyTest</module>
         <module>designPattern</module>
-        <module>web</module>
         <module>algorithms</module>
         <module>netty</module>
         <module>source</module>
-  </modules>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>dom4j</groupId>

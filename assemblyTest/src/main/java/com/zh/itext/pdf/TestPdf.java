@@ -1,5 +1,6 @@
 package com.zh.itext.pdf;
 
+import com.aspose.words.HorizontalAlignment;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
@@ -13,35 +14,37 @@ public class TestPdf {
         Document document = new Document();
 
         PdfWriter pdfWriter= PdfWriter.getInstance(document, new FileOutputStream(new File("e:/test.pdf")));
-
+        document.setPageSize(PageSize.A10);
+        document.setPageSize(PageSize.A4);
+        document.setMargins(51f, 51f, 53f, 53f);
         document.open();
         document.newPage();
 
         PdfPTable table = new PdfPTable(2);
+        table.setHorizontalAlignment(HorizontalAlignment.LEFT);
         table.setSplitLate(false);
         table.setSplitRows(false);
-        table.setTotalWidth(new float[]{250, 250});
+        table.setTotalWidth(new float[]{120, 120});
         table.setLockedWidth(true);
-        for (int i = 0 ; i < 15 ; i++) {
-            Chunk chunk = new Chunk(i + "asdfsasfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf");
-            Paragraph paragraph = new Paragraph("iasddddddasdfasdfasdfdssssddddffffqqqqwwwweeeerrrr");
-            PdfPCell pdfPCell = new PdfPCell();
-            pdfPCell.addElement(paragraph);
-            pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            pdfPCell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-            pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            pdfPCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-            pdfPCell.setFixedHeight(30);
-            if (i == 0) {
-                pdfPCell.setRowspan(12);
-                pdfPCell.setBorderColor(BaseColor.BLUE);
-            }
-            table.addCell(pdfPCell);
-            if (i >= 1) {
-                table.completeRow();
-            }
-        }
+        table.addCell(new Phrase("asdf"));
+        table.addCell(new Phrase("1234"));
+        table.completeRow();
         document.add(table);
+
+        table = new PdfPTable(5);
+        table.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        table.setSplitLate(false);
+        table.setSplitRows(false);
+        table.setTotalWidth(new float[]{100, 100, 100, 100, 50});
+        table.setLockedWidth(true);
+        table.addCell(new Phrase("1"));
+        table.addCell(new Phrase("2"));
+        table.addCell(new Phrase("2"));
+        table.addCell(new Phrase("2"));
+        table.addCell(new Phrase("5"));
+        table.completeRow();
+        document.add(table);
+
         document.close();
         pdfWriter.flush();
     }

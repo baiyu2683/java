@@ -32,7 +32,7 @@ import sun.misc.SharedSecrets;
 
 /**
  * Resizable-array implementation of the <tt>List</tt> interface.  Implements
- * all optional list operations, and permits all elements, including
+ * all optional list operations, and permits all elements, including  // 允许放所有元素，包括null
  * <tt>null</tt>.  In addition to implementing the <tt>List</tt> interface,
  * this class provides methods to manipulate the size of the array that is
  * used internally to store the list.  (This class is roughly equivalent to
@@ -116,7 +116,8 @@ public class ArrayList<E> extends AbstractList<E>
     private static final int DEFAULT_CAPACITY = 10;
 
     /**
-     * 空实例的共享空数组
+     * 空实例的共享空数组add
+     *
      * Shared empty array instance used for empty instances.
      */
     private static final Object[] EMPTY_ELEMENTDATA = {};
@@ -245,7 +246,9 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
+     * 有些虚拟机会在数组头部存储一些信息
      * The maximum size of array to allocate.
+     * 申请更大的数组大小时可能会造成OOM报错
      * Some VMs reserve some header words in an array.
      * Attempts to allocate larger arrays may result in
      * OutOfMemoryError: Requested array size exceeds VM limit
@@ -261,6 +264,7 @@ public class ArrayList<E> extends AbstractList<E>
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
+        // 增大1/2的容量
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
