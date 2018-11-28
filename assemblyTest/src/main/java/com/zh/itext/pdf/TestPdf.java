@@ -3,6 +3,7 @@ package com.zh.itext.pdf;
 import com.aspose.words.HorizontalAlignment;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.hyphenation.Hyphenation;
 
 import java.io.File;
 import java.io.FileNotFoundException;

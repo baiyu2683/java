@@ -4,9 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 限制并发数的set
+ * 限制集合数量的set
+ * 通过在添加是获取许可，在移除时释放许可实现数量控制
  * Created by zh on 2017-07-30.
  */
 public class BoundedHashSet<T> {
@@ -19,7 +21,10 @@ public class BoundedHashSet<T> {
     }
 
     public boolean add(T o) throws InterruptedException {
-        semaphore.acquire();
+        boolean success = semaphore.tryAcquire(3, TimeUnit.SECONDS);
+        if (!success) {
+            return false;
+        }
         boolean wasAdded = false;
         try {
             wasAdded = set.add(o);
@@ -35,5 +40,9 @@ public class BoundedHashSet<T> {
         if(wasRemoved)
             semaphore.release();
         return wasRemoved;
+    }
+
+    public int availablePermits() {
+        return semaphore.availablePermits();
     }
 }

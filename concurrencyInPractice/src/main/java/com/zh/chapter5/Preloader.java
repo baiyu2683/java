@@ -7,6 +7,7 @@ import java.util.concurrent.FutureTask;
 /**
  * 这个为啥get()回来会延迟呢?
  * 看start执行之后，任务也很快返回了，是不是future的状态没有及时改变?
+ * MDZZ, 在ProductInfo构造函数里sleep了5s。。。
  * Created by zh on 2017-07-30.
  */
 public class Preloader {
