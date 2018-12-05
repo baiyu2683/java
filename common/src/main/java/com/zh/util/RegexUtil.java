@@ -13,8 +13,8 @@ public class RegexUtil {
      * @param source
      * @return
      */
-    public static List<String> match(String regex, String source) {
-        Pattern pattern = Pattern.compile(regex );
+    public static List<String> match(String source, String regex) {
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         List<String> result = new ArrayList<>();
         while (matcher.find()) {
@@ -25,11 +25,18 @@ public class RegexUtil {
         return result;
     }
 
-    public static void main(String[] args) {
-        String regex = "publishPath=[^;]*;{0,1}";
-//        String s = "publishPath=";
-//        String ss = "publishPath=@#KLJOPSD;other=asdf;publishPath=111;publishPath=112;publishPath=113;publishPath=114";
-        String sss = "publishPath=@#KLJOPSDF>>[p..    a;other=asdf";
-        System.out.println(match(regex, sss));
+    /**
+     * regex匹配source中内容
+     * @param regex
+     * @param source
+     * @return
+     */
+    public static boolean contains(String source, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(source);
+        if (matcher.find()) {
+            return true;
+        }
+        return false;
     }
 }
