@@ -1,14 +1,13 @@
 package com.zh.itext;
 
 import com.lowagie.text.*;
-import com.lowagie.text.Font;
 import com.lowagie.text.rtf.RtfWriter2;
+import com.lowagie.text.rtf.style.RtfFont;
 import com.lowagie.text.rtf.table.RtfCell;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 
 /**
  *
@@ -19,6 +18,11 @@ import java.net.URL;
 public class WordTestIText {
 
     public static void main(String[] args) throws IOException, DocumentException {
+
+        // 字体注册
+        FontFactory.registerDirectory("E:\\apache-tomcat-6.0.45\\webapps\\HappyServer\\WEB-INF\\classes\\font\\fontResource");
+        FontFactory.defaultEncoding = "utf8";
+
         Document document = new Document();
 
         RtfWriter2.getInstance(document, new FileOutputStream("d:/itext.doc"));
@@ -31,14 +35,16 @@ public class WordTestIText {
 
         RtfCell cell = new RtfCell();
         Paragraph paragraph = new Paragraph("456");
-        // 字体注册
-//        URL url = WordTestIText.class.getClassLoader().getResource("font");
-//        FontFactory.registerDirectory(url.getPath());
-        Font font = new Font();
-        font.setFamily("微软雅黑");
-        paragraph.setFont(font);
+        // 解决office中中文字体，字体选择框里乱码问题
+        String fontName = new String("微软雅黑".getBytes("gb18030"), "iso-8859-1");
+        RtfFont rtfFont = new RtfFont(fontName);
+        rtfFont.setCharset(134);
+        rtfFont.setSize(20);
+//        BaseFont.createFont("微软雅黑",  , BaseFont.EMBEDDED);
+        paragraph.setFont(rtfFont);
         paragraph.setSpacingBefore(0);
         paragraph.setSpacingAfter(0);
+        Font font = paragraph.getFont();
         cell.addElement(paragraph);
 
         table.addCell(cell);
