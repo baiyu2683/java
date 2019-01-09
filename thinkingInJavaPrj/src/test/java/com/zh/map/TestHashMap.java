@@ -1,9 +1,58 @@
 package com.zh.map;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TestHashMap {
 
     public static void main(String[] args) {
+        Map<User, Integer> map = new HashMap<>();
+        User user1 = new User();
+        user1.setName("1");
+        user1.setName1("2");
 
+        User user2 = new User();
+        user2.setName("1");
+        user2.setName1("2");
+        map.put(user1,1);
+        System.out.println(map.containsKey(user2));
+    }
+
+    static class User {
+        private String name;
+
+        private String name1;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName1() {
+            return name1;
+        }
+
+        public void setName1(String name1) {
+            this.name1 = name1;
+        }
+
+        public int hashCode() {
+            return 0;
+        }
+
+        public boolean equals(Object o) {
+            User user = (User) o;
+            if (!user.getName().equals(this.getName())) {
+                return false;
+            }
+            if (!user.getName1().equals(this.getName1())) {
+                return false;
+            }
+            return true;
+        }
     }
 
     static final int tableSizeFor(int cap) {

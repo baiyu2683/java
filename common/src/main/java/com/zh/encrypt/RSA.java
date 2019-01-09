@@ -269,18 +269,5 @@ public class RSA {
         }  
         return null;  
     }
-    
-    public static void main(String[] args) {
-        Map<String, String> keyMap = generateKeyPair();
 
-    	String publicKey = keyMap.get("publicKey");
-    	String privateKey = keyMap.get("privateKey");
-    	System.err.println("公钥加密——私钥解密");
-        String source = "高可用架构对于互联网服务基本是标配。";
-        System.out.println("\r加密前文字：\r\n" + source);
-        String aData = RSA.encrypt(publicKey, source);
-        System.out.println("加密后文字：\r\n" + aData);
-        String dData = RSA.decrypt(privateKey, aData);
-        System.out.println("解密后文字: \r\n" + dData);
-    }
 }

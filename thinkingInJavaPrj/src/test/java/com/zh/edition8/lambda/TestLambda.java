@@ -2,6 +2,10 @@ package com.zh.edition8.lambda;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Created by zhangheng on 2017/1/11.
  */
@@ -32,6 +36,31 @@ public class TestLambda {
         GreetingService greetingService = message -> {
             System.out.println("Hello " + message);
         };
+    }
+
+    @Test
+    public void testFilter() {
+        List<User> list = new ArrayList<>();
+        User user = new User();
+        user.setName("123");
+        list.add(user);
+        User user1 = new User();
+        user1.setName("asd");
+        list.add(user1);
+        User s = list.stream().filter(x -> x.getName().equals("123")).findFirst().get();
+        System.out.println(s.getName());
+    }
+
+    static class User{
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     interface MathOperation{
