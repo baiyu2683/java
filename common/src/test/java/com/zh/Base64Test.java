@@ -4,7 +4,7 @@ import com.zh.encrypt.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Base64UtilTest {
+public class Base64Test {
 
     @Test
     public void testEncryptAndDecrypt() {

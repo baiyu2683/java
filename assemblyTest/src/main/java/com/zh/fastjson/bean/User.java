@@ -16,6 +16,7 @@ public class User {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss.SSS")
     private Date birthday;
 
+    @JSONField(serialzeFeatures = SerializerFeature.WriteEnumUsingToString)
     private SexEnum sex;
 
     @JSONField(serialize = false, deserialize = false)

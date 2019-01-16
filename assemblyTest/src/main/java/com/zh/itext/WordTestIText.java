@@ -1,6 +1,7 @@
 package com.zh.itext;
 
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.DefaultSplitCharacter;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.style.RtfFont;
 import com.lowagie.text.rtf.table.RtfCell;
@@ -34,12 +35,14 @@ public class WordTestIText {
         table.setAutoFillEmptyCells(true);
 
         RtfCell cell = new RtfCell();
-        Paragraph paragraph = new Paragraph("456");
+        Chunk chunk = new Chunk("456asd师打发斯asdfasdfasdfqw3ef阿瑟大方权威番茄味废弃未付钱未付钱未付全微分全微分df师打发斯蒂芬阿斯蒂芬");
+        Phrase phrase = new Phrase(chunk);
+        Paragraph paragraph = new Paragraph(phrase);
         // 解决office中中文字体，字体选择框里乱码问题
         String fontName = new String("微软雅黑".getBytes("gb18030"), "iso-8859-1");
         RtfFont rtfFont = new RtfFont(fontName);
         rtfFont.setCharset(134);
-        rtfFont.setSize(20);
+//        rtfFont.setSize(20);
 //        BaseFont.createFont("微软雅黑",  , BaseFont.EMBEDDED);
         paragraph.setFont(rtfFont);
         paragraph.setSpacingBefore(0);
