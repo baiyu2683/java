@@ -20,6 +20,8 @@
         <module>utils</module>
         <module>chapter1</module>
         <module>chapter2_first_app</module>
+        <module>chapter3</module>
+        <module>chapter4_transfer</module>
     </modules>
 
     <properties>
