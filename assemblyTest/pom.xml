@@ -81,21 +81,21 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.11</version>
         </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext-asian</artifactId>
-            <version>5.2.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.itextpdf</groupId>-->
+            <!--<artifactId>itext-asian</artifactId>-->
+            <!--<version>5.2.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.itextpdf.tool</groupId>
             <artifactId>xmlworker</artifactId>
             <version>5.5.11</version>
         </dependency>
-        <dependency>
-            <groupId>cn.lesper</groupId>
-            <artifactId>iTextAsian</artifactId>
-            <version>3.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>cn.lesper</groupId>-->
+            <!--<artifactId>iTextAsian</artifactId>-->
+            <!--<version>3.0</version>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>com.lowagie</groupId>-->
             <!--<artifactId>itextasian</artifactId>-->
@@ -209,6 +209,16 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>sigar</groupId>
+            <artifactId>sigar</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.6</version>
         </dependency>
     </dependencies>
     <repositories>

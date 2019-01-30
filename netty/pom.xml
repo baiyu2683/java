@@ -22,6 +22,7 @@
         <module>chapter2_first_app</module>
         <module>chapter3</module>
         <module>chapter4_transfer</module>
+        <module>chapter5_bytebuf</module>
     </modules>
 
     <properties>
