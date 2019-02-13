@@ -25,6 +25,8 @@
         <module>chapter5_bytebuf</module>
         <module>chapter6_channelhandlerAndChannelPipeline</module>
         <module>chapter7_eventLoopAndThreadModel</module>
+        <module>chapter8_bootstrap</module>
+        <module>chapter9_unittest</module>
     </modules>
 
     <properties>
