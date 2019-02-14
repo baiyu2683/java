@@ -27,6 +27,7 @@
         <module>chapter7_eventLoopAndThreadModel</module>
         <module>chapter8_bootstrap</module>
         <module>chapter9_unittest</module>
+        <module>chapter10_encoderdecoder</module>
     </modules>
 
     <properties>
