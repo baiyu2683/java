@@ -12,7 +12,7 @@ import java.util.List;
  * 如何抛出异常: 这里的in是ReplayingDecoderByteBuf，在read时会检查数据是否足够，不够抛出Error(io.netty.util.Signal)
  *
  */
-public class ToIntegerDecoder2 extends ReplayingDecoder<Void> {
+public class ToLongDecoder2 extends ReplayingDecoder<Void> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         out.add(in.readLong());
