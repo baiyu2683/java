@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
 
     <name>netty</name>
-    <!-- FIXME change it to the project's website -->
     <url>http://www.zh2683.com</url>
 
     <modules>
@@ -28,6 +27,7 @@
         <module>chapter8_bootstrap</module>
         <module>chapter9_unittest</module>
         <module>chapter10_encoderdecoder</module>
+        <module>chapter11_channelHandlerAndEncoderDecoder</module>
     </modules>
 
     <properties>
