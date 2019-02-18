@@ -12,5 +12,11 @@
     <artifactId>chapter11_channelHandlerAndEncoderDecoder</artifactId>
     <description>netty中预置的ChannelHandler和编解码器</description>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+    </dependencies>
 </project>
