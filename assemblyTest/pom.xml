@@ -210,11 +210,11 @@
             <artifactId>protobuf-java</artifactId>
             <version>LATEST</version>
         </dependency>
-        <dependency>
-            <groupId>sigar</groupId>
-            <artifactId>sigar</artifactId>
-            <version>1.6.4</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>sigar</groupId>-->
+            <!--<artifactId>sigar</artifactId>-->
+            <!--<version>1.6.4</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
