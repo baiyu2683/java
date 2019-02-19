@@ -12,4 +12,11 @@
     <artifactId>chapter12_websocket</artifactId>
     <description>websocket</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
