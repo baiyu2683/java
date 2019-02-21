@@ -132,6 +132,23 @@ public class ByteBufTest {
     }
 
     /**
+     * 制造一种writerindex在readerindex之前的情况
+     */
+    @Test
+    public void resetMethod() {
+        try {
+            ByteBuf byteBuf = Unpooled.buffer();
+            byteBuf.writeInt(1); // - rdx: 0 wdx: 4
+            byteBuf.readInt(); // -rdx: 4 wdx: 4
+            byteBuf.resetWriterIndex(); // - rdx: 4 wdx: 0
+            byteBuf.readInt();
+            Assert.fail();
+        } catch (Exception e) {
+            // ignore exception
+        }
+    }
+
+    /**
      * 比较copy()和派生的方法不同
      * copy()出的缓冲区会有自己的数据副本，派生的是共享数据区的
      */
