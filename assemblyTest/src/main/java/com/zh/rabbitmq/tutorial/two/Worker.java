@@ -5,6 +5,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+/**
+ * 增加了休眠，可以启动多次消费同一个队列
+ */
 public class Worker {
 
     private static final String TASK_QUEUE_NAME = "task_queue";
@@ -42,7 +45,7 @@ public class Worker {
         for (char ch : task.toCharArray()) {
             if (ch == '.') {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException _ignored) {
                     Thread.currentThread().interrupt();
                 }
