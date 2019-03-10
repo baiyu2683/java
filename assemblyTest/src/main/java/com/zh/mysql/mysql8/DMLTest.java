@@ -22,7 +22,7 @@ public class DMLTest {
     // &serverTimezone=Asia/Shanghai
     // allowPublicKeyRetrieval=true
     // nullCatalogMeansCurrent=true&
-    private String jdbcUrl = "jdbc:mysql://localhost:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
+    private String jdbcUrl = "jdbc:mysql://193.112.95.23:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
     private Connection conn;
     
     @BeforeClass
@@ -33,7 +33,7 @@ public class DMLTest {
     
     @Before
     public void before() throws SQLException {
-        conn = DriverManager.getConnection(jdbcUrl, "root", "123456");
+        conn = DriverManager.getConnection(jdbcUrl, "zh", "!@#$asdf");
     }
     @After
     public void after() throws SQLException {
@@ -84,8 +84,8 @@ public class DMLTest {
      */
     @Test
     public void testSelect() {
-        String useDataBaseSql = "use test;";
-        String selectDataSql = "select * from test where name like '%zh%'";
+        String useDataBaseSql = "use zh;";
+        String selectDataSql = "select * from `user` where `nickname` like '%zh%'";
         try {
             PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
             boolean result = pstat.execute();
@@ -95,7 +95,7 @@ public class DMLTest {
             ResultSet rs = pstat.executeQuery();
             
             while (rs.next()) {
-                System.out.println("id: " + rs.getInt(1) + " name: " + rs.getString(2));
+                System.out.println("id: " + rs.getString(1) + " name: " + rs.getString(2));
             }
         } catch (SQLException e) {
             e.printStackTrace();
