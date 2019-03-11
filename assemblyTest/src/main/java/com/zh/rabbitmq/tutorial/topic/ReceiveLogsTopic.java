@@ -5,9 +5,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 public class ReceiveLogsTopic {
 
     private static final String EXCHANGE_NAME = "topic_logs";
