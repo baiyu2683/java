@@ -6,13 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * lru算法
+ * lru算法，最近最少使用
  * @Author zh2683
  */
 public class LRU<T> {
 
     private int capacity = 10;
 
+    // 约定越靠前的说明越不经常访问
     private LinkedHashMap<String, T> items = new LinkedHashMap<>(capacity);
 
     public LRU(int capacity) {
