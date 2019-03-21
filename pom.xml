@@ -25,6 +25,7 @@
         <module>algorithms</module>
         <module>netty</module>
         <module>source</module>
+        <module>vertx</module>
     </modules>
     <dependencies>
         <dependency>
