@@ -10,6 +10,16 @@ public class IntGenerator {
 
     private static Random random;
 
+    public static int[] generatorRandomIntArr(int size) {
+        random = new Random(System.currentTimeMillis());
+        int bound = size * 100;
+        int[] result = new int[size];
+        for (int i = 0 ; i < size ; i++) {
+            result[i] = random.nextInt(bound);
+        }
+        return result;
+    }
+
     /**
      * 生成随机数字数组
      * @param size
