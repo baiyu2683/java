@@ -11,20 +11,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * 文件锁
  * Created by zh on 2017-03-12.
+ * @see com.zh.TestFileLock
  */
 public class FileLocking {
     public static void main(String[] args) throws IOException, InterruptedException {
-//        FileOutputStream fos = new FileOutputStream("f:/file.txt");
-//        FileLock fileLock = fos.getChannel().tryLock();
-//        if (fileLock != null) {
-//            System.out.println("Locked file");
-//            TimeUnit.MILLISECONDS.sleep(100);
-//            fileLock.release();
-//            System.out.println("Released Lock");
-//        }
-//        fos.close();
         ExecutorService executorService = Executors.newCachedThreadPool();
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 10; i++)
             executorService.submit(new TestFileLock());
     }
 
@@ -34,19 +26,19 @@ public class FileLocking {
         public void run() {
             while (!Thread.interrupted()) {
                 try {
-                    TimeUnit.MILLISECONDS.sleep(1000);
+                    TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 FileOutputStream fos = null;
                 try {
-                    fos = new FileOutputStream("f:/file.txt");
+                    fos = new FileOutputStream("/home/zh/file.txt");
                     long start = System.currentTimeMillis();
                     FileLock fileLock = fos.getChannel().lock();
                     System.out.println(System.currentTimeMillis() - start);
                     if (fileLock != null) {
                         System.out.println(Thread.currentThread() + "Locked file");
-                        TimeUnit.MILLISECONDS.sleep(5000);
+                        TimeUnit.SECONDS.sleep(5);
                         fileLock.release();
                         System.out.println(Thread.currentThread() + "Released Lock");
                     }
