@@ -59,6 +59,8 @@ public class Node1 {
         });
         latch.await();
         vertx.setPeriodic(5000, id -> {
+            System.out.println(mgr.getNodes());
+            System.out.println(mgr.getNodeID());
            eventBus.publish("first", "消息: " + System.currentTimeMillis());
         });
     }

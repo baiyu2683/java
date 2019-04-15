@@ -1,7 +1,6 @@
-package com.zh.poi.cvs;
+package com.zh.poi.csv;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
@@ -20,6 +19,7 @@ public class CommonCsvTest {
         CSVPrinter printer = new CSVPrinter(writer, csvFormat);
         for (int i = 0 ; i < 10 ; i++) {
             printer.printRecord("1\\asdf$$%@#)&(*%(&!@#>>??>\"\"'''", "2", "3", "5");
+            printer.printComment("comment");
         }
         writer.flush();
 

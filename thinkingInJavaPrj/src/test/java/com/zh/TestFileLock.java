@@ -14,8 +14,9 @@ public class TestFileLock {
 
     @Test
     public void test1() throws InterruptedException, IOException {
+        String filePath = "d:/test.txt";
         // 删除锁文件
-        File lockFile = new File("/home/zh/test.txt");
+        File lockFile = new File(filePath);
         if (lockFile.exists()) {
             lockFile.delete();
         }
@@ -24,7 +25,7 @@ public class TestFileLock {
         for (int i = 0 ; i < 10 ; i++) {
             final int tmp = i;
             scheduledThreadPoolExecutor.scheduleWithFixedDelay(() -> {
-                File file = new File("/home/zh/test.txt");
+                File file = new File(filePath);
                 boolean flag = false;
                 try {
                     if (!file.createNewFile()) {
