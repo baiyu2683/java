@@ -21,11 +21,12 @@ public class TestExceptionCaught {
                     if (f.isDone())
                         f.get();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("asdf");
                 }
             }
         };
-        scheduledThreadPoolExecutor.submit(() -> {
+        scheduledThreadPoolExecutor.execute(() -> {
             System.out.println(1);
             throw new RuntimeException("123");
         });

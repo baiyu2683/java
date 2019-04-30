@@ -1,4 +1,4 @@
-package com.zh.mysql.procedure;
+package com.zh.db.procedure;
 
 import oracle.jdbc.OracleTypes;
 import org.apache.commons.dbcp.BasicDataSource;

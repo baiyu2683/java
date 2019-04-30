@@ -9,6 +9,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by zhangheng on 2017/1/10.
@@ -85,5 +89,85 @@ public class TestJava8 {
         BitSet bitSet = new BitSet();
         bitSet.set(10);
         System.out.println(bitSet.get(10));
+    }
+
+
+    @Test
+    public void testCompleableFuture() {
+        List<String> datas = new ArrayList<>();
+        for (int i = 0 ; i < 5 ; i++) {
+            datas.add(String.valueOf(i));
+        }
+
+        Executor executor = Executors.newFixedThreadPool(Math.min(datas.size(), 100), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        List<CompletableFuture<Integer>> result =
+                datas.stream()
+                        .map(data -> CompletableFuture.supplyAsync(() -> {
+                            try {
+                                TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(0, 3));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return Integer.valueOf(data);
+                        }, executor))
+                        .collect(Collectors.toList());
+        List<Integer> lists = result.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+        System.out.println("耗时: " + stopWatch.getTime());
+        System.out.println(lists);
+    }
+
+    @Test
+    public void testCompleableFuture2() {
+        List<String> datas = new ArrayList<>();
+        for (int i = 0 ; i < 5 ; i++) {
+            datas.add(String.valueOf(i));
+        }
+
+        Executor executor = Executors.newFixedThreadPool(Math.min(datas.size(), 100), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        Stream<CompletableFuture<Integer>> result =
+                datas.stream()
+                        .map(data -> CompletableFuture.supplyAsync(() -> {
+                            try {
+                                TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(0, 3));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return Integer.valueOf(data);
+                        }, executor));
+        CompletableFuture[] resultFuture = result.map(future -> future.thenAccept(data -> {
+            System.out.println(data);
+        })).toArray(size -> new CompletableFuture[size]);
+        CompletableFuture.allOf(resultFuture).join();
+        System.out.println("耗时: " + stopWatch.getTime());
+    }
+
+    @Test
+    public void test2() {
+        Pattern customNamePattern = Pattern.compile("^\\{([\\s\\S]*)\\}$");
+        String s = "{namelike}";
+        Matcher matcher = customNamePattern.matcher(s);
+        if (matcher.find()) {
+            System.out.println(matcher.group(1));
+        }
     }
 }
