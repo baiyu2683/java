@@ -1,11 +1,15 @@
 package com.zh.map;
 
+import com.alibaba.fastjson.JSONObject;
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class TestHashMap {
 
-    public static void main(String[] args) {
+    @Test
+    public void test1() {
         Map<User, Integer> map = new HashMap<>();
         User user1 = new User();
         user1.setName("1");
@@ -64,5 +68,24 @@ public class TestHashMap {
         n |= n >>> 16; // 按上面类推，此时最高位的1到最末尾都是1，及001111....11这种格式
         int result = (n < 0) ? 1 : (n >= 2 << 30) ? 2 << 30 : n + 1; // 最后加1，得到2的次幂
         return result;
+    }
+
+
+    private static final int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
+    @Test
+    public void test2() {
+        Map<Integer, String> map1 = new HashMap<>();
+        map1.put(2, "2");
+        map1.put(1, "1");
+        System.out.println(JSONObject.toJSONString(map1));
+
+        Map<String, String> map2 = new HashMap<>();
+        map2.put("00000002", "2");
+        map2.put("00000001", "1");
+        System.out.println(JSONObject.toJSONString(map2));
     }
 }

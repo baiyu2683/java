@@ -133,7 +133,7 @@ public class SqlServerTest {
 
         Connection conn = bds.getConnection();
 
-        CallableStatement prepareCall = conn.prepareCall("{call test_page(?, ?, ?, ?)}");
+        CallableStatement prepareCall = conn.prepareCall("{call [test_page](?, ?, ?, ?)}");
         prepareCall.setInt("pageBeginNum", 0);
         prepareCall.setInt("pageEndNum", 10);
         prepareCall.setInt("pageRowCount", 3);

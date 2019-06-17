@@ -1,4 +1,4 @@
-package com.zh.mysql.mysql8;
+package com.zh.db.mysql8;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

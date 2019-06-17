@@ -8,6 +8,21 @@ import java.sql.*;
 public class MySqlTest {
 
     @Test
+    public void testUserPrivilege() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false");
+
+        Connection conn = bds.getConnection();
+        DatabaseMetaData meta = conn.getMetaData();
+        ResultSet resultSet = meta.getTablePrivileges(null, null, "user");
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("PRIVILEGE"));
+        }
+        bds.close();
+    }
+
+    @Test
     public void testDataPro() throws SQLException {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("com.mysql.cj.jdbc.Driver");

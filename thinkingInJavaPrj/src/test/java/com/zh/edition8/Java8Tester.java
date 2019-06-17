@@ -38,9 +38,7 @@ public class Java8Tester {
     }
 
     private void java8Sort(List<String> list) {
-        Collections.sort(list, (s1, s2) -> {
-            return s2.compareTo(s1);
-        });
+        Collections.sort(list, Comparator.reverseOrder());
     }
 
     @Test

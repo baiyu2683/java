@@ -1,4 +1,4 @@
-package com.zh.mysql.dbcp;
+package com.zh.db.dbcp;
 
 /**
  * dbcp连接mysql8
