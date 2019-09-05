@@ -1,5 +1,6 @@
 package com.zh.edition8.lambda;
 
+import lombok.ToString;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSONObject;
@@ -7,9 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -102,5 +101,49 @@ public class TestLambda {
         private Boolean flag;
         
         private String data;
+    }
+
+    @Test
+    public void testComparing() {
+        List<Data> list = new ArrayList<>(6);
+        list.add(new Data(12, 5, 14));
+        list.add(new Data(23, 29, 19));
+        list.add(new Data(24, 16, 18));
+        list.add(new Data(24, 16, 4));
+        list.add(new Data(26, 29, 10));
+        list.add(new Data(12, 28, 18));
+        list.forEach(data -> {
+            System.out.println(data.toString());
+        });
+//        Collections.sort(list,
+//                Comparator.comparing(Data::getNum1)
+//                .thenComparing(Data::getNum2)
+//                .thenComparing(Comparator.comparing(Data::getNum3).reversed())
+//        );
+        list = list.stream().sorted(
+                    Comparator.comparing(Data::getNum1)
+                        .thenComparing(Data::getNum2)
+                        .thenComparing(Comparator.comparing(Data::getNum3).reversed())
+                )
+                .collect(Collectors.toList());
+//        TestLambda.Data(num1=12, num2=5, num3=14)
+//        TestLambda.Data(num1=12, num2=28, num3=18)
+//        TestLambda.Data(num1=23, num2=29, num3=19)
+//        TestLambda.Data(num1=24, num2=16, num3=18)
+//        TestLambda.Data(num1=24, num2=16, num3=4)
+//        TestLambda.Data(num1=26, num2=29, num3=10)
+        System.out.println("=");
+        list.forEach(data -> {
+            System.out.println(data.toString());
+        });
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @ToString
+    static class Data {
+        private int num1;
+        private int num2;
+        private int num3;
     }
 }
