@@ -58,6 +58,11 @@
             <version>3.17</version>
         </dependency>
         <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency>
+        <dependency>
         	<groupId>fr.opensagres.xdocreport</groupId>
         	<artifactId>xdocreport</artifactId>
         	<version>1.0.6</version>

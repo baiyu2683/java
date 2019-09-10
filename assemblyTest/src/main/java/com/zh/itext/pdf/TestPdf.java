@@ -6,30 +6,32 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.tool.xml.ElementList;
 import com.itextpdf.tool.xml.XMLWorkerFontProvider;
-import com.lowagie.text.HeaderFooter;
-import com.sun.javafx.iio.ImageLoaderFactory;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.lowagie.text.pdf.PdfCell;
 import org.apache.commons.io.IOUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * @author Administrator
  * @date  2019/06/06
  */
 public class TestPdf {
 
     public static void main(String[] args) throws IOException, DocumentException {
-        Document document = new Document();
+        FontFactoryImp fp = new XMLWorkerFontProvider();
+        fp.register("E:\\apache-tomcat-6.0.45\\webapps\\HappyServer\\WEB-INF\\classes\\font\\fontResource");
+        FontFactory.setFontImp(fp);
 
+        Document document = new Document();
         PdfWriter pdfWriter= PdfWriter.getInstance(document, new FileOutputStream(new File("d:/test1.pdf")));
         pdfWriter.setPageEvent(new PageEvent("智能报告", "发布人: 测试用户", "发布时间: 2019年06月10日"));
         Rectangle pageSize = new Rectangle(595, 842);
@@ -37,60 +39,118 @@ public class TestPdf {
 
         document.open();
 
-        PdfPTable table = new PdfPTable(2);
+        PdfPTable table = new PdfPTable(1);
         table.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        table.setTotalWidth(new float[]{100, 100});
+        table.setTotalWidth(new float[]{200});
         table.getDefaultCell().setPadding(1);
         table.setLockedWidth(true);
         table.setSplitLate(false);
         table.setSplitRows(false);
 
-        PdfPCellEvent event = getCellBackGroundImageEvent();
-
+        // 第一行
         PdfPCell cell11 = new PdfPCell();
-        cell11.setCellEvent(event);
-        cell11.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        cell11.setFixedHeight(100);
-        cell11.setBorderWidth(0);
-//        cell11.setBorderColor(BaseColor.BLUE);
+        cell11.setMinimumHeight(300);
+        cell11.setRowspan(1);
+        cell11.setBorderWidth(1);
+        String html =
+                "<p>\n" +
+                        "    <strong>1</strong>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <em>2</em>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"text-decoration:underline;\">23</span>\n" +
+                        "</p>\n" +
+                        "<hr/>\n" +
+                        "<p style=\"text-align: center;\">\n" +
+                        "    34\n" +
+                        "</p>\n" +
+                        "<p style=\"text-align: right;\">\n" +
+                        "    <sup><em><span style=\"text-decoration:underline;\"><span style=\"text-decoration:line-through;\"><span style=\"font-size:32px\">亚欧非美南大4</span></span></span></em></sup>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    5\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    6\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\">67</span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\"><br/></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\"><sup>上标</sup></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"font-family:隶书, SimLi;color:#ffff00;font-size:32px\">阿斯蒂芬<span style=\"font-family: 宋体, SimSun;\"><span style=\"font-family: 隶书, SimLi;\"><span style=\"font-family: sans-serif;\"></span></span></span></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\"><sub>下标</sub></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\"><br/></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <span style=\"color:#ff0000\"><span><span style=\"background-color: rgb(255, 255, 0);\">345q</span></span><br/></span>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <a href=\"http://www.baidu.com\" target=\"_blank\" title=\"百度\"><strong><em><span style=\"text-decoration:line-through;\"><span style=\"font-size:24px;color:#ffc000;background-color: rgb(0, 176, 80);font-family:楷体, 楷体_GB2312, SimKai\">http://www.baidu.com</span></span></em></strong></a><br/>\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "    <br/>\n" +
+                        "</p>\n" +
+                        "<ol>\n" +
+                        "    <li>\n" +
+                        "        <p>\n" +
+                        "            <strong><em><span style=\"text-decoration:underline;\"><span style=\"text-decoration:line-through;\"><span style=\"color:#ffff00;background-color: rgb(255, 0, 0);\">列表项1</span></span></span></em></strong>\n" +
+                        "        </p>\n" +
+                        "    </li>\n" +
+                        "    <li>\n" +
+                        "        <p>\n" +
+                        "            列表项2\n" +
+                        "        </p>\n" +
+                        "    </li>\n" +
+                        "</ol>\n" +
+                        "<div>\n" +
+                        "    <ul>\n" +
+                        "        <li>\n" +
+                        "            <strong><em><span style=\"text-decoration:underline;\"><span style=\"text-decoration:line-through;\"><span style=\"color:#0070c0;background-color: rgb(255, 255, 0);\">无序列表项1</span></span></span></em></strong><br/>\n" +
+                        "        </li>\n" +
+                        "        <li>\n" +
+                        "            无序列表项2\n" +
+                        "        </li>\n" +
+                        "    </ul>\n" +
+                        "</div>";
+        ElementList elements = XMLWorkerHelper.parseToElementList(html, "");
+        for (Element element : elements) {
+            if (element instanceof Paragraph) {
+                Paragraph paragraph = (Paragraph) element;
+                List<Chunk> chunks = paragraph.getChunks();
+                for (Chunk chunk : chunks) {
+                    Font chunkFont = chunk.getFont();
+                    String fontName = chunkFont.getFamilyname();
+                    if (fontName.length() == 0 || "unknown".equalsIgnoreCase(fontName)) {
+                        fontName = "宋体";
+                        Font font = fp.getFont(fontName, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                        font.setStyle(chunkFont.getStyle());
+                        font.setSize(chunkFont.getSize());
+                        font.setColor(chunkFont.getColor());
+                        chunk.setFont(font);
+                    }
+                }
+            } else {
+//                System.out.println(element.getClass().getSimpleName());
+            }
+            cell11.addElement(element);
+        }
         table.addCell(cell11);
-
-        PdfPCell cell12 = new PdfPCell();
-        cell12.setFixedHeight(100);
-        cell12.setBorderWidth(0);
-//        cell12.setBorderColor(BaseColor.BLUE);
-        cell12.setCellEvent(event);
-        table.addCell(cell12);
         table.completeRow();
+
+
         document.add(table);
-
-        document.newPage();
-
-        PdfPTable table2 = new PdfPTable(2);
-        table2.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        table2.setTotalWidth(new float[]{100, 100});
-        table2.getDefaultCell().setPadding(1);
-        table2.setLockedWidth(true);
-        table2.setSplitLate(false);
-        table2.setSplitRows(false);
-
-        PdfPCell cell21 = new PdfPCell();
-        cell21.setCellEvent(event);
-        cell21.setHorizontalAlignment(HorizontalAlignment.LEFT);
-        cell21.setFixedHeight(100);
-        cell21.setBorderWidth(2);
-        cell21.setBorderColor(BaseColor.BLUE);
-        table.addCell(cell21);
-
-        PdfPCell cell22 = new PdfPCell();
-        cell22.setFixedHeight(100);
-        cell22.setBorderWidth(2);
-        cell22.setBorderColor(BaseColor.BLUE);
-        cell22.setCellEvent(event);
-        table2.addCell(cell22);
-        table2.completeRow();
-        document.add(table2);
-
         document.close();
         pdfWriter.flush();
     }
@@ -99,45 +159,37 @@ public class TestPdf {
         return (cell, position, canvases) -> {
             System.out.println("=====================");
             System.out.println(position.getLeft() + "-" + position.getTop());
-//            try {
-//                File file = new File("d:/test2.png");
-//                System.out.println(file.toURI().toURL());
-//                BufferedImage srcImage = ImageIO.read(file.toURI().toURL());
-//
-//                int cellWidth = (int) position.getWidth();
-//                int cellHeight = (int) position.getHeight();
-//                int imageWidth = srcImage.getWidth();
-//                int imageHeight = srcImage.getHeight();
-//
-//                BufferedImage destImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
-//                Graphics2D graphics2D = destImage.createGraphics();
-//                graphics2D.setComposite(AlphaComposite.Clear);
-//                graphics2D.fillRect(0, 0, imageWidth, imageHeight);
-//                graphics2D.setComposite(AlphaComposite.Src);
-//                graphics2D.fillRect(0, 0, imageWidth, imageHeight);
-//                graphics2D.drawImage(srcImage,
-//                        0, imageHeight / 2, cellWidth / 2, imageHeight,
-//                        0, imageHeight / 2, cellWidth / 2, imageHeight,
-//                        null);
-//                destImage.flush();
-//                graphics2D.dispose();
-//
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                ImageIO.write(destImage, "png", outputStream);
-//                byte[] newImageData = outputStream.toByteArray();
-//                IOUtils.write(newImageData, new FileOutputStream("d:/test_result.png"));
-//                outputStream = null;
-//                Image newImage = Image.getInstance(newImageData);
-//                newImage.setAbsolutePosition(position.getLeft(), position.getBottom());
-//                canvases[PdfPTable.BACKGROUNDCANVAS]
-//                        .addImage(newImage);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (BadElementException e) {
-//                e.printStackTrace();
-//            } catch (DocumentException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                File file = new File("d:/动态图片.gif");
+                System.out.println(file.toURI().toURL());
+                BufferedImage srcImage = ImageIO.read(file.toURI().toURL());
+
+                int imageWidth = srcImage.getWidth();
+                int imageHeight = srcImage.getHeight();
+
+                BufferedImage destImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D graphics2D = destImage.createGraphics();
+                graphics2D.setComposite(AlphaComposite.Clear);
+                graphics2D.fillRect(0, 0, imageWidth, imageHeight);
+                graphics2D.setComposite(AlphaComposite.Src);
+                graphics2D.fillRect(0, 0, imageWidth, imageHeight);
+                graphics2D.drawImage(srcImage,
+                        0, 0, imageWidth / 2, imageHeight,
+                        0, 0, imageWidth / 2, imageHeight,
+                        null);
+                destImage.flush();
+                graphics2D.dispose();
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ImageIO.write(destImage, "png", outputStream);
+                byte[] newImageData = outputStream.toByteArray();
+                IOUtils.write(newImageData, new FileOutputStream("d:/test_result.png"));
+                Image image = Image.getInstance(newImageData);
+                image.setAbsolutePosition(cell.getLeft(), cell.getBottom());
+                canvases[PdfPTable.BACKGROUNDCANVAS].addImage(image);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         };
     }
 

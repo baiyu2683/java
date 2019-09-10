@@ -1,14 +1,21 @@
 package com.zh.itext;
 
 import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.html.simpleparser.HTMLWorker;
+import com.lowagie.text.html.simpleparser.StyleSheet;
 import com.lowagie.text.pdf.DefaultSplitCharacter;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.style.RtfFont;
+import com.lowagie.text.rtf.table.RtfBorderGroup;
 import com.lowagie.text.rtf.table.RtfCell;
 
+import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  *
@@ -35,20 +42,106 @@ public class WordTestIText {
         table.setAutoFillEmptyCells(true);
 
         RtfCell cell = new RtfCell();
-        Chunk chunk = new Chunk("456asd师打发斯asdfasdfasdfqw3ef阿瑟大方权威番茄味废弃未付钱未付钱未付全微分全微分df师打发斯蒂芬阿斯蒂芬");
-        Phrase phrase = new Phrase(chunk);
-        Paragraph paragraph = new Paragraph(phrase);
-        // 解决office中中文字体，字体选择框里乱码问题
-        String fontName = new String("微软雅黑".getBytes("gb18030"), "iso-8859-1");
-        RtfFont rtfFont = new RtfFont(fontName);
-        rtfFont.setCharset(134);
-//        rtfFont.setSize(20);
-//        BaseFont.createFont("微软雅黑",  , BaseFont.EMBEDDED);
-        paragraph.setFont(rtfFont);
-        paragraph.setSpacingBefore(0);
-        paragraph.setSpacingAfter(0);
-        Font font = paragraph.getFont();
-        cell.addElement(paragraph);
+
+        String html = "<p>\n" +
+                "    <strong>粗体</strong>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    <i>斜体</em>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    <span style=\"text-decoration:underline;\">下划线</span>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    <span style=\"text-decoration:line-through;\">删除线</span>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    x<sup>上标</sup>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    x<sub>下标</sub>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    <span style=\"color:#ffff00\">字体颜色</span>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    <span style=\"background-color: rgb(0, 176, 80);\">字体背景色</span>\n" +
+                "</p>\n" +
+                "<ol>\n" +
+                "    <li>\n" +
+                "        <p>\n" +
+                "            有序列表1<br/>\n" +
+                "        </p>\n" +
+                "    </li>\n" +
+                "    <li>\n" +
+                "        <p>\n" +
+                "            有序列表2\n" +
+                "        </p>\n" +
+                "    </li>\n" +
+                "</ol>\n" +
+                "<div>\n" +
+                "    <ul>\n" +
+                "        <li>\n" +
+                "            无序列表1<br/>\n" +
+                "        </li>\n" +
+                "        <li>\n" +
+                "            无序列表2\n" +
+                "        </li>\n" +
+                "    </ul>\n" +
+                "    <h1>\n" +
+                "        h1\n" +
+                "    </h1>\n" +
+                "</div>\n" +
+                "<h2>\n" +
+                "    h2\n" +
+                "</h2>\n" +
+                "<p style=\"text-align: center;\">\n" +
+                "    <span style=\"font-family: 隶书, SimLi; font-size: 32px; background-color: rgb(0, 176, 240);color:#ff0000\">字体设置</span>\n" +
+                "</p>\n" +
+                "<p style=\"text-align: center;\">\n" +
+                "    <br/>\n" +
+                "</p>\n" +
+                "<p style=\"text-align: left;\">\n" +
+                "    <a href=\"http://www.baidu.com\" target=\"_blank\" title=\"百度首页\">http://www.baidu.com</a><br/>\n" +
+                "</p>\n" +
+                "<hr/>\n" +
+                "<p style=\"text-align: left;\">\n" +
+                "    分割线\n" +
+                "</p>";
+//        html = "<p><span class=\"through\" style=\"text-decoration:line-through;\">删除线</span></p>";
+        StyleSheet styleSheet = new StyleSheet();
+        styleSheet.loadStyle("through", "text-decoration", "line-through");
+        ArrayList<Element> htmlList = HTMLWorker.parseToList(new StringReader(html), styleSheet);
+
+        for (Element element : htmlList) {
+            if (element instanceof Paragraph) {
+                Paragraph paragraph = (Paragraph) element;
+                ArrayList<Chunk> chunks = paragraph.getChunks();
+                for (Chunk chunk : chunks) {
+                    String fontName = chunk.getFont().getFamilyname();
+                    if ("unknown".equalsIgnoreCase(fontName)) {
+                        Font font = new Font();
+                        font.setFamily("宋体");
+                        font.setSize(18);
+                        font.setStyle(Font.BOLD);
+                        font.setColor(Color.BLUE);
+                        chunk.setFont(font);
+                    }
+                }
+            }
+            cell.addElement(element);
+            System.out.println("-----------------------");
+        }
+
+        Color paramColor = Color.BLUE;
+        RtfBorderGroup localRtfBorderGroup = new RtfBorderGroup();
+        localRtfBorderGroup.addBorder(1, 1, 1.0F, paramColor);
+        localRtfBorderGroup.addBorder(8, 1, 1.0F, paramColor);
+        localRtfBorderGroup.addBorder(2, 1, 1.0F, paramColor);
+        localRtfBorderGroup.addBorder(4, 1, 1.0F, paramColor);
+        cell.setBorders(localRtfBorderGroup);
+
+//        cell.setBackgroundColor(Color.BLUE);
 
         table.addCell(cell);
         BigDecimal decimal = new BigDecimal(60 * 15);
