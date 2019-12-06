@@ -1,0 +1,17 @@
+syntax="proto3";
+
+option java_package="com.zh.model";
+option java_outer_classname="MessageDTOModel";
+
+message MessageDTO {
+    string from = 1;
+    string to = 2;
+    string message = 3;
+    MessageType type = 4;
+}
+enum MessageType {
+    normal = 0;
+}
+
+
+

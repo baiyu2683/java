@@ -1,5 +1,5 @@
 syntax="proto3";
-option java_package="com.zh.protobuf";
+option java_package="com.zh.model";
 option java_outer_classname="PersonModel";
 
 message Person {

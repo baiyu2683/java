@@ -1,0 +1,9 @@
+syntax="proto3";
+
+option java_package="com.zh.model";
+
+option java_outer_classname="AddFriendDTOModel";
+
+message AddFriendDTO {
+    string code = 1;
+}

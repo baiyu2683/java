@@ -1,0 +1,12 @@
+syntax="proto3";
+
+import "user.proto";
+
+option java_package="com.zh.model";
+
+option java_outer_classname="AddFriendResponseDTOModel";
+
+
+message AddFriendResponseDTO {
+    UserDTO user = 1;
+}
