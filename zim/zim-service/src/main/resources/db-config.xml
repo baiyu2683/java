@@ -7,6 +7,6 @@
         <package name="com.zh.entity"/>
     </typeAliases>
     <mappers>
-        <mapper resource="com/zh/entity/UserMapper.xml"/>
+        <mapper resource="com/zh/mapper/UserMapper.xml"/>
     </mappers>
 </configuration>

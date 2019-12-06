@@ -14,6 +14,7 @@ public class UserPO {
     private String id;
     private String code;
     private String email;
+    private String nickname;
     private String password;
 
 }

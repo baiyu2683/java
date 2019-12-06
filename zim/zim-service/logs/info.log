@@ -1,4 +1,0 @@
-[17:06:30:126] [INFO] - org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:55) - Starting ServiceStarter on DELL-PC-1 with PID 19028 (D:\private\exercises\zim\zim-service\target\zim-service-1.0-SNAPSHOT.jar started by Administrator in D:\private\exercises\zim\zim-service)
-[17:06:30:126] [INFO] - org.springframework.boot.SpringApplication.logStartupProfileInfo(SpringApplication.java:651) - No active profile set, falling back to default profiles: default
-[17:06:30:496] [WARN] - org.mybatis.logging.Logger.warn(Logger.java:44) - No MyBatis mapper was found in '[com.zh]' package. Please check your configuration.
-[17:06:30:866] [INFO] - org.springframework.boot.StartupInfoLogger.logStarted(StartupInfoLogger.java:61) - Started ServiceStarter in 0.981 seconds (JVM running for 1.718)

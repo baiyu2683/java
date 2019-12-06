@@ -15,14 +15,14 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-public class ServiceController {
+public class ServerController {
 
     @RequestMapping(value = "/home",
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, String> home() {
         Map<String, String> home = new HashMap<>(1);
-        home.putIfAbsent("path", "home");
+        home.putIfAbsent("path", "主页");
         return home;
     }
 }
