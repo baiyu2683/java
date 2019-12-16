@@ -1,0 +1,9 @@
+syntax="proto3";
+
+option java_package="com.zh.model";
+option java_outer_classname = "RegisterResponseDTOModel";
+
+message RegisterResponseDTO {
+    bool success = 1;
+    string msg = 2;
+}

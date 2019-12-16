@@ -1,6 +1,7 @@
 package com.zh.mapper;
 
 import com.zh.entity.UserPO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -10,5 +11,9 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    List<UserPO> listAll();
+    List<UserPO> list(@Param("page") int page, @Param("pageSize") int pageSize);
+
+    UserPO getByCode(@Param("code") String code);
+
+    void updateByCode(UserPO userPO);
 }

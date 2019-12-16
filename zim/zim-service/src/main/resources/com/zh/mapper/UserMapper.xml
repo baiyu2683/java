@@ -5,16 +5,35 @@
     <resultMap id="user" type="com.zh.entity.UserPO">
         <id column="id" property="id" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="code" property="code" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <result column="email" property="email" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" javaType="com.zh.model.UserDTOModel$Sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
         <result column="password" property="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="createTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result column="modifyTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <sql id="all_select_columns">id, `code`, email, nickname, `password`</sql>
+    <sql id="all_select_columns">id, `code`, nickname, sex, `password`, createTime, modifyTime</sql>
 
-    <select id="listAll" resultMap="user">
+    <select id="list" resultMap="user">
         select <include refid="all_select_columns"/>
         from user
-        where `delete` = 0;
+        limit #{page}, #{pageSize};
     </select>
+    <select id="getByCode" parameterType="string" resultMap="user">
+        select <include refid="all_select_columns"/>
+        from user
+        where code = #{code};
+    </select>
+    <update id="updateByCode" parameterType="userPo">
+        update `user`
+        <set>
+            <if test="nickname != null and nickname != ''">nickname=#{nickname},</if>
+            <if test="sex != null">sex=#{sex, typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},</if>
+            <if test="createTime != null">createTime=#{createTime},</if>
+            <if test="modifyTime != null">modifyTime=#{modifyTime},</if>
+        </set>
+        <where>
+            code = #{code};
+        </where>
+    </update>
 </mapper>

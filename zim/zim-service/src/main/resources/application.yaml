@@ -7,7 +7,21 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cache:
+    type: redis
+  redis:
+#    host: localhost
+#    port: 6379
+#    password: 1234qwer
+    database: 0
+    lettuce:
+      pool:
+        max-active: 50
+        max-wait: 10s
+        min-idle: 10
+        max-idle: 20
 
 mybatis:
-  config-location: classpath:db-config.xml
+  config-location: classpath:mybatis-config.xml
+
 
