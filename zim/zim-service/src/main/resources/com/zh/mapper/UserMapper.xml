@@ -6,7 +6,7 @@
         <id column="id" property="id" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="code" property="code" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <result column="sex" property="sex" javaType="com.zh.model.UserDTOModel$Sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result column="sex" property="sex" javaType="com.zh.model.Sex" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
         <result column="password" property="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="createTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result column="modifyTime" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>

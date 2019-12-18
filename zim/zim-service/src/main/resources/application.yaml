@@ -29,5 +29,3 @@ spring:
 
 mybatis:
   config-location: classpath:mybatis-config.xml
-
-
