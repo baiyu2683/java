@@ -1,7 +1,6 @@
 syntax="proto3";
 
 option java_package="com.zh.model";
-option java_outer_classname="RegisterDTOModel";
 
 message RegisterDTO {
     string code = 1;

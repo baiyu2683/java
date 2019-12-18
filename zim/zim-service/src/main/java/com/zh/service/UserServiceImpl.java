@@ -3,13 +3,14 @@ package com.zh.service;
 import com.zh.cache.constant.Consts;
 import com.zh.entity.UserPO;
 import com.zh.mapper.UserMapper;
-import com.zh.model.UserDTOModel;
+import com.zh.model.UserDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,16 +23,18 @@ import java.util.List;
 @Slf4j
 @Service
 @CacheConfig(cacheNames = Consts.KEY_USER)
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
 
+    @Override
     @Cacheable(key = "#root.methodName + ':' + #page + ':' + #pageSize")
-    public List<UserDTOModel.UserDTO> list(int page, int pageSize) {
+    @Transactional()
+    public List<UserDTO> list(int page, int pageSize) {
         List<UserPO> userPOList = userMapper.list(page - 1, pageSize);
-        List<UserDTOModel.UserDTO> userDTOS = new ArrayList<>();
-        UserDTOModel.UserDTO.Builder builder = UserDTOModel.UserDTO.newBuilder();
+        List<UserDTO> userDTOS = new ArrayList<>();
+        UserDTO.Builder builder = UserDTO.newBuilder();
         for (UserPO userPO : userPOList) {
             builder.clear();
             builder.setCode(userPO.getCode())
@@ -50,14 +53,15 @@ public class UserService {
         return userDTOS;
     }
 
+    @Override
     @Cacheable(key = "#code")
-    public UserDTOModel.UserDTO getByCode(String code) {
+    public UserDTO getByCode(String code) {
         UserPO userPO = userMapper.getByCode(code);
         return convert(userPO);
     }
 
-    private UserDTOModel.UserDTO convert(UserPO userPO) {
-        UserDTOModel.UserDTO.Builder builder = UserDTOModel.UserDTO.newBuilder();
+    private UserDTO convert(UserPO userPO) {
+        UserDTO.Builder builder = UserDTO.newBuilder();
         builder.setCode(userPO.getCode())
                 .setNickName(userPO.getCode())
                 .setSex(userPO.getSex());
@@ -72,11 +76,15 @@ public class UserService {
         return builder.build();
     }
 
+    @Override
     @CachePut(key = "#userPO.code")
-    public UserDTOModel.UserDTO updateByCode(UserPO userPO) {
-        if (userPO.getModifyTime() == null) {
-            userPO.setModifyTime(new Date());
-        }
+    @Transactional
+    public UserDTO updateByCode(UserDTO userDTO) {
+        userDTO = userDTO.toBuilder().setModifyTime(System.currentTimeMillis()).build();
+        UserPO userPO = new UserPO();
+        userPO.setModifyTime(new Date(userDTO.getModifyTime()));
+        userPO.setSex(userDTO.getSex());
+        userPO.setNickname(userDTO.getNickName());
         userMapper.updateByCode(userPO);
         return getByCode(userPO.getCode());
     }

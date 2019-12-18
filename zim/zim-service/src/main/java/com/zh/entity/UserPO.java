@@ -1,6 +1,6 @@
 package com.zh.entity;
 
-import com.zh.model.UserDTOModel;
+import com.zh.model.Sex;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class UserPO {
     private String id;
     private String code;
     private String nickname;
-    private UserDTOModel.Sex sex;
+    private Sex sex;
     private String password;
     private Date createTime;
     private Date modifyTime;

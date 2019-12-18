@@ -2,8 +2,6 @@ syntax="proto3";
 
 option java_package="com.zh.model";
 
-option java_outer_classname="LoginRequestDTOModel";
-
 message LoginRequestDTO {
     string code = 1;
     string password = 2;

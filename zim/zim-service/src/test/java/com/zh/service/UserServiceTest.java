@@ -1,14 +1,13 @@
 package com.zh.service;
 
-import com.zh.entity.UserPO;
-import com.zh.model.UserDTOModel;
+import com.zh.model.Sex;
+import com.zh.model.UserDTO;
+import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -20,29 +19,30 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 public class UserServiceTest {
 
-    @Autowired
+    @Reference
     private UserService userService;
 
     @Test
     public void list() {
-        List<UserDTOModel.UserDTO> userDTOS = userService.list(1, 10);
+        List<UserDTO> userDTOS = userService.list(1, 10);
         System.out.println(userDTOS.size());
     }
 
     @Test
     public void getByCode() {
-        UserDTOModel.UserDTO userDTO = userService.getByCode("500000");
+        UserDTO userDTO = userService.getByCode("500000");
         System.out.println(userDTO.toString());
     }
 
     @Test
     public void updateByCode() {
-        UserPO userPO = new UserPO();
-        userPO.setCode("500000");
-        userPO.setModifyTime(new Date());
-        userPO.setNickname("123123123123");
-        userPO.setSex(UserDTOModel.Sex.female);
-        userService.updateByCode(userPO);
+        UserDTO userDTO = UserDTO.newBuilder()
+                .setModifyTime(System.currentTimeMillis())
+                .setSex(Sex.female)
+                .setNickName("asdf")
+                .build();
+
+        userService.updateByCode(userDTO);
     }
 
     @Test

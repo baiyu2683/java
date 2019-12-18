@@ -20,5 +20,9 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.zh</groupId>
+            <artifactId>zim-model</artifactId>
+        </dependency>
     </dependencies>
 </project>
