@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         for (UserPO userPO : userPOList) {
             builder.clear();
             builder.setCode(userPO.getCode())
-                    .setNickName(userPO.getCode())
+                    .setNickName(userPO.getNickname())
                     .setSex(userPO.getSex());
             Date createTime = userPO.getCreateTime();
             if (createTime != null) {

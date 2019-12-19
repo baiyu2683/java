@@ -1,5 +1,6 @@
 package com.zh;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -19,7 +20,6 @@ import java.util.concurrent.CountDownLatch;
 @MapperScan("com.zh.mapper")
 @EnableCaching
 @EnableDubbo(scanBasePackages = "com.zh.service")
-@PropertySource("classpath:dubbo.properties")
 @EnableRabbit
 public class ServiceStarter {
 

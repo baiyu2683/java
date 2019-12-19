@@ -9,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 @EnableHystrix
 @SpringBootApplication
 @EnableDubbo
-@PropertySource("classpath:dubbo.properties")
 public class RouteStarter
 {
     public static void main( String[] args ) {
