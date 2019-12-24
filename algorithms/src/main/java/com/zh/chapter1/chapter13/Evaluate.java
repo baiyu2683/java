@@ -1,7 +1,6 @@
 package com.zh.chapter1.chapter13;
 
 import java.util.*;
-import java.util.Stack;
 
 /**
  * 双栈法计算表达式的值
@@ -10,7 +9,7 @@ import java.util.Stack;
 public class Evaluate {
 
     public static void main(String[] args) {
-        String expression = "($1004$ and $1001,1002,1003,1004$)";
+        String expression = "($$ or $1001,1002,1003,1004$) or ($1$)";
         List<Integer> list = evaluateExpress(expression);
         System.out.println(Arrays.toString(list.toArray()));
     }
@@ -18,8 +17,8 @@ public class Evaluate {
     private static List<Integer> evaluateExpress(String expression) {
         String[] subStr = expression.split("\\s*");
 
-        Stack<String> ops = new Stack<>();
-        Stack<List<Integer>> vals = new Stack<>();
+        Deque<String> ops = new LinkedList<>();
+        Deque<List<Integer>> vals = new LinkedList<>();
         // 单个数字
         StringBuilder data = new StringBuilder();
         // 一个$$中间所有的数字
@@ -27,14 +26,16 @@ public class Evaluate {
         boolean isValue = false;
         for (int i = 0 ; i < subStr.length ; i++) {
             String sub = subStr[i];
-            // 忽略左括号
-            if (sub.equals("(")) {
-            } else if (sub.equals("$")) {
+            if (sub.equals("$")) {
                 if (isValue) {
-                    //最后一个数字
-                    dataList.add(Integer.valueOf(data.toString()));
-                    data.setLength(0);
                     // 第二个$
+
+                    //最后一个数字
+                    if (data.length() > 0) {
+                        dataList.add(Integer.valueOf(data.toString()));
+                        data.setLength(0);
+                    }
+
                     List<Integer> clone = new ArrayList<>();
                     for (Integer d : dataList) {
                         clone.add(d);
@@ -47,8 +48,10 @@ public class Evaluate {
                 if (!sub.equals(",")) {
                     data.append(sub);
                 } else {
-                    dataList.add(Integer.valueOf(data.toString()));
-                    data.setLength(0);
+                    if (data.length() > 0) {
+                        dataList.add(Integer.valueOf(data.toString()));
+                        data.setLength(0);
+                    }
                 }
             } else if (sub.equals("a")) {
                 // 操作符入操作符栈
@@ -78,4 +81,5 @@ public class Evaluate {
         }
         return vals.pop();
     }
+
 }
