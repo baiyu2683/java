@@ -1,0 +1,33 @@
+syntax="proto3";
+
+option java_package="com.zh.model";
+option java_multiple_files=true;
+option java_outer_classname="DataWrapperModel";
+
+import "login.proto";
+import "login_response.proto";
+import "register.proto";
+import "register_response.proto";
+
+message DataWrapper {
+
+    enum DataType {
+        register_request = 0;
+        register_response = 1;
+        login_request = 2;
+        login_response = 3;
+        friend_add_request = 4;
+        friend_add_response = 5;
+        message_send_request = 6;
+        message_send_response = 7;
+    }
+
+    DataType type = 1;
+
+    oneof data {
+        RegisterRequestDTO registerRequestDTO = 2;
+        RegisterResponseDTO registerResponseDTO = 3;
+        LoginRequestDTO loginRequestDTO = 4;
+        LoginResponseDTO loginResponseDTO = 5;
+    }
+}

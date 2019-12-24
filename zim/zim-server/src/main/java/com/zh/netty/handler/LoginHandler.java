@@ -1,19 +1,21 @@
 package com.zh.netty.handler;
 
-import com.zh.model.Login;
+import com.zh.model.LoginRequestDTO;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.springframework.stereotype.Component;
 
 /**
  * @author zhangheng
  * @date 2019/12/23
  */
 @ChannelHandler.Sharable
-public class LoginHandler extends SimpleChannelInboundHandler<Login.LoginRequestDTO> {
+@Component
+public class LoginHandler extends SimpleChannelInboundHandler<LoginRequestDTO> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Login.LoginRequestDTO loginRequestDTO) throws Exception {
-
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, LoginRequestDTO loginRequestDTO) throws Exception {
+        System.out.println("收到..." + loginRequestDTO.toString());
     }
 }

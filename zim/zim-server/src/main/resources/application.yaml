@@ -13,6 +13,7 @@ dubbo:
     serialization: protostuff
 
 im:
+  root: zim-server
   port: 10099
   readerIdleTime: 10000
   writerIdleTime: 0
