@@ -1,22 +1,33 @@
 package com.zh.netty.zk;
 
-import lombok.extern.slf4j.Slf4j;
+import com.zh.netty.constants.ServerConstants;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.state.ConnectionState;
-import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
  * zookeeper节点注册
+ * serverIp由启动参数传入
  */
-@Slf4j
+@Log4j2
 @Component
 public class ZkRegister implements Runnable {
+
+    @Value("${im.port}")
+    private int port;
+
+    @Value("${im.registryAddress}")
+    private String registryAddress;
 
     public void register() {
         new Thread(this).start();
@@ -24,13 +35,21 @@ public class ZkRegister implements Runnable {
 
     @Override
     public void run() {
-        String serverNode = "/zim-server/127.0.0.1:10099";
+        String serverIp = System.getProperty(ServerConstants.SERVER_IP_KEY);
+        if (StringUtils.isBlank(serverIp)) {
+            serverIp = ServerConstants.DEFAULT_SERVER_IP;
+        }
+        log.info("server_ip:" + serverIp);
+        String serverNode = String.format(ServerConstants.SERVER_NODE_TEMPLATE,
+                ServerConstants.ZK_SERVER_ROOT_NODE,
+                serverIp,
+                port);
         try {
             // 节点注册，断线后3秒，节点清除
             RetryPolicy retryPolicy = new ExponentialBackoffRetry(5000, 3);
             CuratorFramework client = CuratorFrameworkFactory
                     .builder()
-                    .connectString("127.0.0.1:2181")
+                    .connectString(registryAddress)
                     .sessionTimeoutMs(3 * 1000)
                     .retryPolicy(retryPolicy)
                     .build();

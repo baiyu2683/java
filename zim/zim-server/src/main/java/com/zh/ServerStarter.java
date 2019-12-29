@@ -21,9 +21,4 @@ public class ServerStarter {
     public static void main(String[] args) {
         SpringApplication.run(ServerStarter.class);
     }
-
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext context) {
-        return args -> logger.info("arguments: " + ArrayUtils.toString(args));
-    }
 }

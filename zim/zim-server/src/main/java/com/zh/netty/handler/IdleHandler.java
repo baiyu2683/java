@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  * @author zhangheng
  * @date 2019/12/23
  */
-@Component
 public class IdleHandler extends IdleStateHandler {
 
     public IdleHandler(int readerIdleTimeSeconds, int writerIdleTimeSeconds, int allIdleTimeSeconds) {

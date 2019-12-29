@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <start-class>com.zh.ServiceStarter</start-class>
         <skipTests>true</skipTests>
     </properties>
 
@@ -116,15 +117,12 @@
 
     </dependencies>
     <build>
+        <finalName>zim-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.2.1.RELEASE</version>
-                <configuration>
-                    <mainClass>com.zh.ServiceStarter</mainClass>
-                    <layout>ZIP</layout>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
