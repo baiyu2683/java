@@ -9,7 +9,9 @@ import java.util.*;
 public class Evaluate {
 
     public static void main(String[] args) {
-        String expression = "($$ or $1001,1002,1003,1004$) or ($1$)";
+        String expression = "$1$ and $1,2,3$";
+//        expression = "$1,2,4$ and ($4,5,6$ or $7,8,9$)";
+//        expression = "$1,2,3$ and ($4,2,6$ or $1,7,8,9$) and $1,2,6$";
         List<Integer> list = evaluateExpress(expression);
         System.out.println(Arrays.toString(list.toArray()));
     }
@@ -78,6 +80,24 @@ public class Evaluate {
                 // 值压栈
                 vals.push(v);
             }
+        }
+        while (ops.size() > 0) {
+            // 操作符出栈
+            String op = ops.pop();
+            // 第一个操作数出栈
+            List<Integer> v = vals.pop();
+            Set<Integer> set = new HashSet<>(v);
+            if (op.equals("and")) {
+                // 求交集
+                set.retainAll(vals.pop());
+                v = new ArrayList<>(set);
+            }else if (op.equals("or")) {
+                // 求并集
+                set.addAll(vals.pop());
+                v = new ArrayList<>(set);
+            }
+            // 值压栈
+            vals.push(v);
         }
         return vals.pop();
     }
