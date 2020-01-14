@@ -1,6 +1,5 @@
 package com.zh.service;
 
-import com.zh.model.Sex;
 import com.zh.model.UserDTO;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class UserServiceTest {
     public void updateByCode() {
         UserDTO userDTO = UserDTO.newBuilder()
                 .setModifyTime(System.currentTimeMillis())
-                .setSex(Sex.female)
+                .setSex(UserDTO.Sex.female)
                 .setNickName("asdf")
                 .build();
 

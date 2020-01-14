@@ -18,3 +18,4 @@ im:
   readerIdleTime: 10000
   writerIdleTime: 0
   allIdleTime: 0
+  registryAddress: 127.0.0.1:2181

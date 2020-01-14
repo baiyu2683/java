@@ -26,6 +26,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>zim-model</finalName>
         <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>

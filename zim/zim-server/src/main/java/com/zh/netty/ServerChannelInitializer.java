@@ -21,7 +21,7 @@ public class ServerChannelInitializer extends ChannelInitializer<NioSocketChanne
     @Value("${im.writerIdleTime}")
     private int writerIdleTime;
 
-    @Value("${im.allIdleTIme}")
+    @Value("${im.allIdleTime}")
     private int allIdleTime;
 
     @Override
