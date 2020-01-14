@@ -16,14 +16,20 @@ public abstract class SocketUsingTask<T> implements CancellableTask<T> {
         socket = s;
     }
 
+    @Override
     public synchronized void cancel() {
         try {
-            if (socket != null) socket.close();
-        } catch (IOException e) {}
+            if (socket != null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+        }
     }
 
+    @Override
     public RunnableFuture<T> newTask() {
         return new FutureTask<T>(this) {
+          @Override
           public boolean cancel(boolean mayInterruptIfRunning) {
               try {
                   SocketUsingTask.this.cancel();

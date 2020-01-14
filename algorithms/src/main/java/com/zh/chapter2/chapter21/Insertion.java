@@ -19,7 +19,7 @@ public class Insertion {
 	public static void sort(Comparable[] a, int lo, int hi) {
 		// 升序
 		for (int i = lo + 1 ; i <= hi ; i++) {
-			for (int j = i ; j > hi && less(a[j], a[j - 1]) ; j--) {
+			for (int j = i ; j > lo && less(a[j], a[j - 1]) ; j--) {
                 exch(a, j, j-1);
 			}
 		}
@@ -44,13 +44,15 @@ public class Insertion {
 	
 	public static boolean isSorted(Comparable[] a) {
 		for (int i = 0 ; i < a.length ; i++) {
-			if (less(a[i], a[i-1])) return false;
+			if (less(a[i], a[i-1])) {
+				return false;
+			}
 		}
 		return true;
 	}
 	
 	public static void main(String[] args) {
-		Integer[] a = IntGenerator.generatorIntegerArr(200);
+		Integer[] a = IntGenerator.generatorIntegerArr(20);
 		sort(a);
 		assert isSorted(a);
 		show(a);

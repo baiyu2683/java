@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * cancel不能中断io和symchronized
  * Created by zh on 2017-01-02.
  */
 public class Interrupting {
@@ -31,12 +32,13 @@ public class Interrupting {
 }
 
 class SleepBlocked implements Runnable {
+    @Override
     public void run() {
         //可中断，中断后会catch到InterruptedException
         try {
             TimeUnit.SECONDS.sleep(100);
         } catch (InterruptedException e) {
-            System.out.println("InterruptedException");
+            System.out.println("InterruptedException " + Thread.currentThread().getName());
         }
         System.out.println("Exiting SleepBlocked.run()");
     }
@@ -56,7 +58,7 @@ class IOBlocked implements Runnable {
             System.out.println("content: " + inputStream.read());
         } catch (IOException e) {
             if (Thread.currentThread().isInterrupted()) {
-                System.out.println("Interrupted from blocked I/O");
+                System.out.println("Interrupted from blocked I/O " + Thread.currentThread().getName());
             } else {
                 throw new RuntimeException(e);
             }
@@ -68,8 +70,9 @@ class IOBlocked implements Runnable {
 class SynchronizedBlocked implements Runnable {
 
     public synchronized void f() {
-        while (true)
+        while (true) {
             Thread.yield();
+        }
     }
 
     public SynchronizedBlocked() {

@@ -14,6 +14,7 @@ public class TestExceptionCaught {
             System.out.println("123");
         });
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1) {
+            @Override
             protected void afterExecute(Runnable r, Throwable t) {
                 super.afterExecute(r, t);
                 Future<?> f = (Future<?>) r;

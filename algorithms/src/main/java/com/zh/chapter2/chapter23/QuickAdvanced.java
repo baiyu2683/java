@@ -26,6 +26,7 @@ public class QuickAdvanced {
 			InsertionAdvance.sort(a, lo, hi);
 			return;
 		}
+		// 分片，左边比j小，右边比j大
 		int j = partition(a, lo, hi);
 		sort(a, lo, j - 1);
 		sort(a, j + 1, hi);

@@ -17,4 +17,11 @@ public class ToLongDecoder2 extends ReplayingDecoder<Void> {
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         out.add(in.readLong());
     }
+    
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+            throws Exception {
+    	cause.printStackTrace();
+        super.exceptionCaught(ctx, cause);
+    }
 }

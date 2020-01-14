@@ -1,9 +1,10 @@
 syntax="proto3";
 
 option java_package="com.zh.model";
-option java_outer_classname="MessageDTOModel";
+option java_multiple_files=true;
+option java_outer_classname="MessageSendDTOModel";
 
-message MessageDTO {
+message MessageSendDTO {
     string from = 1;
     string to = 2;
     string message = 3;

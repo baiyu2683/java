@@ -1,9 +1,11 @@
 package com.zh;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,11 @@ public class LambdaTest {
         Map<String, List<Group>> result = list.stream()
                 .collect(Collectors.groupingBy(Group::getX));
         System.out.println(result);
+
+        List<String> strings =
+                Arrays.stream(new Integer[]{1,2,3,4})
+                    .map(x -> String.valueOf(x))
+                    .collect(Collectors.toList());
     }
 
     @Data
@@ -85,6 +92,55 @@ public class LambdaTest {
                 .distinct()
                 .collect(Collectors.toList());
         System.out.println(result);
+    }
+
+    @Test
+    public void testGroupBy() {
+        List<MyData> datas = new ArrayList<>();
+        for (int i = 0 ; i < 10 ; i++) {
+            datas.add(new MyData("a", new BigDecimal(i)));
+        }
+        for (int i = 11 ; i < 20 ; i++) {
+            datas.add(new MyData("b", new BigDecimal(i)));
+        }
+        long start = System.currentTimeMillis();
+        for (int i = 0 ; i < 1000000 ; i++) {
+            Map<String, BigDecimal> o = datas.stream().collect(
+                    Collectors.groupingBy(
+                            MyData::getKey,
+                            Collectors.reducing(BigDecimal.ZERO, MyData::getValue, BigDecimal::add)
+                    )
+            );
+        }
+        System.out.println(System.currentTimeMillis() - start);
+    }
+
+    private static class MyData {
+
+        private String key;
+
+        private BigDecimal value;
+
+        public MyData(String key, BigDecimal value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public BigDecimal getValue() {
+            return value;
+        }
+
+        public void setValue(BigDecimal value) {
+            this.value = value;
+        }
     }
 
 }

@@ -28,11 +28,13 @@ public class QuickAdvancedThreeMedian {
 		Comparable pivot = threeMedian(a, lo, hi);
         int i = lo, j = hi - 1;
         while (true) {
-            while (less(a[++i], pivot));
-            while (less(pivot, a[--j]));
+            while (less(a[++i], pivot)){}
+            while (less(pivot, a[--j])){}
             if (i < j) {
                 exch(a, i, j);
-            } else break;
+            } else {
+            	break;
+			}
         }
         exch(a, i, hi - 1);
 

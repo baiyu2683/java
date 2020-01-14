@@ -1,8 +1,9 @@
 syntax="proto3";
 
 option java_package = "com.zh.model";
-option java_outer_classname = "MessageSendResponseModel";
+option java_multiple_files=true;
+option java_outer_classname = "MessageSendResponseDTOModel";
 
-message MessageSendResponse {
+message MessageSendResponseDTO {
 }
 

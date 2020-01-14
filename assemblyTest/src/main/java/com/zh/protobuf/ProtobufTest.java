@@ -2,8 +2,11 @@ package com.zh.protobuf;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.zh.model.PersonModel;
-import com.zh.model.UserDTOModel;
+import com.zh.model.*;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtobufIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.RuntimeSchema;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -46,11 +49,35 @@ public class ProtobufTest {
 
     @Test
     public void test1() {
-        UserDTOModel.UserDTO user = UserDTOModel.UserDTO.newBuilder()
+        UserDTO user = UserDTO.newBuilder()
                 .setId("10")
                 .setNickName("20")
                 .setEmail("30")
                 .build();
         System.out.println(user.toByteArray().length);
     }
+
+    @Test
+    public void test2() {
+
+        PersonModel.Person.Builder builder = PersonModel.Person.newBuilder();
+        builder.setId(1);
+        builder.setName("zh2683");
+        builder.setEmail("zh2683@163.com");
+
+        DataWrapper wrapper = DataWrapper.newBuilder()
+                .setType(DataWrapper.DataType.login_request)
+                .setLoginRequestDTO(LoginRequestDTO.newBuilder()
+                        .setCode("10010")
+                        .setPassword("20").build())
+                .build();
+
+        Schema<DataWrapper> schema = RuntimeSchema.getSchema(DataWrapper.class);
+        byte[] data = ProtobufIOUtil.toByteArray(wrapper, schema, LinkedBuffer.allocate());
+
+        DataWrapper wrapper1 = DataWrapper.newBuilder().build();
+        ProtobufIOUtil.mergeFrom(data, wrapper1, schema);
+        System.out.println(wrapper1.toString());
+    }
+
 }

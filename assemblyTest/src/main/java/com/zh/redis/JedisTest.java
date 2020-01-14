@@ -20,6 +20,8 @@ public class JedisTest {
 
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379, 5000, "zh2683");
         jedisPool.getResource().mset("asdf", "asdf", "123", "123");
+        Redis redis = new Redis("127.0.0.1", 6379, 5000);
+        redis.execute(jedis -> jedis.mset("asdf", "asdf", "123", "123"));
     }
 }
 class Holder {

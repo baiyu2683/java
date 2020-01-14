@@ -8,10 +8,14 @@ import org.junit.runner.notification.RunListener;
  */
 @NotThreadSafe
 public class LazyInitRace {
+
     private ExpensiveObject instance = null;
+
     public ExpensiveObject getInstance() {
-        if(instance == null) //竞态条件
+        //竞态条件
+        if(instance == null) {
             instance = new ExpensiveObject();
+        }
         return instance;
     }
 }

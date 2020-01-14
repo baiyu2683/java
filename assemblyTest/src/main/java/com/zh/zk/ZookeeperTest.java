@@ -22,7 +22,7 @@ public class ZookeeperTest implements Watcher {
     public static void main(String[] args) throws InterruptedException{
         int count = Runtime.getRuntime().availableProcessors();
         CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
-        for (int i = 0 ; i < count ; i++) {
+        for (int i = 0 ; i < 50 ; i++) {
             new Thread(() -> {
                 ZooKeeper zooKeeper = null;
                 try {
