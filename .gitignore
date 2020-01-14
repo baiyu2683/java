@@ -10,3 +10,4 @@ logs/
 *.hprof
 *.pdf
 *.~ml
+/assemblyTest/src/main/java/com/lowagie/
