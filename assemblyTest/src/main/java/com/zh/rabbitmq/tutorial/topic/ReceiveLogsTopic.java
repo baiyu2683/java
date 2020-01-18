@@ -1,9 +1,6 @@
 package com.zh.rabbitmq.tutorial.topic;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.*;
 
 public class ReceiveLogsTopic {
 
@@ -15,7 +12,7 @@ public class ReceiveLogsTopic {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
         String queueName = channel.queueDeclare().getQueue();
 
         String[] bindKeys = new String[]{"com.zh.*", "#.log"};

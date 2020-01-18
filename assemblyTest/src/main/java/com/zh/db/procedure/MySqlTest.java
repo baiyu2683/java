@@ -26,7 +26,7 @@ public class MySqlTest {
     public void testDataPro() throws SQLException {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://144.20.80.146:3306/ddsl?user=root&password=123456&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false");
+        bds.setUrl("jdbc:mysql://144.20.80.146:3306/ddsl?user=root&password=123456&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
 
         Connection conn = bds.getConnection();
         DatabaseMetaData meta = conn.getMetaData();
@@ -36,6 +36,7 @@ public class MySqlTest {
             System.out.println(rs.getString("COLUMN_NAME"));
             System.out.println(rs.getString("COLUMN_TYPE"));
             System.out.println(rs.getInt("DATA_TYPE"));
+            System.out.println("");
         }
         conn.close();
     }
@@ -44,7 +45,7 @@ public class MySqlTest {
     public void testquery() throws SQLException {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
 
         Connection conn = bds.getConnection();
 
@@ -68,7 +69,7 @@ public class MySqlTest {
     public void testInsert() throws SQLException {
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://144.20.80.146:3306/ddsl?user=root&password=123456&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false");
+        bds.setUrl("jdbc:mysql://144.20.80.146:3306/ddsl?user=root&password=123456&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
 
         Connection conn = bds.getConnection();
 

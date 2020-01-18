@@ -124,6 +124,7 @@ public class TestPdf {
                         "        </li>\n" +
                         "    </ul>\n" +
                         "</div>";
+        System.out.println(html);
         ElementList elements = XMLWorkerHelper.parseToElementList(html, "");
         for (Element element : elements) {
             if (element instanceof Paragraph) {

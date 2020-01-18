@@ -21,8 +21,9 @@ public class TestExecutor {
         try {
             for (final String host : hosts) {
                 exec.execute(() -> {
-                    if (checkMail(host))
+                    if (checkMail(host)) {
                         hasNewMail.set(true);
+                    }
                 });
             }
         } finally {

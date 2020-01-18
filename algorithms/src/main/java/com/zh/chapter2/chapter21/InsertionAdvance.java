@@ -26,13 +26,17 @@ public class InsertionAdvance {
             Comparable temp = a[i];
             int j = i - 1;
             for (; j >= lo ; j--) {
-                if (less(temp, a[j])) a[j + 1] = a[j];
+                if (less(temp, a[j])) {
+                    a[j + 1] = a[j];
+                }
                 else {
                     a[j + 1] = temp;
                     break;
                 }
             }
-            if (j == lo - 1) a[lo] = temp;
+            if (j == lo - 1) {
+                a[lo] = temp;
+            }
         }
     }
     

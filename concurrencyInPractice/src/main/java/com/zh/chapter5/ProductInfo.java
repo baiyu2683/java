@@ -25,6 +25,7 @@ public class ProductInfo {
         this.info = info;
     }
 
+    @Override
     public String toString() {
         return Thread.currentThread().getName() + " " + info;
     }

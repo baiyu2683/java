@@ -48,8 +48,9 @@ public class TrackingExecutor extends AbstractExecutorService {
      * @return
      */
     public List<Runnable> getCancelledTasks() {
-        if(!exec.isTerminated())
+        if(!exec.isTerminated()) {
             throw new IllegalStateException();
+        }
         return new ArrayList<>(tasksCancelledAtShutdown);
     }
 
@@ -60,8 +61,9 @@ public class TrackingExecutor extends AbstractExecutorService {
                 command.run();
             } finally {
                 //记录被中断的任务
-                if(isShutdown() && Thread.currentThread().isInterrupted())
+                if(isShutdown() && Thread.currentThread().isInterrupted()) {
                     tasksCancelledAtShutdown.add(command);
+                }
             }
         });
     }

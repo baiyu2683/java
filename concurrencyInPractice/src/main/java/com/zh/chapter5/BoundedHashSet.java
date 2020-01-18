@@ -30,8 +30,10 @@ public class BoundedHashSet<T> {
             wasAdded = set.add(o);
             return wasAdded;
         } finally {
-            if(!wasAdded) //加入失败时信号量释放
+            //加入失败时信号量释放
+            if(!wasAdded) {
                 semaphore.release();
+            }
         }
     }
 

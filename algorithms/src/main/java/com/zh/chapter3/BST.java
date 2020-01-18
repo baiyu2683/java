@@ -33,21 +33,6 @@ public class BST<Key extends Comparable<Key>, Value> {
         }
     }
 
-//    public Value get(Key key) {
-//        Node node = root;
-//        while (node != null) {
-//            int compare = node.key.compareTo(key);
-//            if (compare == 0) {
-//                return node.val;
-//            } else if (compare > 0) {
-//                node = node.left;
-//            } else if (compare < 0) {
-//                node = node.right;
-//            }
-//        }
-//        return null;
-//    }
-
     public Value get(Key key) {
         return get(root, key);
     }

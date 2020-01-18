@@ -19,10 +19,7 @@ import org.junit.Test;
  * 2018年9月6日
  */
 public class DMLTest {
-    // &serverTimezone=Asia/Shanghai
-    // allowPublicKeyRetrieval=true
-    // nullCatalogMeansCurrent=true&
-    private String jdbcUrl = "jdbc:mysql://193.112.95.23:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
+    private String jdbcUrl = "jdbc:mysql://localhost:3306?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=True&characterEncoding=utf-8";
     private Connection conn;
     
     @BeforeClass
@@ -33,7 +30,7 @@ public class DMLTest {
     
     @Before
     public void before() throws SQLException {
-        conn = DriverManager.getConnection(jdbcUrl, "zh", "!@#$asdf");
+        conn = DriverManager.getConnection(jdbcUrl, "root", "root");
     }
     @After
     public void after() throws SQLException {
@@ -85,7 +82,7 @@ public class DMLTest {
     @Test
     public void testSelect() {
         String useDataBaseSql = "use zh;";
-        String selectDataSql = "select * from `user` where `nickname` like '%zh%'";
+        String selectDataSql = "select * from `user`";
         try {
             PreparedStatement pstat = conn.prepareStatement(useDataBaseSql);
             boolean result = pstat.execute();
