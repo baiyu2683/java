@@ -3,8 +3,8 @@ package com.zh.netty.server;
 import com.zh.model.DataWrapper;
 import com.zh.netty.handler.LoginHandler;
 import com.zh.netty.handler.RegisterHandler;
-import com.zh.netty.handler.SecondDecoderHandler;
-import com.zh.netty.zk.ZkRegister;
+import com.zh.netty.handler.DataWrapperDecoderHandler;
+import com.zh.netty.zk.ServerRegister;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -56,10 +56,10 @@ public class ImServerStarter implements InitializingBean, DisposableBean {
     private LoginHandler loginHandler;
 
     @Autowired
-    private SecondDecoderHandler secondDecoderHandler;
+    private DataWrapperDecoderHandler secondDecoderHandler;
 
     @Autowired
-    private ZkRegister zkRegister;
+    private ServerRegister zkRegister;
 
     @Override
     public void afterPropertiesSet() throws Exception {

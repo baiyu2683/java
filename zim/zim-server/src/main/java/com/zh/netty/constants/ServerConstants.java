@@ -10,4 +10,13 @@ public interface ServerConstants {
 
     // path/serverIp:port
     String SERVER_NODE_TEMPLATE = "%s/%s:%s";
+
+    // zookeeper
+    // 重试间隔时间, ms
+    int WAIT_TIME_BETWEEN_RETRY = 5000;
+    // 最大重试次数
+    int COUNT_OF_RETRY = 3;
+    // 会话超时时间，ms
+    int SESSION_TIMEOUT = 3 * 1000;
+
 }

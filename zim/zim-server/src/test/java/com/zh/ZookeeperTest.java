@@ -1,6 +1,6 @@
 package com.zh;
 
-import com.zh.netty.zk.ZkRegister;
+import com.zh.netty.zk.ServerRegister;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -13,7 +13,7 @@ public class ZookeeperTest {
 
     @Test
     public void testRegister() throws InterruptedException {
-        new ZkRegister().register();
+        new ServerRegister().register();
         new CountDownLatch(1).await();
     }
 }

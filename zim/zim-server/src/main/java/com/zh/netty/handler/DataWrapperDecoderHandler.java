@@ -14,7 +14,7 @@ import java.util.List;
  */
 @ChannelHandler.Sharable
 @Component
-public class SecondDecoderHandler extends MessageToMessageDecoder<DataWrapper> {
+public class DataWrapperDecoderHandler extends MessageToMessageDecoder<DataWrapper> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, DataWrapper msg, List<Object> out) throws Exception {

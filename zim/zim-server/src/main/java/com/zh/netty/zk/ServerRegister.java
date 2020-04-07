@@ -1,5 +1,6 @@
 package com.zh.netty.zk;
 
+import com.mysql.fabric.Server;
 import com.zh.netty.constants.ServerConstants;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Log4j2
 @Component
-public class ZkRegister implements Runnable {
+public class ServerRegister implements Runnable {
 
     @Value("${im.port}")
     private int port;
@@ -46,11 +47,11 @@ public class ZkRegister implements Runnable {
                 port);
         try {
             // 节点注册，断线后3秒，节点清除
-            RetryPolicy retryPolicy = new ExponentialBackoffRetry(5000, 3);
+            RetryPolicy retryPolicy = new ExponentialBackoffRetry(ServerConstants.WAIT_TIME_BETWEEN_RETRY, ServerConstants.COUNT_OF_RETRY);
             CuratorFramework client = CuratorFrameworkFactory
                     .builder()
                     .connectString(registryAddress)
-                    .sessionTimeoutMs(3 * 1000)
+                    .sessionTimeoutMs(ServerConstants.SESSION_TIMEOUT)
                     .retryPolicy(retryPolicy)
                     .build();
             client.start();

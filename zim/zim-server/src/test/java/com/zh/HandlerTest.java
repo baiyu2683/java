@@ -2,14 +2,10 @@ package com.zh;
 
 import com.zh.model.DataWrapper;
 import com.zh.model.LoginRequestDTO;
-import com.zh.netty.handler.IdleHandler;
-import com.zh.netty.handler.LoginHandler;
-import com.zh.netty.handler.SecondDecoderHandler;
+import com.zh.netty.handler.DataWrapperDecoderHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
-import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +21,7 @@ public class HandlerTest {
         EmbeddedChannel channel = new EmbeddedChannel();
         channel.pipeline()
                 .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new SecondDecoderHandler())
+                .addLast(new DataWrapperDecoderHandler())
                 .addLast(new TestLoginHandler());
         DataWrapper dataWrapper = DataWrapper.newBuilder()
                 .setType(DataWrapper.DataType.login_request)
