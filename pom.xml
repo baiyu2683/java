@@ -26,7 +26,6 @@
         <module>netty</module>
         <module>source</module>
         <module>vertx</module>
-        <module>zim</module>
     </modules>
     <dependencies>
         <dependency>
