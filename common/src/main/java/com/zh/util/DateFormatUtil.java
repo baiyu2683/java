@@ -32,7 +32,9 @@ public class DateFormatUtil {
      * @return
      */
     public static String format(Date date) {
-        if (date == null) return null;
+        if (date == null) {
+            return null;
+        }
         return format(date.getTime());
     }
 }
