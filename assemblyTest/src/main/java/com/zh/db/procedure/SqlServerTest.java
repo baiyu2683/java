@@ -1,5 +1,6 @@
 package com.zh.db.procedure;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 
@@ -157,5 +158,40 @@ public class SqlServerTest {
         System.out.println(prepareCall.getString("procOutResultType"));
 
         conn.close();
+    }
+
+    @Test
+    public void testDuplicatePrimaryKey() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        bds.setUrl("jdbc:sqlserver://129.204.212.96:1433;DatabaseName=zh");
+        bds.setUsername("sa");
+        bds.setPassword("!@#$QWERqwer");
+
+        Connection conn = bds.getConnection();
+        try {
+            PreparedStatement statement = conn.prepareStatement("insert into info(id, name, age) values('4', '2', '2')");
+            statement.execute();
+        } catch (Exception e) {
+            SQLException sqlException = new SQLIntegrityConstraintViolationException("asdf", e);
+            sqlException.printStackTrace();
+            System.out.println(sqlException.getMessage());
+        }
+    }
+
+    @Test
+    public void testPrimary() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        bds.setUrl("jdbc:sqlserver://129.204.212.96:1433;DatabaseName=zh");
+        bds.setUsername("sa");
+        bds.setPassword("!@#$QWERqwer");
+
+        Connection conn = bds.getConnection();
+        DatabaseMetaData meta = conn.getMetaData();
+        ResultSet resultSet = meta.getPrimaryKeys(conn.getCatalog(), null, "user");
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("PK_NAME"));
+        }
     }
 }

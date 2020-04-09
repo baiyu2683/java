@@ -98,4 +98,34 @@ public class MySqlTest {
         System.out.println(prepareCall.getInt("procOutResultType"));
         conn.close();
     }
+
+    @Test
+    public void testDuplicatePrimaryKey() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
+
+        Connection conn = bds.getConnection();
+
+        try {
+            String sql = "insert into 导入(id, name1) values(6, \"2\")";
+            conn.prepareStatement(sql).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testPrimary() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false");
+
+        Connection conn = bds.getConnection();
+        DatabaseMetaData meta = conn.getMetaData();
+        ResultSet resultSet = meta.getPrimaryKeys(conn.getCatalog(), null, "导入");
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("PK_NAME"));
+        }
+    }
 }

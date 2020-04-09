@@ -150,4 +150,38 @@ public class OracleTest {
 
         conn.close();
     }
+
+    @Test
+    public void testDuplicatePrimaryKeyException() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+        bds.setUrl("jdbc:oracle:thin:@129.204.212.96:1521:helowin");
+        bds.setUsername("zh");
+        bds.setPassword("1234qwer");
+
+        Connection connection = bds.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO \"user\"(\"id\", \"code\") values('1', '3')");
+        try {
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testPrimaryKey() throws SQLException, ClassNotFoundException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+        bds.setUrl("jdbc:oracle:thin:@129.204.212.96:1521:helowin");
+        bds.setUsername("zh");
+        bds.setPassword("1234qwer");
+
+        Connection conn = bds.getConnection();
+        DatabaseMetaData databaseMetaData = conn.getMetaData();
+        ResultSet resultSet = databaseMetaData.getPrimaryKeys(null, "ZH", "user");
+        ResultSetMetaData pkmd = resultSet.getMetaData();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("PK_NAME"));
+        }
+    }
 }
