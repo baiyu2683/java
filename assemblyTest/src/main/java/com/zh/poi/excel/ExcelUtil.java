@@ -93,7 +93,7 @@ public class ExcelUtil {
 
         workbook = new XSSFWorkbook();
         //新建工作表
-        Sheet sheet = workbook.createSheet("hello");
+        XSSFSheet sheet = (XSSFSheet) workbook.createSheet("hello");
         //创建行,行号作为参数传递给createRow()方法,第一行从0开始计算
         Row row = sheet.createRow(0);
 
