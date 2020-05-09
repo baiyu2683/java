@@ -2,6 +2,7 @@ package com.zh.image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -72,10 +73,16 @@ public class WaterMark {
             graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             // 文字旋转
 //            graphics2D.rotate(Math.toRadians(-45), (double) width / 2, (double) height / 2);
+            // 字体旋转
+
+            Font font = new Font("微软雅黑", Font.PLAIN, 50);
+            AffineTransform affineTransform = new AffineTransform();
+            affineTransform.rotate(Math.toRadians(0), 0, 0);
+            Font rotatedFont = font.deriveFont(affineTransform);
             // 文字颜色
             graphics2D.setColor(Color.BLACK);
             // 文字字体
-            graphics2D.setFont(new Font("微软雅黑", Font.PLAIN, 50));
+            graphics2D.setFont(rotatedFont);
             graphics2D.drawString(text, 460, 980);
             graphics2D.dispose();
 
@@ -94,8 +101,8 @@ public class WaterMark {
      * @return
      */
     public BufferedImage waterMarkImage(String text) {
-        int width = 1000;
-        int height = 1000;
+        int width = 1920;
+        int height = 1200;
         int imageType = BufferedImage.TYPE_4BYTE_ABGR;
 
         // 画原图
@@ -108,12 +115,19 @@ public class WaterMark {
 
         // 设置文字边缘抗锯齿
         graphics2D.setRenderingHint (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//        graphics2D.rotate(70, 0, 50);
         // 设置水印文字透明度
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
+        graphics2D.setColor(Color.BLACK);
 
-        graphics2D.setColor(new Color(255, 0, 0));
-        graphics2D.setFont(new Font("微软雅黑", Font.PLAIN, 50));
-        graphics2D.drawString(text, 500, 200);
+        // 字体旋转
+        Font font = new Font("微软雅黑", Font.PLAIN, 50);
+        AffineTransform affineTransform = new AffineTransform();
+        affineTransform.rotate(Math.toRadians(45), 0, 0);
+        Font rotatedFont = font.deriveFont(affineTransform);
+
+        graphics2D.setFont(rotatedFont);
+        graphics2D.drawString(text, 460, 980);
         graphics2D.dispose();
         destImage.flush();
         return destImage;
