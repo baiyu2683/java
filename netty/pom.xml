@@ -30,13 +30,14 @@
         <module>chapter11_channelHandlerAndEncoderDecoder</module>
         <module>chapter12_websocket</module>
         <module>chapter13_udp</module>
+        <module>example</module>
     </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.11</junit.version>
-        <netty.version>4.1.12.Final</netty.version>
+        <netty.version>4.1.30.Final</netty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
