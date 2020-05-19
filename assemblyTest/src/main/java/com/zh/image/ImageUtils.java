@@ -93,8 +93,8 @@ public class ImageUtils {
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedImage image = ImageIO.read(new URL("file:/d:/test2.png"));
-        byte[] imageData = ImageUtils.thumbnail(toByteArray(image, "png"), 0.2f);
-        IOUtils.write(imageData, new FileOutputStream("d:/test_transparent.png"));
+        BufferedImage image = ImageIO.read(new URL("file:\\C:\\Users\\Administrator\\Desktop\\1.jpg"));
+        byte[] imageData = ImageUtils.thumbnail(toByteArray(image, "png"), 1f);
+        IOUtils.write(imageData, new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg"));
     }
 }

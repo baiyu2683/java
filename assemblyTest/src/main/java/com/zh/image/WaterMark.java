@@ -1,14 +1,23 @@
 package com.zh.image;
 
+import com.zh.image.textimagewatermark.WaterMarkService;
+import com.zh.image.textimagewatermark.param.ImageLayoutEnum;
+import com.zh.image.textimagewatermark.param.ImageWaterMarkParam;
+import com.zh.image.textimagewatermark.param.TextWaterMarkParam;
+import com.zh.image.textimagewatermark.param.WaterMarkParam;
+import org.apache.commons.io.IOUtils;
 import sun.font.FontDesignMetrics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 测试图片加文字水印
@@ -16,23 +25,63 @@ import java.net.URL;
 public class WaterMark {
 
     public static void main(String[] args) {
-//        String imagePath = "file:\\C:\\Users\\Administrator\\Desktop\\1.jpg";
-        String imagePath = "file:\\D:\\头像.png";
-        String text = "Bing";
-        WaterMark waterMark = new WaterMark();
-        try {
-//            BufferedImage bufferedImage = waterMark.addWaterMark(imagePath, text);
-//            BufferedImage bufferedImage = waterMark.waterMarkImage(text);
-//            BufferedImage bufferedImage = waterMark.waterMarkTextImage(imagePath, "这是一张水印，hahahah");
-            BufferedImage bufferedImage = waterMark.waterMarkTextImageRotate(imagePath, "这是一张水印，hahahah");
-            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg");
-            ImageIO.write(bufferedImage, "png", fileOutputStream);
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        long time = 0;
+        for (int i = 0 ; i < 1 ; i++) {
+            long start = System.currentTimeMillis();
+            WaterMarkService waterMarkService = new WaterMarkService();
+
+            WaterMarkParam waterMarkParam = new WaterMarkParam();
+            waterMarkParam.setHeight(842);
+            waterMarkParam.setWidth(595);
+            waterMarkParam.setAngle(30);
+            waterMarkParam.setHorizontalSpacing(200);
+            waterMarkParam.setVerticalSpacing(100);
+            waterMarkParam.setImageLayoutEnum(ImageLayoutEnum.LEFT);
+
+            TextWaterMarkParam textWaterMarkParam = new TextWaterMarkParam();
+            textWaterMarkParam.setColor("#fff");
+            textWaterMarkParam.setContent("浙江网盛数新软件股份有限公司");
+            textWaterMarkParam.setFontFamily("微软雅黑");
+            textWaterMarkParam.setFontSize(24);
+            waterMarkParam.setText(textWaterMarkParam);
+
+            ImageWaterMarkParam imageWaterMarkParam = new ImageWaterMarkParam();
+            imageWaterMarkParam.setDescription("图片水印");
+            imageWaterMarkParam.setName("hhhh");
+            imageWaterMarkParam.setImagePath("file:\\D:\\company\\乐创者\\水印\\lcz.png");
+            waterMarkParam.setImage(imageWaterMarkParam);
+
+            try {
+                byte[] bytes = waterMarkService.getWaterMarkImage(waterMarkParam);
+                time += System.currentTimeMillis() - start;
+                System.out.println(time);
+                FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg");
+                IOUtils.write(bytes, fileOutputStream);
+                fileOutputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("完成...");
+        System.out.println(time);
     }
+
+//    public static void main(String[] args) {
+//        String imagePath = "file:\\D:\\company\\乐创者\\水印\\lcz.png";
+//        String text = "浙江网盛数新软件股份有限公司";
+//        WaterMark waterMark = new WaterMark();
+//        try {
+////            BufferedImage bufferedImage = waterMark.addWaterMark(imagePath, text);
+////            BufferedImage bufferedImage = waterMark.waterMarkImage(text);
+//            BufferedImage bufferedImage = waterMark.waterMarkTextImage(imagePath, text);
+////            BufferedImage bufferedImage = waterMark.waterMarkTextImageRotate(imagePath, "这是一张水印，hahahah");
+//            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg");
+//            ImageIO.write(bufferedImage, "png", fileOutputStream);
+//            fileOutputStream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("完成...");
+//    }
 
     /**
      * @param imagePath 图片路径
@@ -106,8 +155,8 @@ public class WaterMark {
      * @return
      */
     public BufferedImage waterMarkImage(String text) {
-        int width = 1920;
-        int height = 1200;
+        int width = 595;
+        int height = 842;
         int imageType = BufferedImage.TYPE_4BYTE_ABGR;
 
         // 画原图
@@ -122,17 +171,17 @@ public class WaterMark {
         graphics2D.setRenderingHint (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 //        graphics2D.rotate(70, 0, 50);
         // 设置水印文字透明度
-        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
+//        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
         graphics2D.setColor(Color.BLACK);
 
         // 字体旋转
-        Font font = new Font("微软雅黑", Font.PLAIN, 50);
+        Font font = new Font("微软雅黑", Font.PLAIN, 12);
         AffineTransform affineTransform = new AffineTransform();
         affineTransform.rotate(Math.toRadians(45), 0, 0);
         Font rotatedFont = font.deriveFont(affineTransform);
 
         graphics2D.setFont(rotatedFont);
-        graphics2D.drawString(text, 460, 980);
+        graphics2D.drawString(text, 400, 800);
         graphics2D.dispose();
         destImage.flush();
         return destImage;
@@ -146,7 +195,6 @@ public class WaterMark {
      * @return
      */
     public BufferedImage waterMarkTextImageRotate(String imagePath, String text) {
-
         BufferedImage waterMark = waterMarkTextImage(imagePath, text);
 
         BufferedImage bufferedImage = new BufferedImage(1024, 768, BufferedImage.TYPE_4BYTE_ABGR);
@@ -155,11 +203,22 @@ public class WaterMark {
         graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         int waterMarkWidth = waterMark.getWidth();
         int waterMarkHeight =waterMark.getHeight();
-        // 图片旋转， 弧度数, 旋转中心点坐标
-        graphics2D.rotate(Math.toRadians(20), waterMarkWidth / 2, waterMarkHeight / 2);
-        graphics2D.drawImage(waterMark, 0, 0, waterMarkWidth, waterMarkHeight, null);
 
+        // 图片旋转， 弧度数, 旋转中心点坐标
+        graphics2D.rotate(Math.toRadians(-30), waterMarkWidth / 2, waterMarkHeight / 2);
+        graphics2D.drawImage(waterMark, 0, 0, waterMarkWidth, waterMarkHeight, null);
         graphics2D.dispose();
+
+        graphics2D = bufferedImage.createGraphics();
+        graphics2D.rotate(Math.toRadians(-30), waterMarkWidth + waterMarkWidth / 2, waterMarkHeight / 2);
+        graphics2D.drawImage(waterMark, waterMarkWidth + 10, 0, waterMarkWidth, waterMarkHeight, null);
+        graphics2D.dispose();
+
+        graphics2D = bufferedImage.createGraphics();
+        graphics2D.rotate(Math.toRadians(-30), waterMarkWidth / 2, waterMarkHeight + waterMarkHeight / 2);
+        graphics2D.drawImage(waterMark, 0, waterMarkHeight + 50, waterMarkWidth, waterMarkHeight, null);
+        graphics2D.dispose();
+
         bufferedImage.flush();
         return bufferedImage;
     }
@@ -196,13 +255,22 @@ public class WaterMark {
             destImage = graphics2D.getDeviceConfiguration().createCompatibleImage(destImageWidth, destImageHeight, Transparency.TRANSLUCENT);
             graphics2D.dispose();
 
-            // 图片联合
+            // 填充背景
+//            graphics2D = destImage.createGraphics();
+//            graphics2D.setColor(Color.BLACK);
+//            graphics2D.fillRect(0, 0, destImageWidth, destImageHeight);
+//            graphics2D.dispose();
+
+            // 放置文字图片
             graphics2D = destImage.createGraphics();
-            graphics2D.setColor(Color.BLACK);
-            graphics2D.fillRect(0, 0, destImageWidth, destImageHeight);
-            graphics2D.drawImage(imageBufferedImage, 0, 0, imageWidth, imageHeight, null);
-            graphics2D.drawImage(textBufferedImage, imageWidth, 0,  textImageWidth, textImageHeight, null);
+            graphics2D.drawImage(textBufferedImage, imageWidth, imageHeight / 2,  textImageWidth, textImageHeight, null);
             graphics2D.dispose();
+
+            // 放置图片
+            graphics2D = destImage.createGraphics();
+            graphics2D.drawImage(imageBufferedImage, 0, 0, imageWidth, imageHeight, null);
+            graphics2D.dispose();
+
             destImage.flush();
             return destImage;
         } catch (IOException e) {
@@ -217,8 +285,8 @@ public class WaterMark {
      * @return
      */
     public BufferedImage textToImage(String text) {
-        // 字体旋转
-        Font font = new Font("微软雅黑", Font.BOLD, 32);
+        Font font = new Font("微软雅黑", Font.PLAIN, 16);
+
         FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
         int width = caculateTextWidth(metrics, text);
         int height = metrics.getHeight();
@@ -227,11 +295,13 @@ public class WaterMark {
         Graphics2D graphics2D = destImage.createGraphics();
 
         // 设置文字边缘抗锯齿
-        graphics2D.setRenderingHint (RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        // 设置水印文字透明度
-        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
+//        graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+//        // 设置水印文字透明度
+//        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
 
-        graphics2D.setColor(Color.RED);
+        graphics2D.setColor(Color.GRAY);
         graphics2D.setFont(font);
         graphics2D.drawString(text, 0, metrics.getAscent());
 
