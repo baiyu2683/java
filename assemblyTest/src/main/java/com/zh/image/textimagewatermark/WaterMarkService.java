@@ -1,19 +1,16 @@
 package com.zh.image.textimagewatermark;
 
-import com.zh.image.textimagewatermark.handler.ImageWaterMarkHandler;
-import com.zh.image.textimagewatermark.handler.TextWaterMarkHandler;
-import com.zh.image.textimagewatermark.handler.TileWaterMarkHandler;
+import com.zh.image.textimagewatermark.handler.*;
 import com.zh.image.textimagewatermark.param.WaterMarkParam;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * 水印生成
  */
 public class WaterMarkService {
 
@@ -32,11 +29,16 @@ public class WaterMarkService {
             waterMarkContext.setWaterMarkHandler(new ImageWaterMarkHandler());
             waterMarkContext.setWaterMarkParam(waterMarkParam);
             list.add(waterMarkContext);
+
+            WaterMarkContext transparentImage = new WaterMarkContext();
+            transparentImage.setWaterMarkHandler(new ImageTransparencyHandler());
+            transparentImage.setWaterMarkParam(waterMarkParam);
+            list.add(transparentImage);
             existContent = true;
         }
         if (existContent) {
             WaterMarkContext waterMarkContext = new WaterMarkContext();
-            waterMarkContext.setWaterMarkHandler(new TileWaterMarkHandler());
+            waterMarkContext.setWaterMarkHandler(new RotateWaterMarkHandler());
             waterMarkContext.setWaterMarkParam(waterMarkParam);
             list.add(waterMarkContext);
         }

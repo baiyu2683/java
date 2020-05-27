@@ -23,15 +23,15 @@ public class TextWaterMarkHandler implements WaterMarkHandler {
         BufferedImage destImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D graphics2D = destImage.createGraphics();
 
-        // 设置文字边缘抗锯齿
-//        graphics2D.setRenderingHint(Renderi
-//       ngHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_DEFAULT);
+
         // 设置水印文字透明度
-//        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
+        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f));
         // TODO 颜色解析
-        graphics2D.setColor(Color.GRAY);
+        graphics2D.setColor(Color.BLACK);
         graphics2D.setFont(font);
         graphics2D.drawString(content, 0, metrics.getAscent());
 

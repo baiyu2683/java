@@ -86,6 +86,27 @@ public class ImageUtils {
         return toByteArray(destImage, "png");
     }
 
+    public static byte[] transParentImageFront(byte[] imageData) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+        BufferedImage srcImage = ImageIO.read(bais);
+        int imageWidth = srcImage.getWidth();
+        int imageHeight = srcImage.getHeight();
+
+        BufferedImage destImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D graphics2D = destImage.createGraphics();
+
+        AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 127.5f/255.0f);
+        graphics2D.setComposite(alphaComposite);
+        graphics2D.drawImage(srcImage,
+                0, 0, imageWidth, imageHeight,
+                0, 0, imageWidth, imageHeight,
+                null);
+
+        destImage.flush();
+        graphics2D.dispose();
+        return toByteArray(destImage, "png");
+    }
+
     private static byte[] toByteArray(BufferedImage destImage, String format) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(destImage, format, outputStream);
@@ -93,8 +114,12 @@ public class ImageUtils {
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedImage image = ImageIO.read(new URL("file:\\C:\\Users\\Administrator\\Desktop\\1.jpg"));
-        byte[] imageData = ImageUtils.thumbnail(toByteArray(image, "png"), 1f);
-        IOUtils.write(imageData, new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg"));
+//        BufferedImage image = ImageIO.read(new URL("file:\\C:\\Users\\Administrator\\Desktop\\1.jpg"));
+//        byte[] imageData = ImageUtils.thumbnail(toByteArray(image, "png"), 1f);
+//        IOUtils.write(imageData, new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg"));
+
+        byte[] data = IOUtils.toByteArray(new URL("file:\\D:\\company\\乐创者\\水印\\lcz.png"));
+        byte[] transparentImage = ImageUtils.transParentImageFront(data);
+        IOUtils.write(transparentImage, new FileOutputStream("C:\\Users\\Administrator\\Desktop\\3.jpg"));
     }
 }

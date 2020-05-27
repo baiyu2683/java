@@ -18,8 +18,14 @@ public class ImageWaterMarkHandler implements WaterMarkHandler {
     public BufferedImage handle(WaterMarkParam waterMarkParam, BufferedImage src) throws Exception {
         ImageWaterMarkParam imageWaterMarkParam = waterMarkParam.getImage();
         ImageLayoutEnum layoutEnum = waterMarkParam.getImageLayoutEnum();
+        BufferedImage imageBufferedImage;
+        try {
+            imageBufferedImage = ImageIO.read(new URL(imageWaterMarkParam.getImagePath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return src;
+        }
 
-        BufferedImage imageBufferedImage = ImageIO.read(new URL(imageWaterMarkParam.getImagePath()));
         if (src == null) {
             return imageBufferedImage;
         }
@@ -116,7 +122,6 @@ public class ImageWaterMarkHandler implements WaterMarkHandler {
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.drawImage(src, textX, textY,  textImageWidth, textImageHeight, null);
         graphics2D.dispose();
-
         destImage.flush();
         return destImage;
     }

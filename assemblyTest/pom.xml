@@ -279,7 +279,16 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.28.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.datanew.happyreport</groupId>
+            <artifactId>hr-toolkit</artifactId>
+            <version>6.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.datanew.happyreport</groupId>
+            <artifactId>hr-privilege</artifactId>
+            <version>6.7.1</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

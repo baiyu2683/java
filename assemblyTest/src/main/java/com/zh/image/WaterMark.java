@@ -1,5 +1,6 @@
 package com.zh.image;
 
+import com.alibaba.fastjson.JSON;
 import com.zh.image.textimagewatermark.WaterMarkService;
 import com.zh.image.textimagewatermark.param.ImageLayoutEnum;
 import com.zh.image.textimagewatermark.param.ImageWaterMarkParam;
@@ -16,8 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 测试图片加文字水印
@@ -39,17 +38,17 @@ public class WaterMark {
             waterMarkParam.setImageLayoutEnum(ImageLayoutEnum.LEFT);
 
             TextWaterMarkParam textWaterMarkParam = new TextWaterMarkParam();
-            textWaterMarkParam.setColor("#fff");
-            textWaterMarkParam.setContent("浙江网盛数新软件股份有限公司");
+            textWaterMarkParam.setColor("#909090");
+            textWaterMarkParam.setContent("未配置水印");
             textWaterMarkParam.setFontFamily("微软雅黑");
-            textWaterMarkParam.setFontSize(24);
+            textWaterMarkParam.setFontSize(10);
             waterMarkParam.setText(textWaterMarkParam);
 
-            ImageWaterMarkParam imageWaterMarkParam = new ImageWaterMarkParam();
-            imageWaterMarkParam.setDescription("图片水印");
-            imageWaterMarkParam.setName("hhhh");
-            imageWaterMarkParam.setImagePath("file:\\D:\\company\\乐创者\\水印\\lcz.png");
-            waterMarkParam.setImage(imageWaterMarkParam);
+//            ImageWaterMarkParam imageWaterMarkParam = new ImageWaterMarkParam();
+//            imageWaterMarkParam.setDescription("图片水印");
+//            imageWaterMarkParam.setName("hhhh");
+//            imageWaterMarkParam.setImagePath("file:\\D:\\company\\乐创者\\水印\\lcz.png");
+//            waterMarkParam.setImage(imageWaterMarkParam);
 
             try {
                 byte[] bytes = waterMarkService.getWaterMarkImage(waterMarkParam);
@@ -64,24 +63,6 @@ public class WaterMark {
         }
         System.out.println(time);
     }
-
-//    public static void main(String[] args) {
-//        String imagePath = "file:\\D:\\company\\乐创者\\水印\\lcz.png";
-//        String text = "浙江网盛数新软件股份有限公司";
-//        WaterMark waterMark = new WaterMark();
-//        try {
-////            BufferedImage bufferedImage = waterMark.addWaterMark(imagePath, text);
-////            BufferedImage bufferedImage = waterMark.waterMarkImage(text);
-//            BufferedImage bufferedImage = waterMark.waterMarkTextImage(imagePath, text);
-////            BufferedImage bufferedImage = waterMark.waterMarkTextImageRotate(imagePath, "这是一张水印，hahahah");
-//            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg");
-//            ImageIO.write(bufferedImage, "png", fileOutputStream);
-//            fileOutputStream.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("完成...");
-//    }
 
     /**
      * @param imagePath 图片路径
