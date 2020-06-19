@@ -1,14 +1,11 @@
 package com.zh.future;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.HashMap;
 
 public class CompleteableFutureTest {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        CountDownLatch latch = new CountDownLatch(10);
-        latch.await();
+    public static void main(String[] args) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("asdf", "asdf");
     }
 }

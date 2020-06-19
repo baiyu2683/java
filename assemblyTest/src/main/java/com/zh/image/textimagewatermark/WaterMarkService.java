@@ -29,14 +29,15 @@ public class WaterMarkService {
             waterMarkContext.setWaterMarkHandler(new ImageWaterMarkHandler());
             waterMarkContext.setWaterMarkParam(waterMarkParam);
             list.add(waterMarkContext);
+            existContent = true;
+        }
+        if (existContent) {
 
             WaterMarkContext transparentImage = new WaterMarkContext();
             transparentImage.setWaterMarkHandler(new ImageTransparencyHandler());
             transparentImage.setWaterMarkParam(waterMarkParam);
             list.add(transparentImage);
-            existContent = true;
-        }
-        if (existContent) {
+
             WaterMarkContext waterMarkContext = new WaterMarkContext();
             waterMarkContext.setWaterMarkHandler(new RotateWaterMarkHandler());
             waterMarkContext.setWaterMarkParam(waterMarkParam);

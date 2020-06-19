@@ -11,7 +11,12 @@ import io.netty.channel.ChannelHandler.Sharable;
 
 @Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
-	
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		ctx.fireChannelActive();
+	}
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		ByteBuf in = (ByteBuf) msg;
@@ -28,8 +33,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx,
-			Throwable cause) {
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// 打印异常
 		cause.printStackTrace();
 		// 关闭channel

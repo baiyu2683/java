@@ -11,7 +11,6 @@ import sun.font.FontDesignMetrics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
@@ -32,28 +31,27 @@ public class WaterMark {
             WaterMarkParam waterMarkParam = new WaterMarkParam();
             waterMarkParam.setHeight(842);
             waterMarkParam.setWidth(595);
-            waterMarkParam.setAngle(30);
-            waterMarkParam.setHorizontalSpacing(200);
-            waterMarkParam.setVerticalSpacing(100);
+            waterMarkParam.setAngle(45);
+            waterMarkParam.setHorizontalSpacing(60);
+            waterMarkParam.setVerticalSpacing(30);
             waterMarkParam.setImageLayoutEnum(ImageLayoutEnum.LEFT);
 
             TextWaterMarkParam textWaterMarkParam = new TextWaterMarkParam();
             textWaterMarkParam.setColor("#909090");
             textWaterMarkParam.setContent("未配置水印");
             textWaterMarkParam.setFontFamily("微软雅黑");
-            textWaterMarkParam.setFontSize(10);
+            textWaterMarkParam.setFontSize(60);
             waterMarkParam.setText(textWaterMarkParam);
 
-//            ImageWaterMarkParam imageWaterMarkParam = new ImageWaterMarkParam();
-//            imageWaterMarkParam.setDescription("图片水印");
-//            imageWaterMarkParam.setName("hhhh");
-//            imageWaterMarkParam.setImagePath("file:\\D:\\company\\乐创者\\水印\\lcz.png");
-//            waterMarkParam.setImage(imageWaterMarkParam);
+            ImageWaterMarkParam imageWaterMarkParam = new ImageWaterMarkParam();
+            imageWaterMarkParam.setDescription("图片水印");
+            imageWaterMarkParam.setName("hhhh");
+            imageWaterMarkParam.setImagePath("file:\\D:\\company\\乐创者\\水印\\lcz.png");
+            waterMarkParam.setImage(imageWaterMarkParam);
 
             try {
                 byte[] bytes = waterMarkService.getWaterMarkImage(waterMarkParam);
                 time += System.currentTimeMillis() - start;
-                System.out.println(time);
                 FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\Administrator\\Desktop\\2.jpg");
                 IOUtils.write(bytes, fileOutputStream);
                 fileOutputStream.close();

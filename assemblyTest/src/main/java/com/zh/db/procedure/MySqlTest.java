@@ -4,6 +4,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 
 import java.sql.*;
+import java.util.UUID;
 
 public class MySqlTest {
 
@@ -64,6 +65,29 @@ public class MySqlTest {
         conn.close();
     }
 
+    @Test
+    public void testInsertLarge() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
+
+        Connection conn = bds.getConnection();
+        conn.setAutoCommit(false);
+        try {
+            CallableStatement prepareCall = conn.prepareCall("insert into `散点图`(sex, height, weight) values(?, ?, ?)");
+            for (int i = 0 ; i < 1000000 ; i++) {
+                prepareCall.setInt(1, 1);
+                prepareCall.setInt(2, 2);
+                prepareCall.setInt(3, 60);
+                prepareCall.executeUpdate();
+            }
+            prepareCall.close();
+        } finally {
+            conn.commit();
+        }
+        conn.close();
+    }
+
 
     @Test
     public void testInsert() throws SQLException {
@@ -108,7 +132,55 @@ public class MySqlTest {
         Connection conn = bds.getConnection();
 
         try {
-            String sql = "insert into 导入(id, name1) values(6, \"2\")";
+            String sql = "insert into 导入(id, name1) values(1, null)";
+            conn.prepareStatement(sql).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDelete() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
+
+        Connection conn = bds.getConnection();
+    }
+
+    @Test
+    public void testSel() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
+
+        Connection conn = bds.getConnection();
+
+        try {
+            String sql = "insert into data(name, address) values(?, ?)";
+            conn.setAutoCommit(false);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            for (int i = 0 ; i < 10000; i++) {
+                preparedStatement.setString(1, "2222");
+                preparedStatement.setString(2, "233");
+                preparedStatement.executeUpdate();
+            }
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testForeignKey() throws SQLException {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        bds.setUrl("jdbc:mysql://127.0.0.1:3306/zh?user=root&password=root&useUnicode=true&characterEncoding=gb18030&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useSSL=false&noAccessToProcedureBodies=true");
+
+        Connection conn = bds.getConnection();
+
+        try {
+            String sql = "insert into main(id) values('1')";
             conn.prepareStatement(sql).execute();
         } catch (Exception e) {
             e.printStackTrace();

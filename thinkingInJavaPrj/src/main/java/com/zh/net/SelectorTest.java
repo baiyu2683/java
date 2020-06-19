@@ -1,11 +1,8 @@
 package com.zh.net;
 
-import org.apache.log4j.net.SocketServer;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;

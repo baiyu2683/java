@@ -8,6 +8,8 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Administrator
@@ -143,4 +145,30 @@ public class LambdaTest {
         }
     }
 
+    /**
+     * 将两个数组 排列组合
+     */
+    @Test
+    public void testFlatMap() {
+        List<Integer> a = Arrays.asList(1, 2, 3);
+        List<Integer> b = Arrays.asList(2, 3);
+        List<List<Integer>> list = a.stream()
+                .map(i -> b.stream().map(j -> Arrays.asList(i, j)))
+                .flatMap(listStream -> listStream)
+                .collect(Collectors.toList());
+        System.out.println(list);
+
+        list = a.stream()
+                .flatMap(i -> b.stream().map(j -> Arrays.asList(i, j)))
+                .collect(Collectors.toList());
+        System.out.println(list);
+    }
+
+    @Test
+    public void testJoining() {
+        System.out.println(IntStream.of(1, 2, 3, 4)
+                .boxed()
+                .map(i -> String.valueOf(i))
+                .collect(Collectors.joining(", ")));
+    }
 }

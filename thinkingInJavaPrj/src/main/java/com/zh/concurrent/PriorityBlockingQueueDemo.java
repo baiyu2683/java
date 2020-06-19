@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class PriorityBlockingQueueDemo {
     public static void main(String[] args) throws InterruptedException {
-        Random random = new Random(47);
         ExecutorService executorService = Executors.newCachedThreadPool();
         PriorityBlockingQueue<Runnable> queue = new PriorityBlockingQueue<>();
         executorService.execute(new PrioritizedTaskProducer(queue, executorService));
@@ -71,6 +70,7 @@ class PrioritizedTask implements Runnable, Comparable<PrioritizedTask> {
         }
     }
 }
+
 class PrioritizedTaskProducer implements Runnable {
     private Random random = new Random(47);
     private Queue<Runnable> queue;
@@ -107,7 +107,7 @@ class PrioritizedTaskConsumer implements Runnable {
     }
     public void run() {
         try {
-            while (!Thread.interrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 queue.take().run();
             }
         } catch (InterruptedException e) {

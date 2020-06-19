@@ -160,7 +160,7 @@ public class OracleTest {
         bds.setPassword("1234qwer");
 
         Connection connection = bds.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO \"user\"(\"id\", \"code\") values('1', '3')");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO \"user\"(\"id\", \"code\") values(null, '3')");
         try {
             preparedStatement.execute();
         } catch (Exception e) {

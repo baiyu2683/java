@@ -13,6 +13,9 @@ import java.util.Random;
 
 public class ByteBufTest {
 
+    /**
+     * 默认256，最大Integer.MAX_VALUE
+     */
     @Test
     public void test1() {
         ByteBuf byteBuf = ByteBufAllocator.DEFAULT.buffer();
@@ -33,10 +36,12 @@ public class ByteBufTest {
     @Test
     public void compositeBufferTest() {
         CompositeByteBuf messageBuf = Unpooled.compositeBuffer();
+
         ByteBuf headerBuf = Unpooled.buffer();
         headerBuf.writeBytes("123".getBytes());
         ByteBuf bodyBuf = Unpooled.buffer();
         bodyBuf.writeBytes("asd".getBytes());
+
         // 添加时需要设置increaseWriterIndex参数为true，否则始终为0无法读取
         messageBuf.addComponents(true,headerBuf, bodyBuf);
         for (ByteBuf buf : messageBuf) {
@@ -93,7 +98,7 @@ public class ByteBufTest {
     }
 
     @Test
-    public void searchOper() {
+    public void searchOperation() {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeBytes("asdf\r\nasdf".getBytes());
         Assert.assertEquals(buffer.forEachByte(ByteProcessor.FIND_CRLF), 4);

@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -170,5 +171,11 @@ public class TestJava8 {
         if (matcher.find()) {
             System.out.println(matcher.group(1));
         }
+    }
+
+    @Test
+    public void testLongAdder() {
+        LongAdder longAdder = new LongAdder();
+        longAdder.add(10);
     }
 }

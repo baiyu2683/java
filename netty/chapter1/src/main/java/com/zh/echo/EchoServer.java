@@ -1,14 +1,15 @@
 package com.zh.echo;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 public class EchoServer {
 
@@ -26,12 +27,28 @@ public class EchoServer {
 			b.group(group)
 			.channel(NioServerSocketChannel.class)
 			.localAddress(new InetSocketAddress(port))
+			.handler(new ChannelOutboundHandlerAdapter() {
+				@Override
+				public void bind(ChannelHandlerContext ctx, SocketAddress localAddress,
+								 ChannelPromise promise) throws Exception {
+					ctx.bind(localAddress, promise);
+				}
+
+				@Override
+				public void read(ChannelHandlerContext ctx) throws Exception {
+					ctx.read();
+				}
+
+				@Override
+				public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+					ctx.write(msg, promise);
+				}
+			})
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline()
-					.addLast(serverHandler);
+					ch.pipeline().addLast(serverHandler);
 				}
 			});
 			ChannelFuture f = b.bind().sync();

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Dom4jAndItext {
 
-    private static final String rootPath = JsoupAndItext.class.getResource("/").getPath();
+    private static final String rootPath = null;//JsoupAndItext.class.getResource("/").getPath();
 
     private static final String htmlPath = rootPath + "/html";
 

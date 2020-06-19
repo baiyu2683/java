@@ -1,6 +1,5 @@
 package com.zh.db.procedure;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 
@@ -140,8 +139,6 @@ public class SqlServerTest {
         prepareCall.setInt("pageRowCount", 3);
         prepareCall.registerOutParameter("procOutResultType", Types.VARCHAR);
 
-        boolean flag = prepareCall.execute();
-
         boolean hasMoreResult = true;
         while (hasMoreResult) {
             ResultSet resultSet = prepareCall.getResultSet();
@@ -170,7 +167,7 @@ public class SqlServerTest {
 
         Connection conn = bds.getConnection();
         try {
-            PreparedStatement statement = conn.prepareStatement("insert into info(id, name, age) values('4', '2', '2')");
+            PreparedStatement statement = conn.prepareStatement("insert into info(id, name, age) values('1', '2', '2')");
             statement.execute();
         } catch (Exception e) {
             SQLException sqlException = new SQLIntegrityConstraintViolationException("asdf", e);
