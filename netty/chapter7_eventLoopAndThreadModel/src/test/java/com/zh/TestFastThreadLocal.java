@@ -4,6 +4,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.FastThreadLocalThread;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class TestFastThreadLocal {
 
@@ -41,20 +42,37 @@ public class TestFastThreadLocal {
     private static final FastThreadLocal<String> threadLocal32 = new FastThreadLocal<>();
     private static final FastThreadLocal<String> threadLocal33 = new FastThreadLocal<>();
     private static final FastThreadLocal<String> threadLocal34 = new FastThreadLocal<>();
+    private static final ThreadLocal<String> threadLocal35 = new ThreadLocal<>();
 
     public static void main(String[] args) throws InterruptedException {
-        FastThreadLocalThread threadLocalThread = new FastThreadLocalThread() {
-            public void run() {
+        int count = 1000000000;
+        FastThreadLocalThread fastThreadLocalThread = new FastThreadLocalThread(() -> {
+            long start = System.currentTimeMillis();
+            for (int i = 0 ; i < count ; i++) {
                 threadLocal34.set("100");
                 try {
-                    System.out.println(threadLocal34.get());
-                    System.out.println("asdf");
+                    threadLocal34.get();
                 } finally {
                     threadLocal34.remove();
                 }
             }
-        };
-        threadLocalThread.start();
+            System.out.println("fast: " + (System.currentTimeMillis() - start));
+        });
+        fastThreadLocalThread.start();
+        Thread thread = new Thread(() -> {
+            long start = System.currentTimeMillis();
+            for (int i = 0 ; i < count ; i++) {
+                threadLocal34.set("100");
+                try {
+                    threadLocal34.get();
+                } finally {
+                    threadLocal34.remove();
+                }
+            }
+            System.out.println("slow: " + (System.currentTimeMillis() - start));
+        });
+        thread.start();
+        TimeUnit.SECONDS.sleep(5);
         new CountDownLatch(1).await();
     }
 }
