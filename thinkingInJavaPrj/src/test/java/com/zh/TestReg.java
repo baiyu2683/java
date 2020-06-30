@@ -66,4 +66,11 @@ public class TestReg {
                 .replaceAll("\\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
         System.out.println(text);
     }
+
+    @Test
+    public void testPreCondition() {
+        String text = "\" \"";
+        text = text.replaceAll("^\"\"$", "");
+        System.out.println(text);
+    }
 }
