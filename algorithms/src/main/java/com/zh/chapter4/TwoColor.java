@@ -44,6 +44,7 @@ public class TwoColor {
         graph.addEdge(0, 1);
         graph.addEdge(0, 2);
         graph.addEdge(0, 5);
+
         graph.addEdge(0, 6);
         graph.addEdge(1, 0);
         graph.addEdge(2, 0);
