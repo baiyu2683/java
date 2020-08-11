@@ -3,7 +3,8 @@ package com.zh.chapter4;
 import com.zh.chapter4.graph.Graph;
 
 /**
- * 深度优先搜索
+ * 深度优先搜索， 目的是找到顶点到起点是否有路径的问题
+ * 相比之下广度优先搜索解决了最短路径的问题
  */
 public class DeepthFirstSearch implements Search {
 
@@ -19,6 +20,7 @@ public class DeepthFirstSearch implements Search {
         System.out.println("v: " + v);
         marked[v] = true;
         count++;
+        // 深度优先搜索，filo，先进后出
         for (int w : graph.adj(v)) {
             if (!marked[w]) {
                 dfs(graph, w);
