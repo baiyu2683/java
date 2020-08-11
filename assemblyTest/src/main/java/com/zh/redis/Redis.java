@@ -14,25 +14,28 @@ public class Redis {
 
     private JedisPool jedisPool;
 
-    public Redis(String host, int port, int timeout) {
+    public Redis(RedisConfig config) {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMinIdle(10);
-        jedisPoolConfig.setMaxIdle(20);
-        jedisPoolConfig.setMaxTotal(100);
-        jedisPoolConfig.setMaxWaitMillis(10);
-        jedisPoolConfig.setFairness(false);
-        jedisPoolConfig.setTestOnBorrow(true);
-        jedisPool = new JedisPool(jedisPoolConfig,host, port, timeout, "zh2683");
+        jedisPoolConfig.setMinIdle(config.getMinIdle());
+        jedisPoolConfig.setMaxIdle(config.getMaxIdle());
+        jedisPoolConfig.setMaxTotal(config.getMaxTotal());
+        jedisPoolConfig.setMaxWaitMillis(config.getMaxWaitMillis());
+        jedisPoolConfig.setFairness(config.isFairness());
+        jedisPool = new JedisPool(jedisPoolConfig, config.getHost(), config.getPort(), config.getTimeout(), config.getPassword());
     }
 
     public void execute(RedisCallBack callBack) {
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = null;
         try {
+            jedis = jedisPool.getResource();
             callBack.callback(jedis);
         } catch (JedisConnectionException e) {
-            callBack.callback(jedis);
+            // 日志
+            throw e;
         } finally {
-            jedis.close();
+            if (jedis != null) {
+                jedis.close();
+            }
         }
     }
 }
