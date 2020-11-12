@@ -6,10 +6,8 @@ import org.junit.Test;
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Main {
@@ -89,4 +87,19 @@ public class Main {
         System.out.println("所有的都完成了");
     }
 
+    @Test
+    public void testThen() {
+        CompletableFuture.supplyAsync(() ->  {
+                    System.out.println("第一");
+                    return 1;
+                })
+                .thenCompose(i ->  {
+                    System.out.println("第二" + i);
+                    return CompletableFuture.supplyAsync(() -> getPrice() + "123");
+                })
+                .thenAccept(i -> {
+                    System.out.println(i);
+                })
+                .join();
+    }
 }
