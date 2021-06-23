@@ -48,8 +48,8 @@ public class WordTest {
         }
         table.setWidths(widths);
 
-        Row row = table.getRow(0);
-        row.setHeight(100);
+//        Row row = table.getRow(0);
+//        row.setHeight(100);
 
         RtfCell tableCell = new RtfCell();
         Paragraph paragraph = new Paragraph();

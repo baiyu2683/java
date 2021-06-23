@@ -1,10 +1,7 @@
 package com.zh.chapter13;
 
-import com.sun.org.apache.xpath.internal.operations.String;
 import org.junit.Test;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;

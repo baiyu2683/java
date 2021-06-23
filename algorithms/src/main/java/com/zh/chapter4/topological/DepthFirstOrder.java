@@ -87,6 +87,11 @@ public class DepthFirstOrder {
             System.out.print(i + ", ");
         }
         System.out.println();
+        Queue<Integer> post = depthFirstOrder.post;
+        while (!post.isEmpty()) {
+            System.out.print(post.poll() + ", ");
+        }
+        System.out.println();
         Stack<Integer> integers = depthFirstOrder.reversePost;
         while (!integers.empty()) {
             System.out.print(integers.pop() + ", ");

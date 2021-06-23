@@ -1,7 +1,7 @@
 package com.zh;
 
 import org.junit.Test;
-import sun.font.FontDesignMetrics;
+//import sun.font.FontDesignMetrics;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -151,7 +151,7 @@ public class TestCases {
                 Font font = new Font("微软雅黑", Font.PLAIN, 20);
                 Thread.yield();
                 long start = System.currentTimeMillis();
-                FontDesignMetrics.getMetrics(font);
+//                FontDesignMetrics.getMetrics(font);
                 System.out.println(System.currentTimeMillis() - start);
                 latch.countDown();
             }).start();

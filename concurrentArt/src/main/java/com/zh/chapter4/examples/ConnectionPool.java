@@ -34,6 +34,17 @@ public class ConnectionPool {
                 }
                 return pool.removeFirst();
             } else {
+                long future = System.currentTimeMillis() + mills;
+                long remaining = mills;
+                while(pool.isEmpty() && remaining > 0) {
+                    pool.wait(remaining);
+                    remaining = future - System.currentTimeMillis();
+                }
+                Connection result = null;
+                if (!pool.isEmpty()) {
+                    result = pool.removeFirst();
+                }
+                return result;
             }
         }
     }

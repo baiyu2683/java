@@ -1,6 +1,5 @@
 package com.zh.rabbitmq.tutorial.topic;
 
-import com.aspose.pdf.operators.EX;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

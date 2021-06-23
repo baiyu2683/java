@@ -29,8 +29,8 @@ public class PPTExport {
         // 切图，大小和背景一致
         InputStream inputStream = PPTExport.class.getResourceAsStream("/image/pptbackground.jpg");
         // 单位：像素
-        byte[] destPic = ImageUtils.thumbnail(IOUtils.toByteArray(inputStream), (float)Units.pointsToPixel(dimension.getWidth()), (float)Units.pointsToPixel(dimension.getHeight()));
-        inputStream = new ByteArrayInputStream(destPic);
+//        byte[] destPic = ImageUtils.thumbnail(IOUtils.toByteArray(inputStream), (float)Units.pointsToPixel(dimension.getWidth()), (float)Units.pointsToPixel(dimension.getHeight()));
+//        inputStream = new ByteArrayInputStream(destPic);
 
         // 统一背景图片
         XSLFPictureData xslfPictureData = ppt.addPicture(inputStream, PictureData.PictureType.JPEG);

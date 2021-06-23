@@ -10,27 +10,27 @@ import java.awt.image.BufferedImage;
  */
 public class WaterMarkContext {
 
-    private WaterMarkParam waterMarkParam;
-
-    private WaterMarkHandler waterMarkHandler;
-
-    public BufferedImage handle(BufferedImage src) throws Exception {
-        return waterMarkHandler.handle(waterMarkParam, src);
-    }
-
-    public WaterMarkParam getWaterMarkParam() {
-        return waterMarkParam;
-    }
-
-    public void setWaterMarkParam(WaterMarkParam waterMarkParam) {
-        this.waterMarkParam = waterMarkParam;
-    }
-
-    public WaterMarkHandler getWaterMarkHandler() {
-        return waterMarkHandler;
-    }
-
-    public void setWaterMarkHandler(WaterMarkHandler waterMarkHandler) {
-        this.waterMarkHandler = waterMarkHandler;
-    }
+//    private WaterMarkParam waterMarkParam;
+//
+//    private WaterMarkHandler waterMarkHandler;
+//
+//    public BufferedImage handle(BufferedImage src) throws Exception {
+//        return waterMarkHandler.handle(waterMarkParam, src);
+//    }
+//
+//    public WaterMarkParam getWaterMarkParam() {
+//        return waterMarkParam;
+//    }
+//
+//    public void setWaterMarkParam(WaterMarkParam waterMarkParam) {
+//        this.waterMarkParam = waterMarkParam;
+//    }
+//
+//    public WaterMarkHandler getWaterMarkHandler() {
+//        return waterMarkHandler;
+//    }
+//
+//    public void setWaterMarkHandler(WaterMarkHandler waterMarkHandler) {
+//        this.waterMarkHandler = waterMarkHandler;
+//    }
 }

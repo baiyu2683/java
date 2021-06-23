@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 2018年9月12日
  */
 public class ConcurrentHashMapTest {
-    private Map<String, String> map = new ConcurrentHashMap<String, String>();
+    private static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
 
     public static void main(String[] args) {
-        
+        map.put("10", "10");
     }
 }

@@ -296,22 +296,22 @@
             <artifactId>hr-toolkit</artifactId>
             <version>6.7.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.datanew.happyreport</groupId>
-            <artifactId>hr-privilege</artifactId>
-            <version>6.7.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.datanew.happyreport</groupId>-->
+<!--            <artifactId>hr-privilege</artifactId>-->
+<!--            <version>6.7.1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.3.3</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.datanew.happyreport</groupId>
-            <artifactId>hr-privilege</artifactId>
-            <version>6.7.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.datanew.happyreport</groupId>-->
+<!--            <artifactId>hr-privilege</artifactId>-->
+<!--            <version>6.7.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
