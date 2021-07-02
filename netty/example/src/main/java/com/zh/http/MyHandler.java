@@ -5,7 +5,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
-import sun.misc.Unsafe;
 
 public class MyHandler extends SimpleChannelInboundHandler<FullHttpMessage> {
 
@@ -18,6 +17,5 @@ public class MyHandler extends SimpleChannelInboundHandler<FullHttpMessage> {
         fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE,
                 "text/plain;charset=UTF-8");
         ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
-        Unsafe unsafe = Unsafe.getUnsafe();
     }
 }
