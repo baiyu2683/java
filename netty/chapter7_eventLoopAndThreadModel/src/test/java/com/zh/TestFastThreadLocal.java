@@ -45,34 +45,34 @@ public class TestFastThreadLocal {
     private static final ThreadLocal<String> threadLocal35 = new ThreadLocal<>();
 
     public static void main(String[] args) throws InterruptedException {
-        int count = 1000000000;
-        FastThreadLocalThread fastThreadLocalThread = new FastThreadLocalThread(() -> {
-            long start = System.currentTimeMillis();
-            for (int i = 0 ; i < count ; i++) {
-                threadLocal34.set("100");
-                try {
-                    threadLocal34.get();
-                } finally {
-                    threadLocal34.remove();
-                }
-            }
-            System.out.println("fast: " + (System.currentTimeMillis() - start));
-        });
-        fastThreadLocalThread.start();
-        Thread thread = new Thread(() -> {
-            long start = System.currentTimeMillis();
-            for (int i = 0 ; i < count ; i++) {
-                threadLocal34.set("100");
-                try {
-                    threadLocal34.get();
-                } finally {
-                    threadLocal34.remove();
-                }
-            }
-            System.out.println("slow: " + (System.currentTimeMillis() - start));
-        });
-        thread.start();
-        TimeUnit.SECONDS.sleep(5);
-        new CountDownLatch(1).await();
+//        int count = 1000000000;
+//        FastThreadLocalThread fastThreadLocalThread = new FastThreadLocalThread(() -> {
+//            long start = System.currentTimeMillis();
+//            for (int i = 0 ; i < count ; i++) {
+//                threadLocal34.set("100");
+//                try {
+//                    threadLocal34.get();
+//                } finally {
+//                    threadLocal34.remove();
+//                }
+//            }
+//            System.out.println("fast: " + (System.currentTimeMillis() - start));
+//        });
+//        fastThreadLocalThread.start();
+//        Thread thread = new Thread(() -> {
+//            long start = System.currentTimeMillis();
+//            for (int i = 0 ; i < count ; i++) {
+//                threadLocal34.set("100");
+//                try {
+//                    threadLocal34.get();
+//                } finally {
+//                    threadLocal34.remove();
+//                }
+//            }
+//            System.out.println("slow: " + (System.currentTimeMillis() - start));
+//        });
+//        thread.start();
+//        TimeUnit.SECONDS.sleep(5);
+//        new CountDownLatch(1).await();
     }
 }
