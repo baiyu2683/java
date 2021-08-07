@@ -4,6 +4,7 @@ import com.zh.entity.Apple;
 import com.zh.enums.Color;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -21,5 +22,13 @@ public class MainTest {
 
     public static void main(String[] args) {
         MainTest.testLambdaGrammar();
+
+        Comparator<Apple> comparator = new Comparator<Apple>() {
+            @Override
+            public int compare(Apple o1, Apple o2) {
+                return o1.getColor().compareTo(o2.getColor());
+            }
+        };
+        Comparator<Apple> comparator1 = (Apple a1, Apple a2) -> a1.getColor().compareTo(a2.getColor());
     }
 }
