@@ -1,28 +1,15 @@
 package com.zh.producers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.zh.entity.Point;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.KafkaException;
-import org.apache.kafka.common.errors.AuthorizationException;
-import org.apache.kafka.common.errors.OutOfOrderSequenceException;
-import org.apache.kafka.common.errors.ProducerFencedException;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 未采集过的采集点重新采集
  */
-public class UnPointTopicProducer {
+public class CallbackUnPointTopicProducer {
 
     private static Properties config;
 
@@ -49,7 +36,10 @@ public class UnPointTopicProducer {
         try {
             for (int i = 0; i < 100; i++) {
                 System.out.println("第" + (i+1) + "条");
-                kafkaProducer.send(new ProducerRecord<>("UnPoint", "point-" + i));
+                kafkaProducer.send(new ProducerRecord<>("UnPoint", "point-" + i),
+                        ((metadata, exception) -> {
+                            System.out.println(metadata.topic() + "-" + metadata.partition() + "-" + metadata.offset() + "-" + exception);
+                        }));
             }
             System.out.println("结束");
             kafkaProducer.flush();
