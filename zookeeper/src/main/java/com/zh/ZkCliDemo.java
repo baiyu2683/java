@@ -16,7 +16,7 @@ public class ZkCliDemo {
 
     public ZooKeeper zkCli() throws IOException {
         zooKeeper = new ZooKeeper(connectString,
-                5000, new MyWatcher());
+                5000, new MyWatcher()); // 超时之后自动关闭了
         System.out.println(zooKeeper.getState());
         try {
             connectedLatch.await();
