@@ -29,6 +29,7 @@
         <module>concurrentArt</module>
         <module>jdk8plus</module>
         <module>kafka</module>
+        <module>zookeeper</module>
     </modules>
     <dependencyManagement>
         <dependencies>
