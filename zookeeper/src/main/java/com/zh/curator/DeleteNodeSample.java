@@ -3,7 +3,10 @@ package com.zh.curator;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.shaded.com.google.common.cache.Cache;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
@@ -30,12 +33,24 @@ public class DeleteNodeSample {
         Stat stat = new Stat();
         client.getData().storingStatIn(stat).forPath("/mynode");
         System.out.println(stat.getVersion());
+
+        // 监听删除事件
+        CuratorCache cache = CuratorCache.builder(client, "/mynode").build();
+        cache.start();
+        CuratorCacheListener listener = CuratorCacheListener.builder()
+                .forDeletes(childData -> {
+                    System.out.println(childData.getStat());
+                })
+                .build();
+        cache.listenable().addListener(listener);
+
         // 删除节点
         client.delete()
                 .guaranteed() // 客户端会话有效期间，框架在后台持续进行删除操作直到删除成功
                 .deletingChildrenIfNeeded()
                 .withVersion(stat.getVersion())
                 .forPath("/mynode");
+
         System.out.println("asdf");
         TimeUnit.SECONDS.sleep(Integer.MAX_VALUE);
     }

@@ -7,6 +7,9 @@ import org.apache.zookeeper.CreateMode;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * curator引入cache接口用于事件监听
+ */
 public class NodeCacheSample {
 
     private static String nodeCachePath = "/zk-book/nodecache";
